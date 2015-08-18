@@ -45,12 +45,12 @@ extern "C" {
 /* SET LCD<->MCU CONNECTIONS */
 //-------------------------------
 #define LCD_WIRE          		      PORTB // select your microcontroller gpio port
-#define E  		 	   	  		      2 // pin number in selected port
-#define RS 		  	   	  		      1 // pin number in selected port
+#define E  		 	   	  		      1 // pin number in selected port
+#define RS 		  	   	  		      0 // pin number in selected port
 #define D7 		 	   	  		      5 // pin number in selected port
-#define D6 		 	   	  		      0 // pin number in selected port
+#define D6 		 	   	  		      4 // pin number in selected port
 #define D5 		 	   	  		      3 // pin number in selected port
-#define D4 		  	   	  		      4 // pin number in selected port
+#define D4 		  	   	  		      2 // pin number in selected port
 //-------------------------------
 // SELECT MCU FREQUENCE
 //-------------------------------
@@ -91,7 +91,7 @@ extern "C" {
 #define USE_PROGRESS_BAR			  1  /* 1 or 0 */
 #define DRAW_PROGRESS_BAR_ON_LINE	  2  /* Select lcd line: 1, 2, 4, ... */
 #define PROGRESS_BAR_HEIGHT			  8  /* in pixel: 1(min),2,3,4,5,6,7,8(max) */
-#define PROGRESS_BAR_WIDTH			  8 /* Number of chars in lcd line: ... , 8, 16, 20 */
+#define PROGRESS_BAR_WIDTH			  16 /* Number of chars in lcd line: ... , 8, 16, 20 */
 //-------------------------------
 // OTHER MACROS
 //-------------------------------

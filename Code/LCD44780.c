@@ -10,12 +10,15 @@
 
 #define F_CPU 8000000
 #include <avr/io.h>
-#include <avr/interrupt.h>
-#include <util/delay.h>
 #include <stdlib.h>
-#include <math.h>
-#include <string.h>
 #include "hd44780.h"
+#include <util/delay.h>
+#include <avr/pgmspace.h>
+#include <avr/interrupt.h>
+
+//#include <math.h>
+//#include <string.h>
+
 
 /*
 long val;
@@ -44,7 +47,7 @@ void startup()
 	PORTD=0x7F;	 // PD0..PD6 подтягивающие резисторы включены, PD7 – лог. 0
 	*/
 	
-	/* знак градуса для загрузки в дисплей */
+	/* символы для загрузки в дисплей */
 	uint8_t degree[8]=
 	{  
 		0x0E, // 0 1 1 1 0
@@ -55,30 +58,48 @@ void startup()
 		0x00, // 0 0 0 0 0
 		0x00, // 0 0 0 0 0
 		0x00  // 0 0 0 0 0
-	};	
+	};    
 	
-	lcd_init();				// инициализация дисплея
-	lcd_load(degree,0);		// загрузка символа градуса по Цельсию
-	lcd_clrscr();			// очистка дисплея
-	lcd_goto(1,0);			// переход на строчку 1
-	lcd_prints("TP-Meter");	// вывод надписи с табулированием (/t)
-	lcd_goto(2,0);			// переход на строчку 2
-		for(int i=0;i<NUMBER_OF_BAR_ELEMENTS;i++)
-		{
-			lcd_drawbar(i);
-			_delay_ms(5);
-		}	// прогресс-бар
-	lcd_clrscr();			// очистка экрана
-	lcd_goto(1,0);			// переход на строчку 1
-	lcd_prints("t=27.0C");	// вывод температуры
-	lcd_goto(1,7);			// переход в поле вывода символа температуры
+	lcd_init();				    // инициализация дисплея
+	lcd_load(degree,0);		    // загрузка символа градуса по Цельсию   
+	
+    /*
+        lcd_clrscr();			    // очистка дисплея
+	    lcd_goto(1,0);			    // переход на строчку 1
+        lcd_prints("\t\tTP-Meter");	// вывод надписи с табулированием (/t)
+	    lcd_goto(2,0);			    // переход на строчку 2
+		    for(int i=0;i<NUMBER_OF_BAR_ELEMENTS;i++)
+		    {
+			    lcd_drawbar(i);
+			    _delay_ms(5);
+		    }	// прогресс-бар
+    */
+	
+    lcd_clrscr();			// очистка экрана
+	
+    lcd_goto(1,0);			// переход на строчку 1
+	lcd_prints("T1=99C");	// вывод температуры
+	lcd_goto(1,6);			// переход в поле вывода символа температуры
 	lcd_putc(0);			// вывод символа градуса Цельсия
+    
+    lcd_goto(1,8);
+	lcd_prints("T2=99C");	// вывод температуры
+	lcd_goto(1,14);			// переход в поле вывода символа температуры
+	lcd_putc(0);			// вывод символа градуса Цельсия    
+    
 	lcd_goto(2,0);			// переход на строчку 1
-	lcd_prints("P=50.1kW");	// вывод мощности
+	lcd_prints("P=9999.9W");	// вывод мощности
 	// lcd_prints("P=999.9W");	// вывод мощности (=< 999.90 ---> W)
 	// lcd_prints("P=99.9kW");	// вывод мощности (>= 1000.0 ---> kW)
 	
-	
+    lcd_goto(2,10);
+    lcd_prints("T1");
+    
+    _delay_ms(1000);
+    
+    lcd_goto(2,13);
+    lcd_prints("T2");
+    
 	/* настройка АЦП */
 	/*
 	ADCSRA|=(1<<ADEN)// разрешение АЦП
