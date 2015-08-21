@@ -1,0 +1,2623 @@
+
+main.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000a3a  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000012  00800060  00000a3a  00000ace  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000018  00800072  00800072  00000ae0  2**0
+                  ALLOC
+  3 .debug_aranges 000000c0  00000000  00000000  00000ae0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_pubnames 000002c7  00000000  00000000  00000ba0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   000019dc  00000000  00000000  00000e67  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 00000737  00000000  00000000  00002843  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   000012ae  00000000  00000000  00002f7a  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000260  00000000  00000000  00004228  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    000004ad  00000000  00000000  00004488  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    00000d82  00000000  00000000  00004935  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000210  00000000  00000000  000056b7  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	14 c0       	rjmp	.+40     	; 0x2a <__ctors_end>
+   2:	2e c0       	rjmp	.+92     	; 0x60 <__bad_interrupt>
+   4:	2d c0       	rjmp	.+90     	; 0x60 <__bad_interrupt>
+   6:	2c c0       	rjmp	.+88     	; 0x60 <__bad_interrupt>
+   8:	2b c0       	rjmp	.+86     	; 0x60 <__bad_interrupt>
+   a:	2a c0       	rjmp	.+84     	; 0x60 <__bad_interrupt>
+   c:	29 c0       	rjmp	.+82     	; 0x60 <__bad_interrupt>
+   e:	28 c0       	rjmp	.+80     	; 0x60 <__bad_interrupt>
+  10:	27 c0       	rjmp	.+78     	; 0x60 <__bad_interrupt>
+  12:	26 c0       	rjmp	.+76     	; 0x60 <__bad_interrupt>
+  14:	25 c0       	rjmp	.+74     	; 0x60 <__bad_interrupt>
+  16:	24 c0       	rjmp	.+72     	; 0x60 <__bad_interrupt>
+  18:	23 c0       	rjmp	.+70     	; 0x60 <__bad_interrupt>
+  1a:	22 c0       	rjmp	.+68     	; 0x60 <__bad_interrupt>
+  1c:	21 c0       	rjmp	.+66     	; 0x60 <__bad_interrupt>
+  1e:	20 c0       	rjmp	.+64     	; 0x60 <__bad_interrupt>
+  20:	1f c0       	rjmp	.+62     	; 0x60 <__bad_interrupt>
+  22:	1e c0       	rjmp	.+60     	; 0x60 <__bad_interrupt>
+  24:	1d c0       	rjmp	.+58     	; 0x60 <__bad_interrupt>
+  26:	1c c0       	rjmp	.+56     	; 0x60 <__bad_interrupt>
+  28:	1b c0       	rjmp	.+54     	; 0x60 <__bad_interrupt>
+
+0000002a <__ctors_end>:
+  2a:	11 24       	eor	r1, r1
+  2c:	1f be       	out	0x3f, r1	; 63
+  2e:	cf e5       	ldi	r28, 0x5F	; 95
+  30:	d2 e0       	ldi	r29, 0x02	; 2
+  32:	de bf       	out	0x3e, r29	; 62
+  34:	cd bf       	out	0x3d, r28	; 61
+
+00000036 <__do_copy_data>:
+  36:	10 e0       	ldi	r17, 0x00	; 0
+  38:	a0 e6       	ldi	r26, 0x60	; 96
+  3a:	b0 e0       	ldi	r27, 0x00	; 0
+  3c:	ea e3       	ldi	r30, 0x3A	; 58
+  3e:	fa e0       	ldi	r31, 0x0A	; 10
+  40:	02 c0       	rjmp	.+4      	; 0x46 <.do_copy_data_start>
+
+00000042 <.do_copy_data_loop>:
+  42:	05 90       	lpm	r0, Z+
+  44:	0d 92       	st	X+, r0
+
+00000046 <.do_copy_data_start>:
+  46:	a2 37       	cpi	r26, 0x72	; 114
+  48:	b1 07       	cpc	r27, r17
+  4a:	d9 f7       	brne	.-10     	; 0x42 <.do_copy_data_loop>
+
+0000004c <__do_clear_bss>:
+  4c:	10 e0       	ldi	r17, 0x00	; 0
+  4e:	a2 e7       	ldi	r26, 0x72	; 114
+  50:	b0 e0       	ldi	r27, 0x00	; 0
+  52:	01 c0       	rjmp	.+2      	; 0x56 <.do_clear_bss_start>
+
+00000054 <.do_clear_bss_loop>:
+  54:	1d 92       	st	X+, r1
+
+00000056 <.do_clear_bss_start>:
+  56:	aa 38       	cpi	r26, 0x8A	; 138
+  58:	b1 07       	cpc	r27, r17
+  5a:	e1 f7       	brne	.-8      	; 0x54 <.do_clear_bss_loop>
+  5c:	87 d0       	rcall	.+270    	; 0x16c <main>
+  5e:	eb c4       	rjmp	.+2518   	; 0xa36 <_exit>
+
+00000060 <__bad_interrupt>:
+  60:	cf cf       	rjmp	.-98     	; 0x0 <__vectors>
+
+00000062 <DS18B20_PrintTemperature>:
+*   Parameters :     temperature - температура датчика DS18B20     
+*   Purpose :        Выводит значение температуры датчика DS18B20
+*                    на LCD. Адрес знакоместа нужно выставлять заранее.
+*****************************************************************************/
+void DS18B20_PrintTemperature(unsigned int temperature)
+{
+  62:	0f 93       	push	r16
+  64:	1f 93       	push	r17
+  66:	8c 01       	movw	r16, r24
+  unsigned char tmp = 0;
+  /*выводим знак температуры
+  *если она отрицательная 
+  *делаем преобразование*/  
+  if ((temperature & 0x8000) == 0){
+  68:	97 fd       	sbrc	r25, 7
+  6a:	1d c0       	rjmp	.+58     	; 0xa6 <DS18B20_PrintTemperature+0x44>
+    LCD_WriteData('+');
+  6c:	8b e2       	ldi	r24, 0x2B	; 43
+  6e:	97 d2       	rcall	.+1326   	; 0x59e <LCD_WriteData>
+    LCD_WriteData('-');
+    temperature = ~temperature + 1;
+  }
+        
+  //выводим значение целое знач. температуры      
+  tmp = (unsigned char)(temperature>>4);
+  70:	c8 01       	movw	r24, r16
+  72:	92 95       	swap	r25
+  74:	82 95       	swap	r24
+  76:	8f 70       	andi	r24, 0x0F	; 15
+  78:	89 27       	eor	r24, r25
+  7a:	9f 70       	andi	r25, 0x0F	; 15
+  7c:	89 27       	eor	r24, r25
+  if (tmp<100){
+  7e:	84 36       	cpi	r24, 0x64	; 100
+  80:	80 f0       	brcs	.+32     	; 0xa2 <DS18B20_PrintTemperature+0x40>
+    BCD_2Lcd(tmp);
+  }
+  else{
+    BCD_3Lcd(tmp);    
+  82:	6b d1       	rcall	.+726    	; 0x35a <BCD_3Lcd>
+  }
+        
+  //выводим дробную часть знач. температуры
+  tmp = (unsigned char)(temperature&15);
+  84:	10 2f       	mov	r17, r16
+  86:	1f 70       	andi	r17, 0x0F	; 15
+  tmp = (tmp>>1) + (tmp>>3);
+  88:	01 2f       	mov	r16, r17
+  8a:	06 95       	lsr	r16
+  8c:	16 95       	lsr	r17
+  8e:	16 95       	lsr	r17
+  90:	16 95       	lsr	r17
+  LCD_WriteData('.');
+  92:	8e e2       	ldi	r24, 0x2E	; 46
+  94:	84 d2       	rcall	.+1288   	; 0x59e <LCD_WriteData>
+  BCD_1Lcd(tmp);
+  96:	81 2f       	mov	r24, r17
+  98:	80 0f       	add	r24, r16
+  9a:	9f d1       	rcall	.+830    	; 0x3da <BCD_1Lcd>
+  9c:	1f 91       	pop	r17
+  9e:	0f 91       	pop	r16
+  a0:	08 95       	ret
+  }
+        
+  //выводим значение целое знач. температуры      
+  tmp = (unsigned char)(temperature>>4);
+  if (tmp<100){
+    BCD_2Lcd(tmp);
+  a2:	84 d1       	rcall	.+776    	; 0x3ac <BCD_2Lcd>
+  a4:	ef cf       	rjmp	.-34     	; 0x84 <DS18B20_PrintTemperature+0x22>
+  *делаем преобразование*/  
+  if ((temperature & 0x8000) == 0){
+    LCD_WriteData('+');
+  }
+  else{
+    LCD_WriteData('-');
+  a6:	8d e2       	ldi	r24, 0x2D	; 45
+  a8:	7a d2       	rcall	.+1268   	; 0x59e <LCD_WriteData>
+    temperature = ~temperature + 1;
+  aa:	10 95       	com	r17
+  ac:	01 95       	neg	r16
+  ae:	1f 4f       	sbci	r17, 0xFF	; 255
+  b0:	df cf       	rjmp	.-66     	; 0x70 <DS18B20_PrintTemperature+0xe>
+
+000000b2 <DS18B20_ReadTemperature>:
+*   Purpose :      Адресует датчик DS18B20, дает команду на преобразование температуры
+*                  ждет, считывает его память - scratchpad, проверяет CRC,
+*                  сохраняет значение температуры в переменной, возвращает код ошибки             
+*****************************************************************************/
+unsigned char DS18B20_ReadTemperature(unsigned char bus, unsigned char * id, unsigned int* temperature)
+{
+  b2:	8f 92       	push	r8
+  b4:	9f 92       	push	r9
+  b6:	af 92       	push	r10
+  b8:	bf 92       	push	r11
+  ba:	cf 92       	push	r12
+  bc:	df 92       	push	r13
+  be:	ff 92       	push	r15
+  c0:	0f 93       	push	r16
+  c2:	1f 93       	push	r17
+  c4:	df 93       	push	r29
+  c6:	cf 93       	push	r28
+  c8:	cd b7       	in	r28, 0x3d	; 61
+  ca:	de b7       	in	r29, 0x3e	; 62
+  cc:	29 97       	sbiw	r28, 0x09	; 9
+  ce:	0f b6       	in	r0, 0x3f	; 63
+  d0:	f8 94       	cli
+  d2:	de bf       	out	0x3e, r29	; 62
+  d4:	0f be       	out	0x3f, r0	; 63
+  d6:	cd bf       	out	0x3d, r28	; 61
+  d8:	f8 2e       	mov	r15, r24
+  da:	8b 01       	movw	r16, r22
+  dc:	4a 01       	movw	r8, r20
+    unsigned char i;
+  
+    /*подаем сигнал сброса
+    команду для адресации 1-Wire устройства на шине
+    подаем команду - запук преобразования */
+    OWI_DetectPresence(bus);
+  de:	d4 d2       	rcall	.+1448   	; 0x688 <OWI_DetectPresence>
+    OWI_MatchRom(id, bus);
+  e0:	c8 01       	movw	r24, r16
+  e2:	6f 2d       	mov	r22, r15
+  e4:	33 d3       	rcall	.+1638   	; 0x74c <OWI_MatchRom>
+    OWI_SendByte(DS18B20_CONVERT_T ,bus);
+  e6:	84 e4       	ldi	r24, 0x44	; 68
+  e8:	6f 2d       	mov	r22, r15
+  ea:	18 d3       	rcall	.+1584   	; 0x71c <OWI_SendByte>
+
+    /*ждем, когда датчик завершит преобразование*/ 
+    while (!OWI_ReadBit(bus));
+  ec:	8f 2d       	mov	r24, r15
+  ee:	ae d2       	rcall	.+1372   	; 0x64c <OWI_ReadBit>
+  f0:	88 23       	and	r24, r24
+  f2:	e1 f3       	breq	.-8      	; 0xec <DS18B20_ReadTemperature+0x3a>
+    /*подаем сигнал сброса
+    команду для адресации 1-Wire устройства на шине
+    команду - чтение внутренней памяти
+    затем считываем внутреннюю память датчика в массив
+    */
+    OWI_DetectPresence(bus);
+  f4:	8f 2d       	mov	r24, r15
+  f6:	c8 d2       	rcall	.+1424   	; 0x688 <OWI_DetectPresence>
+    OWI_MatchRom(id, bus);
+  f8:	c8 01       	movw	r24, r16
+  fa:	6f 2d       	mov	r22, r15
+  fc:	27 d3       	rcall	.+1614   	; 0x74c <OWI_MatchRom>
+    OWI_SendByte(DS18B20_READ_SCRATCHPAD, bus);
+  fe:	8e eb       	ldi	r24, 0xBE	; 190
+ 100:	6f 2d       	mov	r22, r15
+ 102:	0c d3       	rcall	.+1560   	; 0x71c <OWI_SendByte>
+ 104:	5e 01       	movw	r10, r28
+ 106:	08 94       	sec
+ 108:	a1 1c       	adc	r10, r1
+ 10a:	b1 1c       	adc	r11, r1
+ 10c:	85 01       	movw	r16, r10
+ 10e:	3a e0       	ldi	r19, 0x0A	; 10
+ 110:	c3 2e       	mov	r12, r19
+ 112:	d1 2c       	mov	r13, r1
+ 114:	cc 0e       	add	r12, r28
+ 116:	dd 1e       	adc	r13, r29
+    for (i = 0; i<=8; i++){
+      scratchpad[i] = OWI_ReceiveByte(bus);
+ 118:	8f 2d       	mov	r24, r15
+ 11a:	ed d2       	rcall	.+1498   	; 0x6f6 <OWI_ReceiveByte>
+ 11c:	f8 01       	movw	r30, r16
+ 11e:	81 93       	st	Z+, r24
+ 120:	8f 01       	movw	r16, r30
+    затем считываем внутреннюю память датчика в массив
+    */
+    OWI_DetectPresence(bus);
+    OWI_MatchRom(id, bus);
+    OWI_SendByte(DS18B20_READ_SCRATCHPAD, bus);
+    for (i = 0; i<=8; i++){
+ 122:	ec 15       	cp	r30, r12
+ 124:	fd 05       	cpc	r31, r13
+ 126:	c1 f7       	brne	.-16     	; 0x118 <DS18B20_ReadTemperature+0x66>
+      scratchpad[i] = OWI_ReceiveByte(bus);
+    }
+    
+    if(OWI_CheckScratchPadCRC(scratchpad) != OWI_CRC_OK){
+ 128:	c5 01       	movw	r24, r10
+ 12a:	45 d4       	rcall	.+2186   	; 0x9b6 <OWI_CheckScratchPadCRC>
+ 12c:	88 23       	and	r24, r24
+ 12e:	e1 f4       	brne	.+56     	; 0x168 <DS18B20_ReadTemperature+0xb6>
+      return READ_CRC_ERROR;
+    }
+    
+    *temperature = (unsigned int)scratchpad[0];
+ 130:	29 81       	ldd	r18, Y+1	; 0x01
+ 132:	30 e0       	ldi	r19, 0x00	; 0
+    *temperature |= ((unsigned int)scratchpad[1] << 8);
+ 134:	9a 81       	ldd	r25, Y+2	; 0x02
+ 136:	80 e0       	ldi	r24, 0x00	; 0
+ 138:	82 2b       	or	r24, r18
+ 13a:	93 2b       	or	r25, r19
+ 13c:	f4 01       	movw	r30, r8
+ 13e:	91 83       	std	Z+1, r25	; 0x01
+ 140:	80 83       	st	Z, r24
+ 142:	80 e0       	ldi	r24, 0x00	; 0
+    
+    return READ_SUCCESSFUL;
+}
+ 144:	29 96       	adiw	r28, 0x09	; 9
+ 146:	0f b6       	in	r0, 0x3f	; 63
+ 148:	f8 94       	cli
+ 14a:	de bf       	out	0x3e, r29	; 62
+ 14c:	0f be       	out	0x3f, r0	; 63
+ 14e:	cd bf       	out	0x3d, r28	; 61
+ 150:	cf 91       	pop	r28
+ 152:	df 91       	pop	r29
+ 154:	1f 91       	pop	r17
+ 156:	0f 91       	pop	r16
+ 158:	ff 90       	pop	r15
+ 15a:	df 90       	pop	r13
+ 15c:	cf 90       	pop	r12
+ 15e:	bf 90       	pop	r11
+ 160:	af 90       	pop	r10
+ 162:	9f 90       	pop	r9
+ 164:	8f 90       	pop	r8
+ 166:	08 95       	ret
+    OWI_SendByte(DS18B20_READ_SCRATCHPAD, bus);
+    for (i = 0; i<=8; i++){
+      scratchpad[i] = OWI_ReceiveByte(bus);
+    }
+    
+    if(OWI_CheckScratchPadCRC(scratchpad) != OWI_CRC_OK){
+ 168:	81 e0       	ldi	r24, 0x01	; 1
+ 16a:	ec cf       	rjmp	.-40     	; 0x144 <DS18B20_ReadTemperature+0x92>
+
+0000016c <main>:
+
+OWI_device allDevices[MAX_DEVICES];
+unsigned char rom[8];
+
+int main( void )
+{
+ 16c:	cf 92       	push	r12
+ 16e:	df 92       	push	r13
+ 170:	ef 92       	push	r14
+ 172:	ff 92       	push	r15
+ 174:	0f 93       	push	r16
+ 176:	1f 93       	push	r17
+ 178:	df 93       	push	r29
+ 17a:	cf 93       	push	r28
+ 17c:	00 d0       	rcall	.+0      	; 0x17e <main+0x12>
+ 17e:	0f 92       	push	r0
+ 180:	cd b7       	in	r28, 0x3d	; 61
+ 182:	de b7       	in	r29, 0x3e	; 62
+  unsigned int temperature = 0;
+ 184:	1b 82       	std	Y+3, r1	; 0x03
+ 186:	1a 82       	std	Y+2, r1	; 0x02
+  unsigned char searchFlag = SEARCH_SENSORS;
+  unsigned char crcFlag = 0;
+  unsigned char num = 0;
+ 188:	19 82       	std	Y+1, r1	; 0x01
+  
+  
+  /*инициализация*/
+  LCD_Init();
+ 18a:	54 d1       	rcall	.+680    	; 0x434 <LCD_Init>
+  LCD_Clear();
+ 18c:	b5 d1       	rcall	.+874    	; 0x4f8 <LCD_Clear>
+  LCD_Goto(3,0);
+ 18e:	83 e8       	ldi	r24, 0x83	; 131
+ 190:	36 d1       	rcall	.+620    	; 0x3fe <LCD_WriteCom>
+  LCD_SendString("Sensors");
+ 192:	80 e6       	ldi	r24, 0x60	; 96
+ 194:	90 e0       	ldi	r25, 0x00	; 0
+ 196:	b7 d1       	rcall	.+878    	; 0x506 <LCD_SendString>
+  LCD_Goto(14,0);
+ 198:	8e e8       	ldi	r24, 0x8E	; 142
+ 19a:	31 d1       	rcall	.+610    	; 0x3fe <LCD_WriteCom>
+  LCD_SendString("N");
+ 19c:	88 e6       	ldi	r24, 0x68	; 104
+ 19e:	90 e0       	ldi	r25, 0x00	; 0
+ 1a0:	b2 d1       	rcall	.+868    	; 0x506 <LCD_SendString>
+  OWI_Init(BUS);
+ 1a2:	80 e8       	ldi	r24, 0x80	; 128
+ 1a4:	17 d2       	rcall	.+1070   	; 0x5d4 <OWI_Init>
+ 1a6:	10 e0       	ldi	r17, 0x00	; 0
+ 1a8:	6e 01       	movw	r12, r28
+ 1aa:	08 94       	sec
+ 1ac:	c1 1c       	adc	r12, r1
+ 1ae:	d1 1c       	adc	r13, r1
+ 1b0:	42 e0       	ldi	r20, 0x02	; 2
+ 1b2:	e4 2e       	mov	r14, r20
+ 1b4:	f1 2c       	mov	r15, r1
+ 1b6:	ec 0e       	add	r14, r28
+ 1b8:	fd 1e       	adc	r15, r29
+    /*-флаг сброшен - выполнить поиск 1Wire устройств
+    -если количество заданных устройсв совпадает с
+    колличеством найденных - устанавливаем флаг, 
+    чтобы функция поиска больше не запускалась
+    -отобразить количество найденных устройств*/
+    if (searchFlag == SEARCH_SENSORS){
+ 1ba:	11 23       	and	r17, r17
+ 1bc:	d1 f0       	breq	.+52     	; 0x1f2 <main+0x86>
+    
+    /*считать температуру первого найденного датчика
+    если возвращена ошибка CRC, вывести строку "not"
+    и сбросить флаг, чтобы функция поиска снова произвела
+    опрос шины*/
+    LCD_Goto(0,1);
+ 1be:	80 ec       	ldi	r24, 0xC0	; 192
+ 1c0:	1e d1       	rcall	.+572    	; 0x3fe <LCD_WriteCom>
+    crcFlag = DS18B20_ReadTemperature(BUS, allDevices[0].id, &temperature);
+ 1c2:	80 e8       	ldi	r24, 0x80	; 128
+ 1c4:	6a e7       	ldi	r22, 0x7A	; 122
+ 1c6:	70 e0       	ldi	r23, 0x00	; 0
+ 1c8:	a7 01       	movw	r20, r14
+ 1ca:	73 df       	rcall	.-282    	; 0xb2 <DS18B20_ReadTemperature>
+    if (crcFlag != READ_CRC_ERROR){ 
+ 1cc:	81 30       	cpi	r24, 0x01	; 1
+ 1ce:	49 f1       	breq	.+82     	; 0x222 <main+0xb6>
+      DS18B20_PrintTemperature(temperature);
+ 1d0:	8a 81       	ldd	r24, Y+2	; 0x02
+ 1d2:	9b 81       	ldd	r25, Y+3	; 0x03
+ 1d4:	46 df       	rcall	.-372    	; 0x62 <DS18B20_PrintTemperature>
+    
+    /*считать температуру второго найденного датчика
+    если возвращена ошибка CRC, вывести строку "not"
+    и сбросить флаг, чтобы функция поиска снова произвела
+    опрос шины*/
+    LCD_Goto(7,1);     
+ 1d6:	87 ec       	ldi	r24, 0xC7	; 199
+ 1d8:	12 d1       	rcall	.+548    	; 0x3fe <LCD_WriteCom>
+    crcFlag = DS18B20_ReadTemperature(BUS, allDevices[1].id, &temperature);
+ 1da:	80 e8       	ldi	r24, 0x80	; 128
+ 1dc:	62 e8       	ldi	r22, 0x82	; 130
+ 1de:	70 e0       	ldi	r23, 0x00	; 0
+ 1e0:	a7 01       	movw	r20, r14
+ 1e2:	67 df       	rcall	.-306    	; 0xb2 <DS18B20_ReadTemperature>
+    if (crcFlag != READ_CRC_ERROR){ 
+ 1e4:	81 30       	cpi	r24, 0x01	; 1
+ 1e6:	c1 f0       	breq	.+48     	; 0x218 <main+0xac>
+      DS18B20_PrintTemperature(temperature);
+ 1e8:	8a 81       	ldd	r24, Y+2	; 0x02
+ 1ea:	9b 81       	ldd	r25, Y+3	; 0x03
+ 1ec:	3a df       	rcall	.-396    	; 0x62 <DS18B20_PrintTemperature>
+    /*-флаг сброшен - выполнить поиск 1Wire устройств
+    -если количество заданных устройсв совпадает с
+    колличеством найденных - устанавливаем флаг, 
+    чтобы функция поиска больше не запускалась
+    -отобразить количество найденных устройств*/
+    if (searchFlag == SEARCH_SENSORS){
+ 1ee:	11 23       	and	r17, r17
+ 1f0:	31 f7       	brne	.-52     	; 0x1be <main+0x52>
+      num = 0;
+ 1f2:	19 82       	std	Y+1, r1	; 0x01
+      crcFlag = OWI_SearchDevices(allDevices, MAX_DEVICES, BUS, &num);
+ 1f4:	8a e7       	ldi	r24, 0x7A	; 122
+ 1f6:	90 e0       	ldi	r25, 0x00	; 0
+ 1f8:	62 e0       	ldi	r22, 0x02	; 2
+ 1fa:	40 e8       	ldi	r20, 0x80	; 128
+ 1fc:	96 01       	movw	r18, r12
+ 1fe:	24 d3       	rcall	.+1608   	; 0x848 <OWI_SearchDevices>
+ 200:	08 2f       	mov	r16, r24
+      LCD_Goto(14,1);
+ 202:	8e ec       	ldi	r24, 0xCE	; 206
+ 204:	fc d0       	rcall	.+504    	; 0x3fe <LCD_WriteCom>
+      BCD_1Lcd(num);
+ 206:	89 81       	ldd	r24, Y+1	; 0x01
+ 208:	e8 d0       	rcall	.+464    	; 0x3da <BCD_1Lcd>
+      if ((num == MAX_DEVICES)&&(crcFlag != SEARCH_CRC_ERROR)){
+ 20a:	89 81       	ldd	r24, Y+1	; 0x01
+ 20c:	82 30       	cpi	r24, 0x02	; 2
+ 20e:	b9 f6       	brne	.-82     	; 0x1be <main+0x52>
+ 210:	01 30       	cpi	r16, 0x01	; 1
+ 212:	a9 f2       	breq	.-86     	; 0x1be <main+0x52>
+ 214:	1f ef       	ldi	r17, 0xFF	; 255
+ 216:	d3 cf       	rjmp	.-90     	; 0x1be <main+0x52>
+    crcFlag = DS18B20_ReadTemperature(BUS, allDevices[1].id, &temperature);
+    if (crcFlag != READ_CRC_ERROR){ 
+      DS18B20_PrintTemperature(temperature);
+    }
+    else{
+      LCD_SendString("  not  ");
+ 218:	8a e6       	ldi	r24, 0x6A	; 106
+ 21a:	90 e0       	ldi	r25, 0x00	; 0
+ 21c:	74 d1       	rcall	.+744    	; 0x506 <LCD_SendString>
+ 21e:	10 e0       	ldi	r17, 0x00	; 0
+ 220:	e8 cf       	rjmp	.-48     	; 0x1f2 <main+0x86>
+    crcFlag = DS18B20_ReadTemperature(BUS, allDevices[0].id, &temperature);
+    if (crcFlag != READ_CRC_ERROR){ 
+      DS18B20_PrintTemperature(temperature);
+    }
+    else{
+      LCD_SendString("  not  ");
+ 222:	8a e6       	ldi	r24, 0x6A	; 106
+ 224:	90 e0       	ldi	r25, 0x00	; 0
+ 226:	6f d1       	rcall	.+734    	; 0x506 <LCD_SendString>
+ 228:	10 e0       	ldi	r17, 0x00	; 0
+ 22a:	d5 cf       	rjmp	.-86     	; 0x1d6 <main+0x6a>
+
+0000022c <BCD_4IntLcd>:
+    value += 48;
+    LcdSendData(value);                  // Add ones
+}
+
+void BCD_4IntLcd(unsigned int value)
+{
+ 22c:	0f 93       	push	r16
+ 22e:	1f 93       	push	r17
+ 230:	cf 93       	push	r28
+ 232:	df 93       	push	r29
+ 234:	ec 01       	movw	r28, r24
+    unsigned char high = 0;
+    unsigned char flag = 0;
+    unsigned char flag2 = 0;  
+    
+    
+    if (value >= 1000) {flag = 48; flag2 = 48;}  
+ 236:	23 e0       	ldi	r18, 0x03	; 3
+ 238:	88 3e       	cpi	r24, 0xE8	; 232
+ 23a:	92 07       	cpc	r25, r18
+ 23c:	f0 f5       	brcc	.+124    	; 0x2ba <__stack+0x5b>
+    else
+    {
+      if (value >= 100) {flag = SYMB_NULL; flag2 = 48;}
+ 23e:	84 36       	cpi	r24, 0x64	; 100
+ 240:	91 05       	cpc	r25, r1
+ 242:	b8 f5       	brcc	.+110    	; 0x2b2 <__stack+0x53>
+ 244:	10 e2       	ldi	r17, 0x20	; 32
+ 246:	60 e2       	ldi	r22, 0x20	; 32
+ 248:	00 e2       	ldi	r16, 0x20	; 32
+        high++;
+        value -= 1000;
+    }
+    if (high) high += 48;
+    else high = SYMB_NULL;
+    LcdSendData(high);
+ 24a:	86 2f       	mov	r24, r22
+ 24c:	a8 d1       	rcall	.+848    	; 0x59e <LCD_WriteData>
+    
+    high = 0;
+    while (value >= 100)                // Count hundreds
+ 24e:	c4 36       	cpi	r28, 0x64	; 100
+ 250:	d1 05       	cpc	r29, r1
+ 252:	88 f1       	brcs	.+98     	; 0x2b6 <__stack+0x57>
+    {
+        high++;
+        value -= 100;
+ 254:	fe 01       	movw	r30, r28
+ 256:	e4 56       	subi	r30, 0x64	; 100
+ 258:	f0 40       	sbci	r31, 0x00	; 0
+ 25a:	cf 01       	movw	r24, r30
+ 25c:	64 e6       	ldi	r22, 0x64	; 100
+ 25e:	70 e0       	ldi	r23, 0x00	; 0
+ 260:	d6 d3       	rcall	.+1964   	; 0xa0e <__udivmodhi4>
+ 262:	ec 01       	movw	r28, r24
+ 264:	cf 01       	movw	r24, r30
+ 266:	64 e6       	ldi	r22, 0x64	; 100
+ 268:	70 e0       	ldi	r23, 0x00	; 0
+ 26a:	d1 d3       	rcall	.+1954   	; 0xa0e <__udivmodhi4>
+    }
+    if (high) high += 48;
+ 26c:	6f 3f       	cpi	r22, 0xFF	; 255
+ 26e:	19 f1       	breq	.+70     	; 0x2b6 <__stack+0x57>
+ 270:	86 2f       	mov	r24, r22
+ 272:	8f 5c       	subi	r24, 0xCF	; 207
+    else high = flag;
+    LcdSendData(high );
+ 274:	94 d1       	rcall	.+808    	; 0x59e <LCD_WriteData>
+    
+    
+    high = 0;
+    while (value >= 10)                 // Count tens
+ 276:	ca 30       	cpi	r28, 0x0A	; 10
+ 278:	d1 05       	cpc	r29, r1
+ 27a:	78 f1       	brcs	.+94     	; 0x2da <__stack+0x7b>
+    {
+        high++;
+        value -= 10;
+ 27c:	9e 01       	movw	r18, r28
+ 27e:	2a 50       	subi	r18, 0x0A	; 10
+ 280:	30 40       	sbci	r19, 0x00	; 0
+ 282:	c9 01       	movw	r24, r18
+ 284:	6a e0       	ldi	r22, 0x0A	; 10
+ 286:	70 e0       	ldi	r23, 0x00	; 0
+ 288:	c2 d3       	rcall	.+1924   	; 0xa0e <__udivmodhi4>
+ 28a:	46 2f       	mov	r20, r22
+ 28c:	c9 01       	movw	r24, r18
+ 28e:	6a e0       	ldi	r22, 0x0A	; 10
+ 290:	70 e0       	ldi	r23, 0x00	; 0
+ 292:	bd d3       	rcall	.+1914   	; 0xa0e <__udivmodhi4>
+ 294:	ec 01       	movw	r28, r24
+    }
+    if (high) high += 48;
+ 296:	4f 3f       	cpi	r20, 0xFF	; 255
+ 298:	01 f1       	breq	.+64     	; 0x2da <__stack+0x7b>
+ 29a:	84 2f       	mov	r24, r20
+ 29c:	8f 5c       	subi	r24, 0xCF	; 207
+    else high = flag2;
+    LcdSendData(high );
+ 29e:	7f d1       	rcall	.+766    	; 0x59e <LCD_WriteData>
+    
+    value += 48;
+    LcdSendData(value);  
+ 2a0:	9e 01       	movw	r18, r28
+ 2a2:	20 5d       	subi	r18, 0xD0	; 208
+ 2a4:	82 2f       	mov	r24, r18
+ 2a6:	7b d1       	rcall	.+758    	; 0x59e <LCD_WriteData>
+}
+ 2a8:	df 91       	pop	r29
+ 2aa:	cf 91       	pop	r28
+ 2ac:	1f 91       	pop	r17
+ 2ae:	0f 91       	pop	r16
+ 2b0:	08 95       	ret
+    
+    
+    if (value >= 1000) {flag = 48; flag2 = 48;}  
+    else
+    {
+      if (value >= 100) {flag = SYMB_NULL; flag2 = 48;}
+ 2b2:	10 e3       	ldi	r17, 0x30	; 48
+ 2b4:	c8 cf       	rjmp	.-112    	; 0x246 <BCD_4IntLcd+0x1a>
+    while (value >= 100)                // Count hundreds
+    {
+        high++;
+        value -= 100;
+    }
+    if (high) high += 48;
+ 2b6:	80 2f       	mov	r24, r16
+ 2b8:	dd cf       	rjmp	.-70     	; 0x274 <__stack+0x15>
+    }
+    
+    while (value >= 1000)                // Count thousand
+    {
+        high++;
+        value -= 1000;
+ 2ba:	fc 01       	movw	r30, r24
+ 2bc:	e8 5e       	subi	r30, 0xE8	; 232
+ 2be:	f3 40       	sbci	r31, 0x03	; 3
+ 2c0:	cf 01       	movw	r24, r30
+ 2c2:	68 ee       	ldi	r22, 0xE8	; 232
+ 2c4:	73 e0       	ldi	r23, 0x03	; 3
+ 2c6:	a3 d3       	rcall	.+1862   	; 0xa0e <__udivmodhi4>
+ 2c8:	ec 01       	movw	r28, r24
+ 2ca:	cf 01       	movw	r24, r30
+ 2cc:	68 ee       	ldi	r22, 0xE8	; 232
+ 2ce:	73 e0       	ldi	r23, 0x03	; 3
+ 2d0:	9e d3       	rcall	.+1852   	; 0xa0e <__udivmodhi4>
+    }
+    if (high) high += 48;
+ 2d2:	6f 5c       	subi	r22, 0xCF	; 207
+ 2d4:	00 e3       	ldi	r16, 0x30	; 48
+ 2d6:	10 e3       	ldi	r17, 0x30	; 48
+ 2d8:	b8 cf       	rjmp	.-144    	; 0x24a <BCD_4IntLcd+0x1e>
+    while (value >= 10)                 // Count tens
+    {
+        high++;
+        value -= 10;
+    }
+    if (high) high += 48;
+ 2da:	81 2f       	mov	r24, r17
+ 2dc:	e0 cf       	rjmp	.-64     	; 0x29e <__stack+0x3f>
+
+000002de <BCD_3IntLcd>:
+    value += 48;
+    LcdSendData(value);                  // Add ones
+}
+
+void BCD_3IntLcd(unsigned int value)
+{
+ 2de:	1f 93       	push	r17
+ 2e0:	cf 93       	push	r28
+ 2e2:	df 93       	push	r29
+ 2e4:	ec 01       	movw	r28, r24
+    unsigned char high = 0;
+    unsigned char flag = 0;
+   
+    if (value >= 100) flag = 48;   
+ 2e6:	84 36       	cpi	r24, 0x64	; 100
+ 2e8:	91 05       	cpc	r25, r1
+ 2ea:	00 f5       	brcc	.+64     	; 0x32c <BCD_3IntLcd+0x4e>
+ 2ec:	80 e2       	ldi	r24, 0x20	; 32
+ 2ee:	10 e2       	ldi	r17, 0x20	; 32
+        high++;
+        value -= 100;
+    }
+    if (high) high += 48;
+    else high = SYMB_NULL;
+    LcdSendData(high );
+ 2f0:	56 d1       	rcall	.+684    	; 0x59e <LCD_WriteData>
+    
+    high = 0;
+    while (value >= 10)                 // Count tens
+ 2f2:	ca 30       	cpi	r28, 0x0A	; 10
+ 2f4:	d1 05       	cpc	r29, r1
+ 2f6:	78 f1       	brcs	.+94     	; 0x356 <BCD_3IntLcd+0x78>
+    {
+        high++;
+        value -= 10;
+ 2f8:	9e 01       	movw	r18, r28
+ 2fa:	2a 50       	subi	r18, 0x0A	; 10
+ 2fc:	30 40       	sbci	r19, 0x00	; 0
+ 2fe:	c9 01       	movw	r24, r18
+ 300:	6a e0       	ldi	r22, 0x0A	; 10
+ 302:	70 e0       	ldi	r23, 0x00	; 0
+ 304:	84 d3       	rcall	.+1800   	; 0xa0e <__udivmodhi4>
+ 306:	46 2f       	mov	r20, r22
+ 308:	c9 01       	movw	r24, r18
+ 30a:	6a e0       	ldi	r22, 0x0A	; 10
+ 30c:	70 e0       	ldi	r23, 0x00	; 0
+ 30e:	7f d3       	rcall	.+1790   	; 0xa0e <__udivmodhi4>
+ 310:	ec 01       	movw	r28, r24
+    }
+    if (high) high += 48;
+ 312:	4f 3f       	cpi	r20, 0xFF	; 255
+ 314:	01 f1       	breq	.+64     	; 0x356 <BCD_3IntLcd+0x78>
+ 316:	84 2f       	mov	r24, r20
+ 318:	8f 5c       	subi	r24, 0xCF	; 207
+    else high = flag;
+    LcdSendData(high );
+ 31a:	41 d1       	rcall	.+642    	; 0x59e <LCD_WriteData>
+    
+    value += 48;
+    LcdSendData(value);                  // Add ones
+ 31c:	9e 01       	movw	r18, r28
+ 31e:	20 5d       	subi	r18, 0xD0	; 208
+ 320:	82 2f       	mov	r24, r18
+ 322:	3d d1       	rcall	.+634    	; 0x59e <LCD_WriteData>
+}
+ 324:	df 91       	pop	r29
+ 326:	cf 91       	pop	r28
+ 328:	1f 91       	pop	r17
+ 32a:	08 95       	ret
+    if (value >= 100) flag = 48;   
+    else flag = SYMB_NULL;
+    while (value >= 100)                // Count hundreds
+    {
+        high++;
+        value -= 100;
+ 32c:	fc 01       	movw	r30, r24
+ 32e:	e4 56       	subi	r30, 0x64	; 100
+ 330:	f0 40       	sbci	r31, 0x00	; 0
+ 332:	cf 01       	movw	r24, r30
+ 334:	64 e6       	ldi	r22, 0x64	; 100
+ 336:	70 e0       	ldi	r23, 0x00	; 0
+ 338:	6a d3       	rcall	.+1748   	; 0xa0e <__udivmodhi4>
+ 33a:	ec 01       	movw	r28, r24
+ 33c:	cf 01       	movw	r24, r30
+ 33e:	64 e6       	ldi	r22, 0x64	; 100
+ 340:	70 e0       	ldi	r23, 0x00	; 0
+ 342:	65 d3       	rcall	.+1738   	; 0xa0e <__udivmodhi4>
+    }
+    if (high) high += 48;
+ 344:	6f 3f       	cpi	r22, 0xFF	; 255
+ 346:	19 f4       	brne	.+6      	; 0x34e <BCD_3IntLcd+0x70>
+ 348:	80 e2       	ldi	r24, 0x20	; 32
+ 34a:	10 e3       	ldi	r17, 0x30	; 48
+ 34c:	d1 cf       	rjmp	.-94     	; 0x2f0 <BCD_3IntLcd+0x12>
+ 34e:	86 2f       	mov	r24, r22
+ 350:	8f 5c       	subi	r24, 0xCF	; 207
+ 352:	10 e3       	ldi	r17, 0x30	; 48
+ 354:	cd cf       	rjmp	.-102    	; 0x2f0 <BCD_3IntLcd+0x12>
+    while (value >= 10)                 // Count tens
+    {
+        high++;
+        value -= 10;
+    }
+    if (high) high += 48;
+ 356:	81 2f       	mov	r24, r17
+ 358:	e0 cf       	rjmp	.-64     	; 0x31a <BCD_3IntLcd+0x3c>
+
+0000035a <BCD_3Lcd>:
+    LcdSendData(value);                  // Add ones
+}
+
+
+void BCD_3Lcd(unsigned char value)
+{
+ 35a:	0f 93       	push	r16
+ 35c:	1f 93       	push	r17
+ 35e:	18 2f       	mov	r17, r24
+    unsigned char high = 0;
+    unsigned char flag = 0;
+   
+    if (value >= 100) flag = 48;   
+ 360:	84 36       	cpi	r24, 0x64	; 100
+ 362:	b8 f4       	brcc	.+46     	; 0x392 <BCD_3Lcd+0x38>
+ 364:	80 e2       	ldi	r24, 0x20	; 32
+ 366:	00 e2       	ldi	r16, 0x20	; 32
+        high++;
+        value -= 100;
+    }
+    if (high) high += 48;
+    else high = SYMB_NULL;
+    LcdSendData(high );
+ 368:	1a d1       	rcall	.+564    	; 0x59e <LCD_WriteData>
+    
+    high = 0;
+    while (value >= 10)                 // Count tens
+ 36a:	1a 30       	cpi	r17, 0x0A	; 10
+ 36c:	e8 f0       	brcs	.+58     	; 0x3a8 <BCD_3Lcd+0x4e>
+    {
+        high++;
+        value -= 10;
+ 36e:	21 2f       	mov	r18, r17
+ 370:	2a 50       	subi	r18, 0x0A	; 10
+ 372:	82 2f       	mov	r24, r18
+ 374:	6a e0       	ldi	r22, 0x0A	; 10
+ 376:	3f d3       	rcall	.+1662   	; 0x9f6 <__udivmodqi4>
+ 378:	38 2f       	mov	r19, r24
+ 37a:	82 2f       	mov	r24, r18
+ 37c:	3c d3       	rcall	.+1656   	; 0x9f6 <__udivmodqi4>
+ 37e:	19 2f       	mov	r17, r25
+    }
+    if (high) high += 48;
+ 380:	3f 5c       	subi	r19, 0xCF	; 207
+    else high = flag;
+    LcdSendData(high );
+ 382:	83 2f       	mov	r24, r19
+ 384:	0c d1       	rcall	.+536    	; 0x59e <LCD_WriteData>
+    
+    value += 48;
+    LcdSendData(value);                  // Add ones
+ 386:	81 2f       	mov	r24, r17
+ 388:	80 5d       	subi	r24, 0xD0	; 208
+ 38a:	09 d1       	rcall	.+530    	; 0x59e <LCD_WriteData>
+}
+ 38c:	1f 91       	pop	r17
+ 38e:	0f 91       	pop	r16
+ 390:	08 95       	ret
+    if (value >= 100) flag = 48;   
+    else flag = SYMB_NULL;
+    while (value >= 100)                // Count hundreds
+    {
+        high++;
+        value -= 100;
+ 392:	28 2f       	mov	r18, r24
+ 394:	24 56       	subi	r18, 0x64	; 100
+ 396:	82 2f       	mov	r24, r18
+ 398:	64 e6       	ldi	r22, 0x64	; 100
+ 39a:	2d d3       	rcall	.+1626   	; 0x9f6 <__udivmodqi4>
+ 39c:	19 2f       	mov	r17, r25
+ 39e:	82 2f       	mov	r24, r18
+ 3a0:	2a d3       	rcall	.+1620   	; 0x9f6 <__udivmodqi4>
+    }
+    if (high) high += 48;
+ 3a2:	8f 5c       	subi	r24, 0xCF	; 207
+ 3a4:	00 e3       	ldi	r16, 0x30	; 48
+ 3a6:	e0 cf       	rjmp	.-64     	; 0x368 <BCD_3Lcd+0xe>
+    else high = SYMB_NULL;
+    LcdSendData(high );
+    
+    high = 0;
+    while (value >= 10)                 // Count tens
+ 3a8:	30 2f       	mov	r19, r16
+ 3aa:	eb cf       	rjmp	.-42     	; 0x382 <BCD_3Lcd+0x28>
+
+000003ac <BCD_2Lcd>:
+    value += 48;
+    LcdSendData(value);                  // ones
+}
+
+void BCD_2Lcd(unsigned char value)
+{
+ 3ac:	1f 93       	push	r17
+ 3ae:	18 2f       	mov	r17, r24
+    unsigned char high = 0;
+    
+    while (value >= 10)                 // Count tens
+ 3b0:	8a 30       	cpi	r24, 0x0A	; 10
+ 3b2:	88 f0       	brcs	.+34     	; 0x3d6 <BCD_2Lcd+0x2a>
+    {
+        high++;
+        value -= 10;
+ 3b4:	28 2f       	mov	r18, r24
+ 3b6:	2a 50       	subi	r18, 0x0A	; 10
+ 3b8:	82 2f       	mov	r24, r18
+ 3ba:	6a e0       	ldi	r22, 0x0A	; 10
+ 3bc:	1c d3       	rcall	.+1592   	; 0x9f6 <__udivmodqi4>
+ 3be:	38 2f       	mov	r19, r24
+ 3c0:	82 2f       	mov	r24, r18
+ 3c2:	19 d3       	rcall	.+1586   	; 0x9f6 <__udivmodqi4>
+ 3c4:	19 2f       	mov	r17, r25
+    }
+    if (high) high += 48;
+ 3c6:	3f 5c       	subi	r19, 0xCF	; 207
+    else high = SYMB_NULL;
+    LcdSendData(high);
+ 3c8:	83 2f       	mov	r24, r19
+ 3ca:	e9 d0       	rcall	.+466    	; 0x59e <LCD_WriteData>
+
+    value += 48;
+    LcdSendData(value);                  // Add ones
+ 3cc:	81 2f       	mov	r24, r17
+ 3ce:	80 5d       	subi	r24, 0xD0	; 208
+ 3d0:	e6 d0       	rcall	.+460    	; 0x59e <LCD_WriteData>
+}
+ 3d2:	1f 91       	pop	r17
+ 3d4:	08 95       	ret
+
+void BCD_2Lcd(unsigned char value)
+{
+    unsigned char high = 0;
+    
+    while (value >= 10)                 // Count tens
+ 3d6:	30 e2       	ldi	r19, 0x20	; 32
+ 3d8:	f7 cf       	rjmp	.-18     	; 0x3c8 <BCD_2Lcd+0x1c>
+
+000003da <BCD_1Lcd>:
+#endif
+
+void BCD_1Lcd(unsigned char value)
+{
+    value += 48;
+    LcdSendData(value);                  // ones
+ 3da:	80 5d       	subi	r24, 0xD0	; 208
+ 3dc:	e0 d0       	rcall	.+448    	; 0x59e <LCD_WriteData>
+}
+ 3de:	08 95       	ret
+
+000003e0 <LCD_WriteComInit>:
+    can be achieved.
+*/
+void
+_delay_loop_1(uint8_t __count)
+{
+	__asm__ volatile (
+ 3e0:	95 ed       	ldi	r25, 0xD5	; 213
+ 3e2:	9a 95       	dec	r25
+ 3e4:	f1 f7       	brne	.-4      	; 0x3e2 <LCD_WriteComInit+0x2>
+}
+
+void LCD_WriteComInit(unsigned char data)
+{
+  _delay_us(40);
+  ClearBit(PORT_SIG, RS);	
+ 3e6:	ae 98       	cbi	0x15, 6	; 21
+#ifdef BUS_4BIT
+  unsigned char tmp; 
+  tmp  = PORT_DATA & 0x0f;
+ 3e8:	9b b3       	in	r25, 0x1b	; 27
+  tmp |= (data & 0xf0);
+ 3ea:	80 7f       	andi	r24, 0xF0	; 240
+ 3ec:	9f 70       	andi	r25, 0x0F	; 15
+ 3ee:	98 2b       	or	r25, r24
+  PORT_DATA = tmp;		 
+ 3f0:	9b bb       	out	0x1b, r25	; 27
+#else
+  PORT_DATA = data;		
+#endif  
+  SetBit(PORT_SIG, EN);	        
+ 3f2:	af 9a       	sbi	0x15, 7	; 21
+ 3f4:	8a e0       	ldi	r24, 0x0A	; 10
+ 3f6:	8a 95       	dec	r24
+ 3f8:	f1 f7       	brne	.-4      	; 0x3f6 <LCD_WriteComInit+0x16>
+  _delay_us(2);
+  ClearBit(PORT_SIG, EN);	
+ 3fa:	af 98       	cbi	0x15, 7	; 21
+}
+ 3fc:	08 95       	ret
+
+000003fe <LCD_WriteCom>:
+ 3fe:	95 ed       	ldi	r25, 0xD5	; 213
+ 400:	9a 95       	dec	r25
+ 402:	f1 f7       	brne	.-4      	; 0x400 <LCD_WriteCom+0x2>
+
+//функция записи команды 
+void LCD_WriteCom(unsigned char data)
+{
+  LCD_Wait();
+  ClearBit(PORT_SIG, RS);	//установка RS в 0 - команды
+ 404:	ae 98       	cbi	0x15, 6	; 21
+
+inline static void LCD_CommonFunc(unsigned char data)
+{
+#ifdef BUS_4BIT  
+  unsigned char tmp; 
+  tmp  = PORT_DATA & 0x0f;
+ 406:	9b b3       	in	r25, 0x1b	; 27
+  tmp |= (data & 0xf0);
+ 408:	28 2f       	mov	r18, r24
+ 40a:	20 7f       	andi	r18, 0xF0	; 240
+ 40c:	9f 70       	andi	r25, 0x0F	; 15
+ 40e:	29 2b       	or	r18, r25
+
+  PORT_DATA = tmp;		//вывод старшей тетрады 
+ 410:	2b bb       	out	0x1b, r18	; 27
+  SetBit(PORT_SIG, EN);	        
+ 412:	af 9a       	sbi	0x15, 7	; 21
+ 414:	2a e0       	ldi	r18, 0x0A	; 10
+ 416:	92 2f       	mov	r25, r18
+ 418:	9a 95       	dec	r25
+ 41a:	f1 f7       	brne	.-4      	; 0x418 <LCD_WriteCom+0x1a>
+  _delay_us(2);
+  ClearBit(PORT_SIG, EN);	
+ 41c:	af 98       	cbi	0x15, 7	; 21
+
+#define FLAG_BF 7
+
+inline unsigned char __swap_nibbles(unsigned char data)
+{
+  asm volatile("swap %0" : "=r" (data) : "0" (data));
+ 41e:	82 95       	swap	r24
+  SetBit(PORT_SIG, EN);	        
+  _delay_us(2);
+  ClearBit(PORT_SIG, EN);	
+
+  data = __swap_nibbles(data);
+  tmp  = PORT_DATA & 0x0f;
+ 420:	9b b3       	in	r25, 0x1b	; 27
+  tmp |= (data & 0xf0);
+ 422:	80 7f       	andi	r24, 0xF0	; 240
+ 424:	9f 70       	andi	r25, 0x0F	; 15
+ 426:	98 2b       	or	r25, r24
+ 
+  PORT_DATA = tmp;		//вывод младшей тетрады 
+ 428:	9b bb       	out	0x1b, r25	; 27
+  SetBit(PORT_SIG, EN);	        
+ 42a:	af 9a       	sbi	0x15, 7	; 21
+ 42c:	2a 95       	dec	r18
+ 42e:	f1 f7       	brne	.-4      	; 0x42c <LCD_WriteCom+0x2e>
+  _delay_us(2);
+  ClearBit(PORT_SIG, EN);	 
+ 430:	af 98       	cbi	0x15, 7	; 21
+void LCD_WriteCom(unsigned char data)
+{
+  LCD_Wait();
+  ClearBit(PORT_SIG, RS);	//установка RS в 0 - команды
+  LCD_CommonFunc(data);
+}
+ 432:	08 95       	ret
+
+00000434 <LCD_Init>:
+
+//ooieoey eieoeaeecaoee
+void LCD_Init(void)
+{
+#ifdef BUS_4BIT
+  DDRX_DATA |= 0xf0;
+ 434:	8a b3       	in	r24, 0x1a	; 26
+ 436:	80 6f       	ori	r24, 0xF0	; 240
+ 438:	8a bb       	out	0x1a, r24	; 26
+  PORT_DATA |= 0xf0; 
+ 43a:	8b b3       	in	r24, 0x1b	; 27
+ 43c:	80 6f       	ori	r24, 0xF0	; 240
+ 43e:	8b bb       	out	0x1b, r24	; 27
+#else  
+  DDRX_DATA |= 0xff;
+  PORT_DATA |= 0xff;
+#endif
+  
+  DDRX_SIG |= (1<<RW)|(1<<RS)|(1<<EN);
+ 440:	84 b3       	in	r24, 0x14	; 20
+ 442:	80 6d       	ori	r24, 0xD0	; 208
+ 444:	84 bb       	out	0x14, r24	; 20
+  PORT_SIG |= (1<<RW)|(1<<RS)|(1<<EN);
+ 446:	85 b3       	in	r24, 0x15	; 21
+ 448:	80 6d       	ori	r24, 0xD0	; 208
+ 44a:	85 bb       	out	0x15, r24	; 21
+  ClearBit(PORT_SIG, RW);
+ 44c:	ac 98       	cbi	0x15, 4	; 21
+ 44e:	20 e9       	ldi	r18, 0x90	; 144
+ 450:	31 e0       	ldi	r19, 0x01	; 1
+    milliseconds can be achieved.
+ */
+void
+_delay_loop_2(uint16_t __count)
+{
+	__asm__ volatile (
+ 452:	40 e9       	ldi	r20, 0x90	; 144
+ 454:	51 e0       	ldi	r21, 0x01	; 1
+ 456:	ca 01       	movw	r24, r20
+ 458:	01 97       	sbiw	r24, 0x01	; 1
+ 45a:	f1 f7       	brne	.-4      	; 0x458 <LCD_Init+0x24>
+		__ticks = (uint16_t) (__ms * 10.0);
+		while(__ticks)
+		{
+			// wait 1/10 ms
+			_delay_loop_2(((F_CPU) / 4e3) / 10);
+			__ticks --;
+ 45c:	21 50       	subi	r18, 0x01	; 1
+ 45e:	30 40       	sbci	r19, 0x00	; 0
+		__ticks = 1;
+	else if (__tmp > 65535)
+	{
+		//	__ticks = requested delay in 1/10 ms
+		__ticks = (uint16_t) (__ms * 10.0);
+		while(__ticks)
+ 460:	d1 f7       	brne	.-12     	; 0x456 <LCD_Init+0x22>
+    can be achieved.
+*/
+void
+_delay_loop_1(uint8_t __count)
+{
+	__asm__ volatile (
+ 462:	25 ed       	ldi	r18, 0xD5	; 213
+ 464:	82 2f       	mov	r24, r18
+ 466:	8a 95       	dec	r24
+ 468:	f1 f7       	brne	.-4      	; 0x466 <LCD_Init+0x32>
+}
+
+void LCD_WriteComInit(unsigned char data)
+{
+  _delay_us(40);
+  ClearBit(PORT_SIG, RS);	
+ 46a:	ae 98       	cbi	0x15, 6	; 21
+#ifdef BUS_4BIT
+  unsigned char tmp; 
+  tmp  = PORT_DATA & 0x0f;
+ 46c:	8b b3       	in	r24, 0x1b	; 27
+  tmp |= (data & 0xf0);
+ 46e:	8f 70       	andi	r24, 0x0F	; 15
+ 470:	80 63       	ori	r24, 0x30	; 48
+  PORT_DATA = tmp;		 
+ 472:	8b bb       	out	0x1b, r24	; 27
+#else
+  PORT_DATA = data;		
+#endif  
+  SetBit(PORT_SIG, EN);	        
+ 474:	af 9a       	sbi	0x15, 7	; 21
+ 476:	9a e0       	ldi	r25, 0x0A	; 10
+ 478:	89 2f       	mov	r24, r25
+ 47a:	8a 95       	dec	r24
+ 47c:	f1 f7       	brne	.-4      	; 0x47a <LCD_Init+0x46>
+  _delay_us(2);
+  ClearBit(PORT_SIG, EN);	
+ 47e:	af 98       	cbi	0x15, 7	; 21
+    milliseconds can be achieved.
+ */
+void
+_delay_loop_2(uint16_t __count)
+{
+	__asm__ volatile (
+ 480:	e0 e4       	ldi	r30, 0x40	; 64
+ 482:	fc e9       	ldi	r31, 0x9C	; 156
+ 484:	31 97       	sbiw	r30, 0x01	; 1
+ 486:	f1 f7       	brne	.-4      	; 0x484 <LCD_Init+0x50>
+    can be achieved.
+*/
+void
+_delay_loop_1(uint8_t __count)
+{
+	__asm__ volatile (
+ 488:	82 2f       	mov	r24, r18
+ 48a:	8a 95       	dec	r24
+ 48c:	f1 f7       	brne	.-4      	; 0x48a <LCD_Init+0x56>
+}
+
+void LCD_WriteComInit(unsigned char data)
+{
+  _delay_us(40);
+  ClearBit(PORT_SIG, RS);	
+ 48e:	ae 98       	cbi	0x15, 6	; 21
+#ifdef BUS_4BIT
+  unsigned char tmp; 
+  tmp  = PORT_DATA & 0x0f;
+ 490:	8b b3       	in	r24, 0x1b	; 27
+  tmp |= (data & 0xf0);
+ 492:	8f 70       	andi	r24, 0x0F	; 15
+ 494:	80 63       	ori	r24, 0x30	; 48
+  PORT_DATA = tmp;		 
+ 496:	8b bb       	out	0x1b, r24	; 27
+#else
+  PORT_DATA = data;		
+#endif  
+  SetBit(PORT_SIG, EN);	        
+ 498:	af 9a       	sbi	0x15, 7	; 21
+ 49a:	89 2f       	mov	r24, r25
+ 49c:	8a 95       	dec	r24
+ 49e:	f1 f7       	brne	.-4      	; 0x49c <LCD_Init+0x68>
+  _delay_us(2);
+  ClearBit(PORT_SIG, EN);	
+ 4a0:	af 98       	cbi	0x15, 7	; 21
+    milliseconds can be achieved.
+ */
+void
+_delay_loop_2(uint16_t __count)
+{
+	__asm__ volatile (
+ 4a2:	e0 ea       	ldi	r30, 0xA0	; 160
+ 4a4:	ff e0       	ldi	r31, 0x0F	; 15
+ 4a6:	31 97       	sbiw	r30, 0x01	; 1
+ 4a8:	f1 f7       	brne	.-4      	; 0x4a6 <LCD_Init+0x72>
+    can be achieved.
+*/
+void
+_delay_loop_1(uint8_t __count)
+{
+	__asm__ volatile (
+ 4aa:	82 2f       	mov	r24, r18
+ 4ac:	8a 95       	dec	r24
+ 4ae:	f1 f7       	brne	.-4      	; 0x4ac <LCD_Init+0x78>
+}
+
+void LCD_WriteComInit(unsigned char data)
+{
+  _delay_us(40);
+  ClearBit(PORT_SIG, RS);	
+ 4b0:	ae 98       	cbi	0x15, 6	; 21
+#ifdef BUS_4BIT
+  unsigned char tmp; 
+  tmp  = PORT_DATA & 0x0f;
+ 4b2:	8b b3       	in	r24, 0x1b	; 27
+  tmp |= (data & 0xf0);
+ 4b4:	8f 70       	andi	r24, 0x0F	; 15
+ 4b6:	80 63       	ori	r24, 0x30	; 48
+  PORT_DATA = tmp;		 
+ 4b8:	8b bb       	out	0x1b, r24	; 27
+#else
+  PORT_DATA = data;		
+#endif  
+  SetBit(PORT_SIG, EN);	        
+ 4ba:	af 9a       	sbi	0x15, 7	; 21
+ 4bc:	89 2f       	mov	r24, r25
+ 4be:	8a 95       	dec	r24
+ 4c0:	f1 f7       	brne	.-4      	; 0x4be <LCD_Init+0x8a>
+  _delay_us(2);
+  ClearBit(PORT_SIG, EN);	
+ 4c2:	af 98       	cbi	0x15, 7	; 21
+ 4c4:	2a 95       	dec	r18
+ 4c6:	f1 f7       	brne	.-4      	; 0x4c4 <LCD_Init+0x90>
+}
+
+void LCD_WriteComInit(unsigned char data)
+{
+  _delay_us(40);
+  ClearBit(PORT_SIG, RS);	
+ 4c8:	ae 98       	cbi	0x15, 6	; 21
+#ifdef BUS_4BIT
+  unsigned char tmp; 
+  tmp  = PORT_DATA & 0x0f;
+ 4ca:	8b b3       	in	r24, 0x1b	; 27
+  tmp |= (data & 0xf0);
+ 4cc:	8f 70       	andi	r24, 0x0F	; 15
+ 4ce:	80 62       	ori	r24, 0x20	; 32
+  PORT_DATA = tmp;		 
+ 4d0:	8b bb       	out	0x1b, r24	; 27
+#else
+  PORT_DATA = data;		
+#endif  
+  SetBit(PORT_SIG, EN);	        
+ 4d2:	af 9a       	sbi	0x15, 7	; 21
+ 4d4:	9a 95       	dec	r25
+ 4d6:	f1 f7       	brne	.-4      	; 0x4d4 <LCD_Init+0xa0>
+  _delay_us(2);
+  ClearBit(PORT_SIG, EN);	
+ 4d8:	af 98       	cbi	0x15, 7	; 21
+  LCD_WriteComInit(0x30);
+#endif
+  
+#ifdef BUS_4BIT  
+  LCD_WriteComInit(0x20); //4 разрядная шина
+  LCD_WriteCom(0x28); //4-разрядная шина, 2 - строки
+ 4da:	88 e2       	ldi	r24, 0x28	; 40
+ 4dc:	90 df       	rcall	.-224    	; 0x3fe <LCD_WriteCom>
+#else
+  LCD_WriteCom(0x38); //8-разрядная шина, 2 - строки
+#endif
+  LCD_WriteCom(0x08);
+ 4de:	88 e0       	ldi	r24, 0x08	; 8
+ 4e0:	8e df       	rcall	.-228    	; 0x3fe <LCD_WriteCom>
+  LCD_WriteCom(0x0c);  //дисплей вкл, курсор и мерцание выключены
+ 4e2:	8c e0       	ldi	r24, 0x0C	; 12
+ 4e4:	8c df       	rcall	.-232    	; 0x3fe <LCD_WriteCom>
+  LCD_WriteCom(0x01);  //0b00000001 - очистка дисплея
+ 4e6:	81 e0       	ldi	r24, 0x01	; 1
+ 4e8:	8a df       	rcall	.-236    	; 0x3fe <LCD_WriteCom>
+    milliseconds can be achieved.
+ */
+void
+_delay_loop_2(uint16_t __count)
+{
+	__asm__ volatile (
+ 4ea:	80 e4       	ldi	r24, 0x40	; 64
+ 4ec:	9f e1       	ldi	r25, 0x1F	; 31
+ 4ee:	01 97       	sbiw	r24, 0x01	; 1
+ 4f0:	f1 f7       	brne	.-4      	; 0x4ee <LCD_Init+0xba>
+  _delay_ms(2);
+  LCD_WriteCom(0x06);  //0b00000110 - курсор движется вправо, сдвига нет
+ 4f2:	86 e0       	ldi	r24, 0x06	; 6
+ 4f4:	84 df       	rcall	.-248    	; 0x3fe <LCD_WriteCom>
+}
+ 4f6:	08 95       	ret
+
+000004f8 <LCD_Clear>:
+}
+
+
+void LCD_Clear(void)
+{
+  LCD_WriteCom(0x01);
+ 4f8:	81 e0       	ldi	r24, 0x01	; 1
+ 4fa:	81 df       	rcall	.-254    	; 0x3fe <LCD_WriteCom>
+ 4fc:	80 e4       	ldi	r24, 0x40	; 64
+ 4fe:	9f e1       	ldi	r25, 0x1F	; 31
+ 500:	01 97       	sbiw	r24, 0x01	; 1
+ 502:	f1 f7       	brne	.-4      	; 0x500 <LCD_Clear+0x8>
+  _delay_ms(2);
+ 504:	08 95       	ret
+
+00000506 <LCD_SendString>:
+  }
+}
+
+//фунция вывода строки из RAM
+void LCD_SendString(char *str)
+{
+ 506:	fc 01       	movw	r30, r24
+  unsigned char data;
+  SetBit(PORT_SIG, RS);			
+ 508:	ae 9a       	sbi	0x15, 6	; 21
+  while (*str)
+ 50a:	20 81       	ld	r18, Z
+ 50c:	22 23       	and	r18, r18
+ 50e:	01 f1       	breq	.+64     	; 0x550 <LCD_SendString+0x4a>
+    can be achieved.
+*/
+void
+_delay_loop_1(uint8_t __count)
+{
+	__asm__ volatile (
+ 510:	45 ed       	ldi	r20, 0xD5	; 213
+  {
+    data = *str++;
+ 512:	3a e0       	ldi	r19, 0x0A	; 10
+ 514:	31 96       	adiw	r30, 0x01	; 1
+ 516:	84 2f       	mov	r24, r20
+ 518:	8a 95       	dec	r24
+ 51a:	f1 f7       	brne	.-4      	; 0x518 <LCD_SendString+0x12>
+    LCD_Wait();
+    SetBit(PORT_SIG, RS);			
+ 51c:	ae 9a       	sbi	0x15, 6	; 21
+
+inline static void LCD_CommonFunc(unsigned char data)
+{
+#ifdef BUS_4BIT  
+  unsigned char tmp; 
+  tmp  = PORT_DATA & 0x0f;
+ 51e:	8b b3       	in	r24, 0x1b	; 27
+  tmp |= (data & 0xf0);
+ 520:	92 2f       	mov	r25, r18
+ 522:	90 7f       	andi	r25, 0xF0	; 240
+ 524:	8f 70       	andi	r24, 0x0F	; 15
+ 526:	98 2b       	or	r25, r24
+
+  PORT_DATA = tmp;		//вывод старшей тетрады 
+ 528:	9b bb       	out	0x1b, r25	; 27
+  SetBit(PORT_SIG, EN);	        
+ 52a:	af 9a       	sbi	0x15, 7	; 21
+ 52c:	83 2f       	mov	r24, r19
+ 52e:	8a 95       	dec	r24
+ 530:	f1 f7       	brne	.-4      	; 0x52e <LCD_SendString+0x28>
+  _delay_us(2);
+  ClearBit(PORT_SIG, EN);	
+ 532:	af 98       	cbi	0x15, 7	; 21
+
+#define FLAG_BF 7
+
+inline unsigned char __swap_nibbles(unsigned char data)
+{
+  asm volatile("swap %0" : "=r" (data) : "0" (data));
+ 534:	22 95       	swap	r18
+  SetBit(PORT_SIG, EN);	        
+  _delay_us(2);
+  ClearBit(PORT_SIG, EN);	
+
+  data = __swap_nibbles(data);
+  tmp  = PORT_DATA & 0x0f;
+ 536:	8b b3       	in	r24, 0x1b	; 27
+  tmp |= (data & 0xf0);
+ 538:	20 7f       	andi	r18, 0xF0	; 240
+ 53a:	8f 70       	andi	r24, 0x0F	; 15
+ 53c:	28 2b       	or	r18, r24
+ 
+  PORT_DATA = tmp;		//вывод младшей тетрады 
+ 53e:	2b bb       	out	0x1b, r18	; 27
+  SetBit(PORT_SIG, EN);	        
+ 540:	af 9a       	sbi	0x15, 7	; 21
+ 542:	83 2f       	mov	r24, r19
+ 544:	8a 95       	dec	r24
+ 546:	f1 f7       	brne	.-4      	; 0x544 <LCD_SendString+0x3e>
+  _delay_us(2);
+  ClearBit(PORT_SIG, EN);	 
+ 548:	af 98       	cbi	0x15, 7	; 21
+//фунция вывода строки из RAM
+void LCD_SendString(char *str)
+{
+  unsigned char data;
+  SetBit(PORT_SIG, RS);			
+  while (*str)
+ 54a:	20 81       	ld	r18, Z
+ 54c:	22 23       	and	r18, r18
+ 54e:	11 f7       	brne	.-60     	; 0x514 <LCD_SendString+0xe>
+ 550:	08 95       	ret
+
+00000552 <LCD_SendStringFlash>:
+}
+
+
+//функция вывода строки из флэш памяти
+void LCD_SendStringFlash(prog_char *str)
+{
+ 552:	fc 01       	movw	r30, r24
+  unsigned char data = pgm_read_byte(str);
+ 554:	84 91       	lpm	r24, Z+
+  while (data)
+ 556:	88 23       	and	r24, r24
+ 558:	09 f1       	breq	.+66     	; 0x59c <LCD_SendStringFlash+0x4a>
+ 55a:	28 2f       	mov	r18, r24
+ 55c:	45 ed       	ldi	r20, 0xD5	; 213
+  {
+    LCD_Wait();
+    SetBit(PORT_SIG, RS);			
+ 55e:	3a e0       	ldi	r19, 0x0A	; 10
+ 560:	84 2f       	mov	r24, r20
+ 562:	8a 95       	dec	r24
+ 564:	f1 f7       	brne	.-4      	; 0x562 <LCD_SendStringFlash+0x10>
+ 566:	ae 9a       	sbi	0x15, 6	; 21
+
+inline static void LCD_CommonFunc(unsigned char data)
+{
+#ifdef BUS_4BIT  
+  unsigned char tmp; 
+  tmp  = PORT_DATA & 0x0f;
+ 568:	8b b3       	in	r24, 0x1b	; 27
+  tmp |= (data & 0xf0);
+ 56a:	92 2f       	mov	r25, r18
+ 56c:	90 7f       	andi	r25, 0xF0	; 240
+ 56e:	8f 70       	andi	r24, 0x0F	; 15
+ 570:	98 2b       	or	r25, r24
+
+  PORT_DATA = tmp;		//вывод старшей тетрады 
+ 572:	9b bb       	out	0x1b, r25	; 27
+  SetBit(PORT_SIG, EN);	        
+ 574:	af 9a       	sbi	0x15, 7	; 21
+ 576:	83 2f       	mov	r24, r19
+ 578:	8a 95       	dec	r24
+ 57a:	f1 f7       	brne	.-4      	; 0x578 <LCD_SendStringFlash+0x26>
+  _delay_us(2);
+  ClearBit(PORT_SIG, EN);	
+ 57c:	af 98       	cbi	0x15, 7	; 21
+
+#define FLAG_BF 7
+
+inline unsigned char __swap_nibbles(unsigned char data)
+{
+  asm volatile("swap %0" : "=r" (data) : "0" (data));
+ 57e:	22 95       	swap	r18
+  SetBit(PORT_SIG, EN);	        
+  _delay_us(2);
+  ClearBit(PORT_SIG, EN);	
+
+  data = __swap_nibbles(data);
+  tmp  = PORT_DATA & 0x0f;
+ 580:	8b b3       	in	r24, 0x1b	; 27
+  tmp |= (data & 0xf0);
+ 582:	20 7f       	andi	r18, 0xF0	; 240
+ 584:	8f 70       	andi	r24, 0x0F	; 15
+ 586:	82 2b       	or	r24, r18
+ 
+  PORT_DATA = tmp;		//вывод младшей тетрады 
+ 588:	8b bb       	out	0x1b, r24	; 27
+  SetBit(PORT_SIG, EN);	        
+ 58a:	af 9a       	sbi	0x15, 7	; 21
+ 58c:	83 2f       	mov	r24, r19
+ 58e:	8a 95       	dec	r24
+ 590:	f1 f7       	brne	.-4      	; 0x58e <LCD_SendStringFlash+0x3c>
+  _delay_us(2);
+  ClearBit(PORT_SIG, EN);	 
+ 592:	af 98       	cbi	0x15, 7	; 21
+  while (data)
+  {
+    LCD_Wait();
+    SetBit(PORT_SIG, RS);			
+    LCD_CommonFunc(data);
+    str++;
+ 594:	31 96       	adiw	r30, 0x01	; 1
+    data = pgm_read_byte(str);
+ 596:	24 91       	lpm	r18, Z+
+
+//функция вывода строки из флэш памяти
+void LCD_SendStringFlash(prog_char *str)
+{
+  unsigned char data = pgm_read_byte(str);
+  while (data)
+ 598:	22 23       	and	r18, r18
+ 59a:	11 f7       	brne	.-60     	; 0x560 <LCD_SendStringFlash+0xe>
+ 59c:	08 95       	ret
+
+0000059e <LCD_WriteData>:
+ 59e:	95 ed       	ldi	r25, 0xD5	; 213
+ 5a0:	9a 95       	dec	r25
+ 5a2:	f1 f7       	brne	.-4      	; 0x5a0 <LCD_WriteData+0x2>
+
+//функция записи данных
+void LCD_WriteData(unsigned char data)
+{
+  LCD_Wait();
+  SetBit(PORT_SIG, RS);	    //установка RS в 1 - данные
+ 5a4:	ae 9a       	sbi	0x15, 6	; 21
+
+inline static void LCD_CommonFunc(unsigned char data)
+{
+#ifdef BUS_4BIT  
+  unsigned char tmp; 
+  tmp  = PORT_DATA & 0x0f;
+ 5a6:	9b b3       	in	r25, 0x1b	; 27
+  tmp |= (data & 0xf0);
+ 5a8:	28 2f       	mov	r18, r24
+ 5aa:	20 7f       	andi	r18, 0xF0	; 240
+ 5ac:	9f 70       	andi	r25, 0x0F	; 15
+ 5ae:	29 2b       	or	r18, r25
+
+  PORT_DATA = tmp;		//вывод старшей тетрады 
+ 5b0:	2b bb       	out	0x1b, r18	; 27
+  SetBit(PORT_SIG, EN);	        
+ 5b2:	af 9a       	sbi	0x15, 7	; 21
+ 5b4:	2a e0       	ldi	r18, 0x0A	; 10
+ 5b6:	92 2f       	mov	r25, r18
+ 5b8:	9a 95       	dec	r25
+ 5ba:	f1 f7       	brne	.-4      	; 0x5b8 <LCD_WriteData+0x1a>
+  _delay_us(2);
+  ClearBit(PORT_SIG, EN);	
+ 5bc:	af 98       	cbi	0x15, 7	; 21
+
+#define FLAG_BF 7
+
+inline unsigned char __swap_nibbles(unsigned char data)
+{
+  asm volatile("swap %0" : "=r" (data) : "0" (data));
+ 5be:	82 95       	swap	r24
+  SetBit(PORT_SIG, EN);	        
+  _delay_us(2);
+  ClearBit(PORT_SIG, EN);	
+
+  data = __swap_nibbles(data);
+  tmp  = PORT_DATA & 0x0f;
+ 5c0:	9b b3       	in	r25, 0x1b	; 27
+  tmp |= (data & 0xf0);
+ 5c2:	80 7f       	andi	r24, 0xF0	; 240
+ 5c4:	9f 70       	andi	r25, 0x0F	; 15
+ 5c6:	98 2b       	or	r25, r24
+ 
+  PORT_DATA = tmp;		//вывод младшей тетрады 
+ 5c8:	9b bb       	out	0x1b, r25	; 27
+  SetBit(PORT_SIG, EN);	        
+ 5ca:	af 9a       	sbi	0x15, 7	; 21
+ 5cc:	2a 95       	dec	r18
+ 5ce:	f1 f7       	brne	.-4      	; 0x5cc <LCD_WriteData+0x2e>
+  _delay_us(2);
+  ClearBit(PORT_SIG, EN);	 
+ 5d0:	af 98       	cbi	0x15, 7	; 21
+void LCD_WriteData(unsigned char data)
+{
+  LCD_Wait();
+  SetBit(PORT_SIG, RS);	    //установка RS в 1 - данные
+  LCD_CommonFunc(data);
+}
+ 5d2:	08 95       	ret
+
+000005d4 <OWI_Init>:
+ 5d4:	91 b3       	in	r25, 0x11	; 17
+ 5d6:	80 95       	com	r24
+ 5d8:	98 23       	and	r25, r24
+ 5da:	91 bb       	out	0x11, r25	; 17
+ 5dc:	92 b3       	in	r25, 0x12	; 18
+ 5de:	98 23       	and	r25, r24
+ 5e0:	92 bb       	out	0x12, r25	; 18
+    milliseconds can be achieved.
+ */
+void
+_delay_loop_2(uint16_t __count)
+{
+	__asm__ volatile (
+ 5e2:	8c e7       	ldi	r24, 0x7C	; 124
+ 5e4:	97 e0       	ldi	r25, 0x07	; 7
+ 5e6:	01 97       	sbiw	r24, 0x01	; 1
+ 5e8:	f1 f7       	brne	.-4      	; 0x5e6 <OWI_Init+0x12>
+ 5ea:	08 95       	ret
+
+000005ec <OWI_WriteBit1>:
+ 5ec:	2f b7       	in	r18, 0x3f	; 63
+ 5ee:	f8 94       	cli
+ 5f0:	91 b3       	in	r25, 0x11	; 17
+ 5f2:	98 2b       	or	r25, r24
+ 5f4:	91 bb       	out	0x11, r25	; 17
+ 5f6:	92 b3       	in	r25, 0x12	; 18
+ 5f8:	80 95       	com	r24
+ 5fa:	98 23       	and	r25, r24
+ 5fc:	92 bb       	out	0x12, r25	; 18
+    can be achieved.
+*/
+void
+_delay_loop_1(uint8_t __count)
+{
+	__asm__ volatile (
+ 5fe:	9a e1       	ldi	r25, 0x1A	; 26
+ 600:	9a 95       	dec	r25
+ 602:	f1 f7       	brne	.-4      	; 0x600 <OWI_WriteBit1+0x14>
+ 604:	91 b3       	in	r25, 0x11	; 17
+ 606:	98 23       	and	r25, r24
+ 608:	91 bb       	out	0x11, r25	; 17
+ 60a:	92 b3       	in	r25, 0x12	; 18
+ 60c:	89 23       	and	r24, r25
+ 60e:	82 bb       	out	0x12, r24	; 18
+    milliseconds can be achieved.
+ */
+void
+_delay_loop_2(uint16_t __count)
+{
+	__asm__ volatile (
+ 610:	8c ef       	ldi	r24, 0xFC	; 252
+ 612:	90 e0       	ldi	r25, 0x00	; 0
+ 614:	01 97       	sbiw	r24, 0x01	; 1
+ 616:	f1 f7       	brne	.-4      	; 0x614 <OWI_WriteBit1+0x28>
+ 618:	2f bf       	out	0x3f, r18	; 63
+ 61a:	08 95       	ret
+
+0000061c <OWI_WriteBit0>:
+ 61c:	2f b7       	in	r18, 0x3f	; 63
+ 61e:	f8 94       	cli
+ 620:	91 b3       	in	r25, 0x11	; 17
+ 622:	98 2b       	or	r25, r24
+ 624:	91 bb       	out	0x11, r25	; 17
+ 626:	92 b3       	in	r25, 0x12	; 18
+ 628:	80 95       	com	r24
+ 62a:	98 23       	and	r25, r24
+ 62c:	92 bb       	out	0x12, r25	; 18
+ 62e:	ec ee       	ldi	r30, 0xEC	; 236
+ 630:	f0 e0       	ldi	r31, 0x00	; 0
+ 632:	31 97       	sbiw	r30, 0x01	; 1
+ 634:	f1 f7       	brne	.-4      	; 0x632 <OWI_WriteBit0+0x16>
+ 636:	91 b3       	in	r25, 0x11	; 17
+ 638:	98 23       	and	r25, r24
+ 63a:	91 bb       	out	0x11, r25	; 17
+ 63c:	92 b3       	in	r25, 0x12	; 18
+ 63e:	89 23       	and	r24, r25
+ 640:	82 bb       	out	0x12, r24	; 18
+    can be achieved.
+*/
+void
+_delay_loop_1(uint8_t __count)
+{
+	__asm__ volatile (
+ 642:	80 e3       	ldi	r24, 0x30	; 48
+ 644:	8a 95       	dec	r24
+ 646:	f1 f7       	brne	.-4      	; 0x644 <OWI_WriteBit0+0x28>
+ 648:	2f bf       	out	0x3f, r18	; 63
+ 64a:	08 95       	ret
+
+0000064c <OWI_ReadBit>:
+ 64c:	3f b7       	in	r19, 0x3f	; 63
+ 64e:	f8 94       	cli
+ 650:	91 b3       	in	r25, 0x11	; 17
+ 652:	98 2b       	or	r25, r24
+ 654:	91 bb       	out	0x11, r25	; 17
+ 656:	92 b3       	in	r25, 0x12	; 18
+ 658:	28 2f       	mov	r18, r24
+ 65a:	20 95       	com	r18
+ 65c:	92 23       	and	r25, r18
+ 65e:	92 bb       	out	0x12, r25	; 18
+ 660:	9a e1       	ldi	r25, 0x1A	; 26
+ 662:	9a 95       	dec	r25
+ 664:	f1 f7       	brne	.-4      	; 0x662 <OWI_ReadBit+0x16>
+ 666:	91 b3       	in	r25, 0x11	; 17
+ 668:	92 23       	and	r25, r18
+ 66a:	91 bb       	out	0x11, r25	; 17
+ 66c:	92 b3       	in	r25, 0x12	; 18
+ 66e:	29 23       	and	r18, r25
+ 670:	22 bb       	out	0x12, r18	; 18
+ 672:	9a e2       	ldi	r25, 0x2A	; 42
+ 674:	9a 95       	dec	r25
+ 676:	f1 f7       	brne	.-4      	; 0x674 <OWI_ReadBit+0x28>
+ 678:	90 b3       	in	r25, 0x10	; 16
+    milliseconds can be achieved.
+ */
+void
+_delay_loop_2(uint16_t __count)
+{
+	__asm__ volatile (
+ 67a:	e8 ed       	ldi	r30, 0xD8	; 216
+ 67c:	f0 e0       	ldi	r31, 0x00	; 0
+ 67e:	31 97       	sbiw	r30, 0x01	; 1
+ 680:	f1 f7       	brne	.-4      	; 0x67e <OWI_ReadBit+0x32>
+ 682:	3f bf       	out	0x3f, r19	; 63
+ 684:	89 23       	and	r24, r25
+ 686:	08 95       	ret
+
+00000688 <OWI_DetectPresence>:
+ 688:	3f b7       	in	r19, 0x3f	; 63
+ 68a:	f8 94       	cli
+ 68c:	91 b3       	in	r25, 0x11	; 17
+ 68e:	98 2b       	or	r25, r24
+ 690:	91 bb       	out	0x11, r25	; 17
+ 692:	92 b3       	in	r25, 0x12	; 18
+ 694:	28 2f       	mov	r18, r24
+ 696:	20 95       	com	r18
+ 698:	92 23       	and	r25, r18
+ 69a:	92 bb       	out	0x12, r25	; 18
+ 69c:	ec e7       	ldi	r30, 0x7C	; 124
+ 69e:	f7 e0       	ldi	r31, 0x07	; 7
+ 6a0:	31 97       	sbiw	r30, 0x01	; 1
+ 6a2:	f1 f7       	brne	.-4      	; 0x6a0 <OWI_DetectPresence+0x18>
+ 6a4:	91 b3       	in	r25, 0x11	; 17
+ 6a6:	92 23       	and	r25, r18
+ 6a8:	91 bb       	out	0x11, r25	; 17
+ 6aa:	92 b3       	in	r25, 0x12	; 18
+ 6ac:	29 23       	and	r18, r25
+ 6ae:	22 bb       	out	0x12, r18	; 18
+ 6b0:	e4 e1       	ldi	r30, 0x14	; 20
+ 6b2:	f1 e0       	ldi	r31, 0x01	; 1
+ 6b4:	31 97       	sbiw	r30, 0x01	; 1
+ 6b6:	f1 f7       	brne	.-4      	; 0x6b4 <OWI_DetectPresence+0x2c>
+ 6b8:	90 b3       	in	r25, 0x10	; 16
+ 6ba:	e4 e6       	ldi	r30, 0x64	; 100
+ 6bc:	f6 e0       	ldi	r31, 0x06	; 6
+ 6be:	31 97       	sbiw	r30, 0x01	; 1
+ 6c0:	f1 f7       	brne	.-4      	; 0x6be <OWI_DetectPresence+0x36>
+ 6c2:	3f bf       	out	0x3f, r19	; 63
+ 6c4:	90 95       	com	r25
+ 6c6:	89 23       	and	r24, r25
+ 6c8:	08 95       	ret
+
+000006ca <FindFamily>:
+ *
+ *  \return A pointer to a device of the family.
+ *  \retval NULL    if no device of the family was found.
+ */
+unsigned char FindFamily(unsigned char familyID, OWI_device * devices, unsigned char numDevices, unsigned char lastNum)
+{
+ 6ca:	98 2f       	mov	r25, r24
+ 6cc:	fb 01       	movw	r30, r22
+    unsigned char i;
+    
+    if (lastNum == AT_FIRST){
+ 6ce:	2f 3f       	cpi	r18, 0xFF	; 255
+ 6d0:	81 f0       	breq	.+32     	; 0x6f2 <FindFamily+0x28>
+      i = 0;
+    }
+    else{
+      i = lastNum + 1;      
+ 6d2:	2f 5f       	subi	r18, 0xFF	; 255
+    }
+      
+    // Search through the array.
+    while (i < numDevices)
+ 6d4:	24 17       	cp	r18, r20
+ 6d6:	28 f0       	brcs	.+10     	; 0x6e2 <FindFamily+0x18>
+ 6d8:	09 c0       	rjmp	.+18     	; 0x6ec <FindFamily+0x22>
+        if ((*devices).id[0] == familyID)
+        {
+            return i;
+        }
+        devices++;
+        i++;
+ 6da:	2f 5f       	subi	r18, 0xFF	; 255
+    else{
+      i = lastNum + 1;      
+    }
+      
+    // Search through the array.
+    while (i < numDevices)
+ 6dc:	24 17       	cp	r18, r20
+ 6de:	30 f4       	brcc	.+12     	; 0x6ec <FindFamily+0x22>
+        // Return the pointer if there is a family id match.
+        if ((*devices).id[0] == familyID)
+        {
+            return i;
+        }
+        devices++;
+ 6e0:	38 96       	adiw	r30, 0x08	; 8
+      
+    // Search through the array.
+    while (i < numDevices)
+    {
+        // Return the pointer if there is a family id match.
+        if ((*devices).id[0] == familyID)
+ 6e2:	80 81       	ld	r24, Z
+ 6e4:	89 17       	cp	r24, r25
+ 6e6:	c9 f7       	brne	.-14     	; 0x6da <FindFamily+0x10>
+        }
+        devices++;
+        i++;
+    }
+    return SEARCH_ERROR;
+}
+ 6e8:	82 2f       	mov	r24, r18
+ 6ea:	08 95       	ret
+    else{
+      i = lastNum + 1;      
+    }
+      
+    // Search through the array.
+    while (i < numDevices)
+ 6ec:	2f ef       	ldi	r18, 0xFF	; 255
+        }
+        devices++;
+        i++;
+    }
+    return SEARCH_ERROR;
+}
+ 6ee:	82 2f       	mov	r24, r18
+ 6f0:	08 95       	ret
+ */
+unsigned char FindFamily(unsigned char familyID, OWI_device * devices, unsigned char numDevices, unsigned char lastNum)
+{
+    unsigned char i;
+    
+    if (lastNum == AT_FIRST){
+ 6f2:	20 e0       	ldi	r18, 0x00	; 0
+ 6f4:	ef cf       	rjmp	.-34     	; 0x6d4 <FindFamily+0xa>
+
+000006f6 <OWI_ReceiveByte>:
+ *  \param  pin     A bitmask of the bus to read from.
+ *  
+ *  \return     The byte read from the bus.
+ */
+unsigned char OWI_ReceiveByte(unsigned char pin)
+{
+ 6f6:	ff 92       	push	r15
+ 6f8:	0f 93       	push	r16
+ 6fa:	1f 93       	push	r17
+ 6fc:	f8 2e       	mov	r15, r24
+ 6fe:	00 e0       	ldi	r16, 0x00	; 0
+ 700:	10 e0       	ldi	r17, 0x00	; 0
+    
+    // Do once for each bit
+    for (i = 0; i < 8; i++)
+    {
+        // Shift temporary input variable right.
+        data >>= 1;
+ 702:	06 95       	lsr	r16
+        // Set the msb if a '1' value is read from the bus.
+        // Leave as it is ('0') else.
+        if (OWI_ReadBit(pin))
+ 704:	8f 2d       	mov	r24, r15
+ 706:	a2 df       	rcall	.-188    	; 0x64c <OWI_ReadBit>
+ 708:	81 11       	cpse	r24, r1
+        {
+            // Set msb
+            data |= 0x80;
+ 70a:	00 68       	ori	r16, 0x80	; 128
+
+    // Clear the temporary input variable.
+    data = 0x00;
+    
+    // Do once for each bit
+    for (i = 0; i < 8; i++)
+ 70c:	1f 5f       	subi	r17, 0xFF	; 255
+ 70e:	18 30       	cpi	r17, 0x08	; 8
+ 710:	c1 f7       	brne	.-16     	; 0x702 <OWI_ReceiveByte+0xc>
+            // Set msb
+            data |= 0x80;
+        }
+    }
+    return data;
+}
+ 712:	80 2f       	mov	r24, r16
+ 714:	1f 91       	pop	r17
+ 716:	0f 91       	pop	r16
+ 718:	ff 90       	pop	r15
+ 71a:	08 95       	ret
+
+0000071c <OWI_SendByte>:
+ *  \param  data    The data to send on the bus(es).
+ *  
+ *  \param  pins    A bitmask of the buses to send the data to.
+ */
+void OWI_SendByte(unsigned char data, unsigned char pin)
+{
+ 71c:	ff 92       	push	r15
+ 71e:	0f 93       	push	r16
+ 720:	1f 93       	push	r17
+ 722:	08 2f       	mov	r16, r24
+ 724:	f6 2e       	mov	r15, r22
+ 726:	10 e0       	ldi	r17, 0x00	; 0
+ 728:	06 c0       	rjmp	.+12     	; 0x736 <OWI_SendByte+0x1a>
+        // Determine if lsb is '0' or '1' and transmit corresponding
+        // waveform on the bus.
+        temp = data & 0x01;
+        if (temp)
+        {
+            OWI_WriteBit1(pin);
+ 72a:	8f 2d       	mov	r24, r15
+ 72c:	5f df       	rcall	.-322    	; 0x5ec <OWI_WriteBit1>
+{
+    unsigned char temp;
+    unsigned char i;
+    
+    // Do once for each bit
+    for (i = 0; i < 8; i++)
+ 72e:	1f 5f       	subi	r17, 0xFF	; 255
+ 730:	18 30       	cpi	r17, 0x08	; 8
+ 732:	41 f0       	breq	.+16     	; 0x744 <OWI_SendByte+0x28>
+        else
+        {
+            OWI_WriteBit0(pin);
+        }
+        // Right shift the data to get next bit.
+        data >>= 1;
+ 734:	06 95       	lsr	r16
+    for (i = 0; i < 8; i++)
+    {
+        // Determine if lsb is '0' or '1' and transmit corresponding
+        // waveform on the bus.
+        temp = data & 0x01;
+        if (temp)
+ 736:	00 fd       	sbrc	r16, 0
+ 738:	f8 cf       	rjmp	.-16     	; 0x72a <OWI_SendByte+0xe>
+        {
+            OWI_WriteBit1(pin);
+        }
+        else
+        {
+            OWI_WriteBit0(pin);
+ 73a:	8f 2d       	mov	r24, r15
+ 73c:	6f df       	rcall	.-290    	; 0x61c <OWI_WriteBit0>
+{
+    unsigned char temp;
+    unsigned char i;
+    
+    // Do once for each bit
+    for (i = 0; i < 8; i++)
+ 73e:	1f 5f       	subi	r17, 0xFF	; 255
+ 740:	18 30       	cpi	r17, 0x08	; 8
+ 742:	c1 f7       	brne	.-16     	; 0x734 <OWI_SendByte+0x18>
+            OWI_WriteBit0(pin);
+        }
+        // Right shift the data to get next bit.
+        data >>= 1;
+    }
+}
+ 744:	1f 91       	pop	r17
+ 746:	0f 91       	pop	r16
+ 748:	ff 90       	pop	r15
+ 74a:	08 95       	ret
+
+0000074c <OWI_MatchRom>:
+ *  \param  romValue    A pointer to the ID to match against.
+ *
+ *  \param  pins    A bitmask of the buses to perform the MATCH ROM command on.
+ */
+void OWI_MatchRom(unsigned char * romValue, unsigned char pin)
+{
+ 74c:	0f 93       	push	r16
+ 74e:	1f 93       	push	r17
+ 750:	cf 93       	push	r28
+ 752:	df 93       	push	r29
+ 754:	ec 01       	movw	r28, r24
+ 756:	06 2f       	mov	r16, r22
+    unsigned char bytesLeft = 8;   
+    
+    // Send the MATCH ROM command.
+    OWI_SendByte(OWI_ROM_MATCH, pin);
+ 758:	85 e5       	ldi	r24, 0x55	; 85
+ 75a:	e0 df       	rcall	.-64     	; 0x71c <OWI_SendByte>
+ 75c:	18 e0       	ldi	r17, 0x08	; 8
+
+    // Do once for each byte.
+    while (bytesLeft > 0)
+    {
+        // Transmit 1 byte of the ID to match.
+        OWI_SendByte(*romValue++, pin);
+ 75e:	89 91       	ld	r24, Y+
+ 760:	60 2f       	mov	r22, r16
+ 762:	dc df       	rcall	.-72     	; 0x71c <OWI_SendByte>
+        bytesLeft--;
+ 764:	11 50       	subi	r17, 0x01	; 1
+    
+    // Send the MATCH ROM command.
+    OWI_SendByte(OWI_ROM_MATCH, pin);
+
+    // Do once for each byte.
+    while (bytesLeft > 0)
+ 766:	d9 f7       	brne	.-10     	; 0x75e <OWI_MatchRom+0x12>
+    {
+        // Transmit 1 byte of the ID to match.
+        OWI_SendByte(*romValue++, pin);
+        bytesLeft--;
+    }
+}
+ 768:	df 91       	pop	r29
+ 76a:	cf 91       	pop	r28
+ 76c:	1f 91       	pop	r17
+ 76e:	0f 91       	pop	r16
+ 770:	08 95       	ret
+
+00000772 <OWI_ReadRom>:
+ *  \param  romValue    A pointer where the id will be placed.
+ *
+ *  \param  pin     A bitmask of the bus to read from.
+ */
+void OWI_ReadRom(unsigned char * romValue, unsigned char pin)
+{
+ 772:	0f 93       	push	r16
+ 774:	1f 93       	push	r17
+ 776:	cf 93       	push	r28
+ 778:	df 93       	push	r29
+ 77a:	ec 01       	movw	r28, r24
+ 77c:	06 2f       	mov	r16, r22
+    unsigned char bytesLeft = 8;
+
+    // Send the READ ROM command on the bus.
+    OWI_SendByte(OWI_ROM_READ, pin);
+ 77e:	83 e3       	ldi	r24, 0x33	; 51
+ 780:	cd df       	rcall	.-102    	; 0x71c <OWI_SendByte>
+ 782:	18 e0       	ldi	r17, 0x08	; 8
+    
+    // Do 8 times.
+    while (bytesLeft > 0)
+    {
+        // Place the received data in memory.
+        *romValue++ = OWI_ReceiveByte(pin);
+ 784:	80 2f       	mov	r24, r16
+ 786:	b7 df       	rcall	.-146    	; 0x6f6 <OWI_ReceiveByte>
+ 788:	89 93       	st	Y+, r24
+        bytesLeft--;
+ 78a:	11 50       	subi	r17, 0x01	; 1
+
+    // Send the READ ROM command on the bus.
+    OWI_SendByte(OWI_ROM_READ, pin);
+    
+    // Do 8 times.
+    while (bytesLeft > 0)
+ 78c:	d9 f7       	brne	.-10     	; 0x784 <OWI_ReadRom+0x12>
+    {
+        // Place the received data in memory.
+        *romValue++ = OWI_ReceiveByte(pin);
+        bytesLeft--;
+    }
+}
+ 78e:	df 91       	pop	r29
+ 790:	cf 91       	pop	r28
+ 792:	1f 91       	pop	r17
+ 794:	0f 91       	pop	r16
+ 796:	08 95       	ret
+
+00000798 <OWI_SkipRom>:
+/*! \brief  Sends the SKIP ROM command to the 1-Wire bus(es).
+ *
+ *  \param  pins    A bitmask of the buses to send the SKIP ROM command to.
+ */
+void OWI_SkipRom(unsigned char pin)
+{
+ 798:	68 2f       	mov	r22, r24
+    // Send the SKIP ROM command on the bus.
+    OWI_SendByte(OWI_ROM_SKIP, pin);
+ 79a:	8c ec       	ldi	r24, 0xCC	; 204
+ 79c:	bf df       	rcall	.-130    	; 0x71c <OWI_SendByte>
+}
+ 79e:	08 95       	ret
+
+000007a0 <OWI_SearchRom>:
+ *  \return The last bit position where there was a discrepancy between slave addresses the last time this function was run. Returns OWI_ROM_SEARCH_FAILED if an error was detected (e.g. a device was connected to the bus during the search), or OWI_ROM_SEARCH_FINISHED when there are no more devices to be discovered.
+ *
+ *  \note   See main.c for an example of how to utilize this function.
+ */
+unsigned char OWI_SearchRom(unsigned char * bitPattern, unsigned char lastDeviation, unsigned char pin)
+{
+ 7a0:	cf 92       	push	r12
+ 7a2:	df 92       	push	r13
+ 7a4:	ef 92       	push	r14
+ 7a6:	ff 92       	push	r15
+ 7a8:	0f 93       	push	r16
+ 7aa:	1f 93       	push	r17
+ 7ac:	cf 93       	push	r28
+ 7ae:	df 93       	push	r29
+ 7b0:	ec 01       	movw	r28, r24
+ 7b2:	c6 2e       	mov	r12, r22
+ 7b4:	e4 2e       	mov	r14, r20
+    unsigned char bitMask = 0x01;
+    unsigned char bitA;
+    unsigned char bitB;
+
+    // Send SEARCH ROM command on the bus.
+    OWI_SendByte(OWI_ROM_SEARCH, pin);
+ 7b6:	80 ef       	ldi	r24, 0xF0	; 240
+ 7b8:	64 2f       	mov	r22, r20
+ 7ba:	b0 df       	rcall	.-160    	; 0x71c <OWI_SendByte>
+ 7bc:	ff 24       	eor	r15, r15
+ 7be:	f3 94       	inc	r15
+ 7c0:	dd 24       	eor	r13, r13
+ 7c2:	01 e0       	ldi	r16, 0x01	; 1
+ 7c4:	0a c0       	rjmp	.+20     	; 0x7da <OWI_SearchRom+0x3a>
+                
+        
+        // Send the selected bit to the bus.
+        if ((*bitPattern) & bitMask)
+        {
+            OWI_WriteBit1(pin);
+ 7c6:	8e 2d       	mov	r24, r14
+ 7c8:	11 df       	rcall	.-478    	; 0x5ec <OWI_WriteBit1>
+        {
+            OWI_WriteBit0(pin);
+        }
+
+        // Increment current bit.    
+        currentBit++;
+ 7ca:	f3 94       	inc	r15
+
+        // Adjust bitMask and bitPattern pointer.    
+        bitMask <<= 1;
+ 7cc:	00 0f       	add	r16, r16
+        if (!bitMask)
+ 7ce:	11 f4       	brne	.+4      	; 0x7d4 <OWI_SearchRom+0x34>
+        {
+            bitMask = 0x01;
+            bitPattern++;
+ 7d0:	21 96       	adiw	r28, 0x01	; 1
+ 7d2:	01 e0       	ldi	r16, 0x01	; 1
+
+    // Send SEARCH ROM command on the bus.
+    OWI_SendByte(OWI_ROM_SEARCH, pin);
+    
+    // Walk through all 64 bits.
+    while (currentBit <= 64)
+ 7d4:	81 e4       	ldi	r24, 0x41	; 65
+ 7d6:	f8 16       	cp	r15, r24
+ 7d8:	69 f1       	breq	.+90     	; 0x834 <OWI_SearchRom+0x94>
+    {
+        // Read bit from bus twice.
+        bitA = OWI_ReadBit(pin);
+ 7da:	8e 2d       	mov	r24, r14
+ 7dc:	37 df       	rcall	.-402    	; 0x64c <OWI_ReadBit>
+ 7de:	18 2f       	mov	r17, r24
+        bitB = OWI_ReadBit(pin);
+ 7e0:	8e 2d       	mov	r24, r14
+ 7e2:	34 df       	rcall	.-408    	; 0x64c <OWI_ReadBit>
+
+        if (bitA && bitB)
+ 7e4:	11 23       	and	r17, r17
+ 7e6:	51 f0       	breq	.+20     	; 0x7fc <OWI_SearchRom+0x5c>
+ 7e8:	88 23       	and	r24, r24
+ 7ea:	11 f5       	brne	.+68     	; 0x830 <OWI_SearchRom+0x90>
+        {
+            // If this is where a choice was made the last time,
+            // a '1' bit is selected this time.
+            if (currentBit == lastDeviation)
+            {
+                (*bitPattern) |= bitMask;
+ 7ec:	98 81       	ld	r25, Y
+ 7ee:	90 2b       	or	r25, r16
+ 7f0:	98 83       	st	Y, r25
+            }
+        }
+                
+        
+        // Send the selected bit to the bus.
+        if ((*bitPattern) & bitMask)
+ 7f2:	90 23       	and	r25, r16
+ 7f4:	41 f7       	brne	.-48     	; 0x7c6 <OWI_SearchRom+0x26>
+        {
+            OWI_WriteBit1(pin);
+        }
+        else
+        {
+            OWI_WriteBit0(pin);
+ 7f6:	8e 2d       	mov	r24, r14
+ 7f8:	11 df       	rcall	.-478    	; 0x61c <OWI_WriteBit0>
+ 7fa:	e7 cf       	rjmp	.-50     	; 0x7ca <OWI_SearchRom+0x2a>
+        {
+            // Both bits 1 (Error).
+            newDeviation = OWI_ROM_SEARCH_FAILED;
+            return SEARCH_ERROR;
+        }
+        else if (bitA ^ bitB)
+ 7fc:	88 23       	and	r24, r24
+ 7fe:	59 f4       	brne	.+22     	; 0x816 <OWI_SearchRom+0x76>
+        }
+        else // Both bits 0
+        {
+            // If this is where a choice was made the last time,
+            // a '1' bit is selected this time.
+            if (currentBit == lastDeviation)
+ 800:	fc 14       	cp	r15, r12
+ 802:	a1 f3       	breq	.-24     	; 0x7ec <OWI_SearchRom+0x4c>
+            {
+                (*bitPattern) |= bitMask;
+            }
+            // For the rest of the id, '0' bits are selected when
+            // discrepancies occur.
+            else if (currentBit > lastDeviation)
+ 804:	cf 14       	cp	r12, r15
+ 806:	68 f4       	brcc	.+26     	; 0x822 <OWI_SearchRom+0x82>
+            {
+                (*bitPattern) &= ~bitMask;
+ 808:	90 2f       	mov	r25, r16
+ 80a:	90 95       	com	r25
+ 80c:	88 81       	ld	r24, Y
+ 80e:	98 23       	and	r25, r24
+ 810:	98 83       	st	Y, r25
+ 812:	df 2c       	mov	r13, r15
+ 814:	ee cf       	rjmp	.-36     	; 0x7f2 <OWI_SearchRom+0x52>
+            {
+                (*bitPattern) |= bitMask;
+            }
+            else
+            {
+                (*bitPattern) &= ~bitMask;
+ 816:	90 2f       	mov	r25, r16
+ 818:	90 95       	com	r25
+ 81a:	88 81       	ld	r24, Y
+ 81c:	98 23       	and	r25, r24
+ 81e:	98 83       	st	Y, r25
+ 820:	e8 cf       	rjmp	.-48     	; 0x7f2 <OWI_SearchRom+0x52>
+                (*bitPattern) &= ~bitMask;
+                newDeviation = currentBit;
+            }
+            // If current bit in bit pattern = 0, then this is
+            // out new deviation.
+            else if ( !(*bitPattern & bitMask)) 
+ 822:	88 81       	ld	r24, Y
+ 824:	80 23       	and	r24, r16
+ 826:	79 f6       	brne	.-98     	; 0x7c6 <OWI_SearchRom+0x26>
+                
+        
+        // Send the selected bit to the bus.
+        if ((*bitPattern) & bitMask)
+        {
+            OWI_WriteBit1(pin);
+ 828:	df 2c       	mov	r13, r15
+        }
+        else
+        {
+            OWI_WriteBit0(pin);
+ 82a:	8e 2d       	mov	r24, r14
+ 82c:	f7 de       	rcall	.-530    	; 0x61c <OWI_WriteBit0>
+ 82e:	cd cf       	rjmp	.-102    	; 0x7ca <OWI_SearchRom+0x2a>
+    {
+        // Read bit from bus twice.
+        bitA = OWI_ReadBit(pin);
+        bitB = OWI_ReadBit(pin);
+
+        if (bitA && bitB)
+ 830:	dd 24       	eor	r13, r13
+ 832:	da 94       	dec	r13
+            bitMask = 0x01;
+            bitPattern++;
+        }
+    }
+    return newDeviation;
+}
+ 834:	8d 2d       	mov	r24, r13
+ 836:	df 91       	pop	r29
+ 838:	cf 91       	pop	r28
+ 83a:	1f 91       	pop	r17
+ 83c:	0f 91       	pop	r16
+ 83e:	ff 90       	pop	r15
+ 840:	ef 90       	pop	r14
+ 842:	df 90       	pop	r13
+ 844:	cf 90       	pop	r12
+ 846:	08 95       	ret
+
+00000848 <OWI_SearchDevices>:
+ *  \retval SEARCH_SUCCESSFUL   Search completed successfully.
+ *  \retval SEARCH_CRC_ERROR    A CRC error occured. Probably because of noise
+ *                              during transmission.
+ */
+unsigned char OWI_SearchDevices(OWI_device * devices, unsigned char numDevices, unsigned char pin, unsigned char *num)
+{
+ 848:	bf 92       	push	r11
+ 84a:	cf 92       	push	r12
+ 84c:	df 92       	push	r13
+ 84e:	ef 92       	push	r14
+ 850:	ff 92       	push	r15
+ 852:	0f 93       	push	r16
+ 854:	1f 93       	push	r17
+ 856:	cf 93       	push	r28
+ 858:	df 93       	push	r29
+ 85a:	ec 01       	movw	r28, r24
+ 85c:	b4 2e       	mov	r11, r20
+ 85e:	69 01       	movw	r12, r18
+    unsigned char lastDeviation;
+    unsigned char numFoundDevices;
+	unsigned char flag = SEARCH_SUCCESSFUL;
+    
+    //сбрасываем адреса 1Wire устройств    
+    for (i = 0; i < numDevices; i++)
+ 860:	66 23       	and	r22, r22
+ 862:	89 f0       	breq	.+34     	; 0x886 <OWI_SearchDevices+0x3e>
+ 864:	9c 01       	movw	r18, r24
+ 866:	40 e0       	ldi	r20, 0x00	; 0
+ 868:	80 e0       	ldi	r24, 0x00	; 0
+ 86a:	90 e0       	ldi	r25, 0x00	; 0
+    {
+        for (j = 0; j < 8; j++)
+        {
+            devices[i].id[j] = 0x00;
+ 86c:	f9 01       	movw	r30, r18
+ 86e:	e8 0f       	add	r30, r24
+ 870:	f9 1f       	adc	r31, r25
+ 872:	10 82       	st	Z, r1
+ 874:	01 96       	adiw	r24, 0x01	; 1
+	unsigned char flag = SEARCH_SUCCESSFUL;
+    
+    //сбрасываем адреса 1Wire устройств    
+    for (i = 0; i < numDevices; i++)
+    {
+        for (j = 0; j < 8; j++)
+ 876:	88 30       	cpi	r24, 0x08	; 8
+ 878:	91 05       	cpc	r25, r1
+ 87a:	c1 f7       	brne	.-16     	; 0x86c <OWI_SearchDevices+0x24>
+    unsigned char lastDeviation;
+    unsigned char numFoundDevices;
+	unsigned char flag = SEARCH_SUCCESSFUL;
+    
+    //сбрасываем адреса 1Wire устройств    
+    for (i = 0; i < numDevices; i++)
+ 87c:	4f 5f       	subi	r20, 0xFF	; 255
+ 87e:	28 5f       	subi	r18, 0xF8	; 248
+ 880:	3f 4f       	sbci	r19, 0xFF	; 255
+ 882:	46 17       	cp	r20, r22
+ 884:	88 f3       	brcs	.-30     	; 0x868 <OWI_SearchDevices+0x20>
+            devices[i].id[j] = 0x00;
+        }
+    }
+    
+    numFoundDevices = 0;
+    newID = devices[0].id;
+ 886:	8e 01       	movw	r16, r28
+ 888:	5c 2f       	mov	r21, r28
+ 88a:	4d 2f       	mov	r20, r29
+ 88c:	ff 24       	eor	r15, r15
+ 88e:	ee 24       	eor	r14, r14
+    lastDeviation = 0;
+    currentID = newID;
+
+    do  
+    {
+      memcpy(newID, currentID, 8);
+ 890:	d8 01       	movw	r26, r16
+ 892:	25 2f       	mov	r18, r21
+ 894:	34 2f       	mov	r19, r20
+ 896:	c9 01       	movw	r24, r18
+ 898:	fc 01       	movw	r30, r24
+ 89a:	88 e0       	ldi	r24, 0x08	; 8
+ 89c:	01 90       	ld	r0, Z+
+ 89e:	0d 92       	st	X+, r0
+ 8a0:	81 50       	subi	r24, 0x01	; 1
+ 8a2:	e1 f7       	brne	.-8      	; 0x89c <OWI_SearchDevices+0x54>
+      if (!OWI_DetectPresence(pin)){
+ 8a4:	8b 2d       	mov	r24, r11
+ 8a6:	f0 de       	rcall	.-544    	; 0x688 <OWI_DetectPresence>
+ 8a8:	88 23       	and	r24, r24
+ 8aa:	b9 f1       	breq	.+110    	; 0x91a <OWI_SearchDevices+0xd2>
+        return SEARCH_ERROR;        
+      };
+      lastDeviation = OWI_SearchRom(newID, lastDeviation, pin);
+ 8ac:	c8 01       	movw	r24, r16
+ 8ae:	6f 2d       	mov	r22, r15
+ 8b0:	4b 2d       	mov	r20, r11
+ 8b2:	76 df       	rcall	.-276    	; 0x7a0 <OWI_SearchRom>
+ 8b4:	f8 2e       	mov	r15, r24
+      currentID = newID;
+      numFoundDevices++;
+ 8b6:	e3 94       	inc	r14
+      newID=devices[numFoundDevices].id;                
+    } while(lastDeviation != OWI_ROM_SEARCH_FINISHED);            
+ 8b8:	88 23       	and	r24, r24
+ 8ba:	71 f0       	breq	.+28     	; 0x8d8 <OWI_SearchDevices+0x90>
+        return SEARCH_ERROR;        
+      };
+      lastDeviation = OWI_SearchRom(newID, lastDeviation, pin);
+      currentID = newID;
+      numFoundDevices++;
+      newID=devices[numFoundDevices].id;                
+ 8bc:	8e 2d       	mov	r24, r14
+ 8be:	90 e0       	ldi	r25, 0x00	; 0
+ 8c0:	88 0f       	add	r24, r24
+ 8c2:	99 1f       	adc	r25, r25
+ 8c4:	88 0f       	add	r24, r24
+ 8c6:	99 1f       	adc	r25, r25
+ 8c8:	88 0f       	add	r24, r24
+ 8ca:	99 1f       	adc	r25, r25
+ 8cc:	8c 0f       	add	r24, r28
+ 8ce:	9d 1f       	adc	r25, r29
+ 8d0:	50 2f       	mov	r21, r16
+ 8d2:	41 2f       	mov	r20, r17
+ 8d4:	8c 01       	movw	r16, r24
+ 8d6:	dc cf       	rjmp	.-72     	; 0x890 <OWI_SearchDevices+0x48>
+    } while(lastDeviation != OWI_ROM_SEARCH_FINISHED);            
+
+    
+    // Go through all the devices and do CRC check.
+    for (i = 0; i < numFoundDevices; i++)
+ 8d8:	ee 20       	and	r14, r14
+ 8da:	09 f1       	breq	.+66     	; 0x91e <OWI_SearchDevices+0xd6>
+ 8dc:	10 e0       	ldi	r17, 0x00	; 0
+ 8de:	00 e0       	ldi	r16, 0x00	; 0
+ 8e0:	05 c0       	rjmp	.+10     	; 0x8ec <OWI_SearchDevices+0xa4>
+    {
+        // If any id has a crc error, return error.
+        if(OWI_CheckRomCRC(devices[i].id) != OWI_CRC_OK)
+ 8e2:	01 e0       	ldi	r16, 0x01	; 1
+      newID=devices[numFoundDevices].id;                
+    } while(lastDeviation != OWI_ROM_SEARCH_FINISHED);            
+
+    
+    // Go through all the devices and do CRC check.
+    for (i = 0; i < numFoundDevices; i++)
+ 8e4:	1f 5f       	subi	r17, 0xFF	; 255
+ 8e6:	28 96       	adiw	r28, 0x08	; 8
+ 8e8:	1e 15       	cp	r17, r14
+ 8ea:	60 f4       	brcc	.+24     	; 0x904 <OWI_SearchDevices+0xbc>
+    {
+        // If any id has a crc error, return error.
+        if(OWI_CheckRomCRC(devices[i].id) != OWI_CRC_OK)
+ 8ec:	ce 01       	movw	r24, r28
+ 8ee:	43 d0       	rcall	.+134    	; 0x976 <OWI_CheckRomCRC>
+ 8f0:	88 23       	and	r24, r24
+ 8f2:	b9 f7       	brne	.-18     	; 0x8e2 <OWI_SearchDevices+0x9a>
+        {
+            flag = SEARCH_CRC_ERROR;
+        }
+        else 
+        {
+           (*num)++;
+ 8f4:	f6 01       	movw	r30, r12
+ 8f6:	80 81       	ld	r24, Z
+ 8f8:	8f 5f       	subi	r24, 0xFF	; 255
+ 8fa:	80 83       	st	Z, r24
+      newID=devices[numFoundDevices].id;                
+    } while(lastDeviation != OWI_ROM_SEARCH_FINISHED);            
+
+    
+    // Go through all the devices and do CRC check.
+    for (i = 0; i < numFoundDevices; i++)
+ 8fc:	1f 5f       	subi	r17, 0xFF	; 255
+ 8fe:	28 96       	adiw	r28, 0x08	; 8
+ 900:	1e 15       	cp	r17, r14
+ 902:	a0 f3       	brcs	.-24     	; 0x8ec <OWI_SearchDevices+0xa4>
+           (*num)++;
+        }
+    }
+    // Else, return Successful.
+    return flag;
+}
+ 904:	80 2f       	mov	r24, r16
+ 906:	df 91       	pop	r29
+ 908:	cf 91       	pop	r28
+ 90a:	1f 91       	pop	r17
+ 90c:	0f 91       	pop	r16
+ 90e:	ff 90       	pop	r15
+ 910:	ef 90       	pop	r14
+ 912:	df 90       	pop	r13
+ 914:	cf 90       	pop	r12
+ 916:	bf 90       	pop	r11
+ 918:	08 95       	ret
+    currentID = newID;
+
+    do  
+    {
+      memcpy(newID, currentID, 8);
+      if (!OWI_DetectPresence(pin)){
+ 91a:	0f ef       	ldi	r16, 0xFF	; 255
+ 91c:	f3 cf       	rjmp	.-26     	; 0x904 <OWI_SearchDevices+0xbc>
+      newID=devices[numFoundDevices].id;                
+    } while(lastDeviation != OWI_ROM_SEARCH_FINISHED);            
+
+    
+    // Go through all the devices and do CRC check.
+    for (i = 0; i < numFoundDevices; i++)
+ 91e:	00 e0       	ldi	r16, 0x00	; 0
+ 920:	f1 cf       	rjmp	.-30     	; 0x904 <OWI_SearchDevices+0xbc>
+
+00000922 <OWI_ComputeCRC8>:
+ 922:	28 2f       	mov	r18, r24
+ 924:	98 e0       	ldi	r25, 0x08	; 8
+ 926:	38 e1       	ldi	r19, 0x18	; 24
+ 928:	04 c0       	rjmp	.+8      	; 0x932 <OWI_ComputeCRC8+0x10>
+ 92a:	66 95       	lsr	r22
+ 92c:	91 50       	subi	r25, 0x01	; 1
+ 92e:	51 f0       	breq	.+20     	; 0x944 <OWI_ComputeCRC8+0x22>
+ 930:	26 95       	lsr	r18
+ 932:	86 2f       	mov	r24, r22
+ 934:	82 27       	eor	r24, r18
+ 936:	80 ff       	sbrs	r24, 0
+ 938:	f8 cf       	rjmp	.-16     	; 0x92a <OWI_ComputeCRC8+0x8>
+ 93a:	63 27       	eor	r22, r19
+ 93c:	66 95       	lsr	r22
+ 93e:	60 68       	ori	r22, 0x80	; 128
+ 940:	91 50       	subi	r25, 0x01	; 1
+ 942:	b1 f7       	brne	.-20     	; 0x930 <OWI_ComputeCRC8+0xe>
+ 944:	86 2f       	mov	r24, r22
+ 946:	08 95       	ret
+
+00000948 <OWI_ComputeCRC16>:
+ 948:	28 2f       	mov	r18, r24
+ 94a:	98 e0       	ldi	r25, 0x08	; 8
+ 94c:	42 e0       	ldi	r20, 0x02	; 2
+ 94e:	50 e4       	ldi	r21, 0x40	; 64
+ 950:	05 c0       	rjmp	.+10     	; 0x95c <OWI_ComputeCRC16+0x14>
+ 952:	76 95       	lsr	r23
+ 954:	67 95       	ror	r22
+ 956:	91 50       	subi	r25, 0x01	; 1
+ 958:	61 f0       	breq	.+24     	; 0x972 <OWI_ComputeCRC16+0x2a>
+ 95a:	26 95       	lsr	r18
+ 95c:	82 2f       	mov	r24, r18
+ 95e:	86 27       	eor	r24, r22
+ 960:	80 ff       	sbrs	r24, 0
+ 962:	f7 cf       	rjmp	.-18     	; 0x952 <OWI_ComputeCRC16+0xa>
+ 964:	64 27       	eor	r22, r20
+ 966:	75 27       	eor	r23, r21
+ 968:	76 95       	lsr	r23
+ 96a:	67 95       	ror	r22
+ 96c:	70 68       	ori	r23, 0x80	; 128
+ 96e:	91 50       	subi	r25, 0x01	; 1
+ 970:	a1 f7       	brne	.-24     	; 0x95a <OWI_ComputeCRC16+0x12>
+ 972:	cb 01       	movw	r24, r22
+ 974:	08 95       	ret
+
+00000976 <OWI_CheckRomCRC>:
+ 976:	dc 01       	movw	r26, r24
+ 978:	fc 01       	movw	r30, r24
+ 97a:	40 e0       	ldi	r20, 0x00	; 0
+ 97c:	20 e0       	ldi	r18, 0x00	; 0
+ 97e:	58 e1       	ldi	r21, 0x18	; 24
+ 980:	30 81       	ld	r19, Z
+ 982:	98 e0       	ldi	r25, 0x08	; 8
+ 984:	04 c0       	rjmp	.+8      	; 0x98e <OWI_CheckRomCRC+0x18>
+ 986:	26 95       	lsr	r18
+ 988:	91 50       	subi	r25, 0x01	; 1
+ 98a:	51 f0       	breq	.+20     	; 0x9a0 <OWI_CheckRomCRC+0x2a>
+ 98c:	36 95       	lsr	r19
+ 98e:	83 2f       	mov	r24, r19
+ 990:	82 27       	eor	r24, r18
+ 992:	80 ff       	sbrs	r24, 0
+ 994:	f8 cf       	rjmp	.-16     	; 0x986 <OWI_CheckRomCRC+0x10>
+ 996:	25 27       	eor	r18, r21
+ 998:	26 95       	lsr	r18
+ 99a:	20 68       	ori	r18, 0x80	; 128
+ 99c:	91 50       	subi	r25, 0x01	; 1
+ 99e:	b1 f7       	brne	.-20     	; 0x98c <OWI_CheckRomCRC+0x16>
+ 9a0:	31 96       	adiw	r30, 0x01	; 1
+ 9a2:	4f 5f       	subi	r20, 0xFF	; 255
+ 9a4:	47 30       	cpi	r20, 0x07	; 7
+ 9a6:	61 f7       	brne	.-40     	; 0x980 <OWI_CheckRomCRC+0xa>
+ 9a8:	90 e0       	ldi	r25, 0x00	; 0
+ 9aa:	17 96       	adiw	r26, 0x07	; 7
+ 9ac:	8c 91       	ld	r24, X
+ 9ae:	82 13       	cpse	r24, r18
+ 9b0:	91 e0       	ldi	r25, 0x01	; 1
+ 9b2:	89 2f       	mov	r24, r25
+ 9b4:	08 95       	ret
+
+000009b6 <OWI_CheckScratchPadCRC>:
+ 9b6:	dc 01       	movw	r26, r24
+ 9b8:	fc 01       	movw	r30, r24
+ 9ba:	40 e0       	ldi	r20, 0x00	; 0
+ 9bc:	20 e0       	ldi	r18, 0x00	; 0
+ 9be:	58 e1       	ldi	r21, 0x18	; 24
+ 9c0:	30 81       	ld	r19, Z
+ 9c2:	98 e0       	ldi	r25, 0x08	; 8
+ 9c4:	04 c0       	rjmp	.+8      	; 0x9ce <OWI_CheckScratchPadCRC+0x18>
+ 9c6:	26 95       	lsr	r18
+ 9c8:	91 50       	subi	r25, 0x01	; 1
+ 9ca:	51 f0       	breq	.+20     	; 0x9e0 <OWI_CheckScratchPadCRC+0x2a>
+ 9cc:	36 95       	lsr	r19
+ 9ce:	83 2f       	mov	r24, r19
+ 9d0:	82 27       	eor	r24, r18
+ 9d2:	80 ff       	sbrs	r24, 0
+ 9d4:	f8 cf       	rjmp	.-16     	; 0x9c6 <OWI_CheckScratchPadCRC+0x10>
+ 9d6:	25 27       	eor	r18, r21
+ 9d8:	26 95       	lsr	r18
+ 9da:	20 68       	ori	r18, 0x80	; 128
+ 9dc:	91 50       	subi	r25, 0x01	; 1
+ 9de:	b1 f7       	brne	.-20     	; 0x9cc <OWI_CheckScratchPadCRC+0x16>
+ 9e0:	31 96       	adiw	r30, 0x01	; 1
+ 9e2:	4f 5f       	subi	r20, 0xFF	; 255
+ 9e4:	48 30       	cpi	r20, 0x08	; 8
+ 9e6:	61 f7       	brne	.-40     	; 0x9c0 <OWI_CheckScratchPadCRC+0xa>
+ 9e8:	90 e0       	ldi	r25, 0x00	; 0
+ 9ea:	18 96       	adiw	r26, 0x08	; 8
+ 9ec:	8c 91       	ld	r24, X
+ 9ee:	82 13       	cpse	r24, r18
+ 9f0:	91 e0       	ldi	r25, 0x01	; 1
+ 9f2:	89 2f       	mov	r24, r25
+ 9f4:	08 95       	ret
+
+000009f6 <__udivmodqi4>:
+ 9f6:	99 1b       	sub	r25, r25
+ 9f8:	79 e0       	ldi	r23, 0x09	; 9
+ 9fa:	04 c0       	rjmp	.+8      	; 0xa04 <__udivmodqi4_ep>
+
+000009fc <__udivmodqi4_loop>:
+ 9fc:	99 1f       	adc	r25, r25
+ 9fe:	96 17       	cp	r25, r22
+ a00:	08 f0       	brcs	.+2      	; 0xa04 <__udivmodqi4_ep>
+ a02:	96 1b       	sub	r25, r22
+
+00000a04 <__udivmodqi4_ep>:
+ a04:	88 1f       	adc	r24, r24
+ a06:	7a 95       	dec	r23
+ a08:	c9 f7       	brne	.-14     	; 0x9fc <__udivmodqi4_loop>
+ a0a:	80 95       	com	r24
+ a0c:	08 95       	ret
+
+00000a0e <__udivmodhi4>:
+ a0e:	aa 1b       	sub	r26, r26
+ a10:	bb 1b       	sub	r27, r27
+ a12:	51 e1       	ldi	r21, 0x11	; 17
+ a14:	07 c0       	rjmp	.+14     	; 0xa24 <__udivmodhi4_ep>
+
+00000a16 <__udivmodhi4_loop>:
+ a16:	aa 1f       	adc	r26, r26
+ a18:	bb 1f       	adc	r27, r27
+ a1a:	a6 17       	cp	r26, r22
+ a1c:	b7 07       	cpc	r27, r23
+ a1e:	10 f0       	brcs	.+4      	; 0xa24 <__udivmodhi4_ep>
+ a20:	a6 1b       	sub	r26, r22
+ a22:	b7 0b       	sbc	r27, r23
+
+00000a24 <__udivmodhi4_ep>:
+ a24:	88 1f       	adc	r24, r24
+ a26:	99 1f       	adc	r25, r25
+ a28:	5a 95       	dec	r21
+ a2a:	a9 f7       	brne	.-22     	; 0xa16 <__udivmodhi4_loop>
+ a2c:	80 95       	com	r24
+ a2e:	90 95       	com	r25
+ a30:	bc 01       	movw	r22, r24
+ a32:	cd 01       	movw	r24, r26
+ a34:	08 95       	ret
+
+00000a36 <_exit>:
+ a36:	f8 94       	cli
+
+00000a38 <__stop_program>:
+ a38:	ff cf       	rjmp	.-2      	; 0xa38 <__stop_program>

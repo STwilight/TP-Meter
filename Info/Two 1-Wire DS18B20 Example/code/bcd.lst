@@ -1,0 +1,426 @@
+   1               		.file	"bcd.c"
+   2               	__SREG__ = 0x3f
+   3               	__SP_H__ = 0x3e
+   4               	__SP_L__ = 0x3d
+   5               	__CCP__  = 0x34
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+  15               	.Ltext0:
+  16               	.global	BCD_4IntLcd
+  18               	BCD_4IntLcd:
+  19               	.LFB10:
+  20               	.LM1:
+  21               	.LVL0:
+  22 0000 0F93      		push r16
+  23 0002 1F93      		push r17
+  24 0004 CF93      		push r28
+  25 0006 DF93      		push r29
+  26               	/* prologue: function */
+  27               	/* frame size = 0 */
+  28 0008 EC01      		movw r28,r24
+  29               	.LM2:
+  30 000a 23E0      		ldi r18,hi8(1000)
+  31 000c 883E      		cpi r24,lo8(1000)
+  32 000e 9207      		cpc r25,r18
+  33 0010 00F4      		brsh .L2
+  34               	.LM3:
+  35 0012 8436      		cpi r24,100
+  36 0014 9105      		cpc r25,__zero_reg__
+  37 0016 00F4      		brsh .L3
+  38 0018 10E2      		ldi r17,lo8(32)
+  39               	.LVL1:
+  40               	.L4:
+  41 001a 60E2      		ldi r22,lo8(32)
+  42               	.LVL2:
+  43 001c 00E2      		ldi r16,lo8(32)
+  44               	.LVL3:
+  45               	.L5:
+  46               	.LM4:
+  47 001e 862F      		mov r24,r22
+  48 0020 00D0      		rcall LCD_WriteData
+  49               	.LVL4:
+  50               	.LM5:
+  51 0022 C436      		cpi r28,100
+  52 0024 D105      		cpc r29,__zero_reg__
+  53 0026 00F0      		brlo .L6
+  54               	.LM6:
+  55 0028 FE01      		movw r30,r28
+  56 002a E456      		subi r30,lo8(-(-100))
+  57 002c F040      		sbci r31,hi8(-(-100))
+  58               	.LVL5:
+  59 002e CF01      		movw r24,r30
+  60 0030 64E6      		ldi r22,lo8(100)
+  61 0032 70E0      		ldi r23,hi8(100)
+  62 0034 00D0      		rcall __udivmodhi4
+  63 0036 EC01      		movw r28,r24
+  64 0038 CF01      		movw r24,r30
+  65 003a 64E6      		ldi r22,lo8(100)
+  66 003c 70E0      		ldi r23,hi8(100)
+  67 003e 00D0      		rcall __udivmodhi4
+  68               	.LM7:
+  69 0040 6F3F      		cpi r22,lo8(-1)
+  70 0042 01F0      		breq .L6
+  71 0044 862F      		mov r24,r22
+  72               	.LVL6:
+  73 0046 8F5C      		subi r24,lo8(-(49))
+  74               	.L7:
+  75               	.LM8:
+  76 0048 00D0      		rcall LCD_WriteData
+  77               	.LVL7:
+  78               	.LM9:
+  79 004a CA30      		cpi r28,10
+  80 004c D105      		cpc r29,__zero_reg__
+  81 004e 00F0      		brlo .L8
+  82               	.LM10:
+  83 0050 9E01      		movw r18,r28
+  84 0052 2A50      		subi r18,lo8(-(-10))
+  85 0054 3040      		sbci r19,hi8(-(-10))
+  86               	.LVL8:
+  87 0056 C901      		movw r24,r18
+  88 0058 6AE0      		ldi r22,lo8(10)
+  89 005a 70E0      		ldi r23,hi8(10)
+  90 005c 00D0      		rcall __udivmodhi4
+  91 005e 462F      		mov r20,r22
+  92 0060 C901      		movw r24,r18
+  93 0062 6AE0      		ldi r22,lo8(10)
+  94 0064 70E0      		ldi r23,hi8(10)
+  95 0066 00D0      		rcall __udivmodhi4
+  96 0068 EC01      		movw r28,r24
+  97               	.LM11:
+  98 006a 4F3F      		cpi r20,lo8(-1)
+  99 006c 01F0      		breq .L8
+ 100               	.LVL9:
+ 101 006e 842F      		mov r24,r20
+ 102               	.LVL10:
+ 103 0070 8F5C      		subi r24,lo8(-(49))
+ 104               	.L9:
+ 105               	.LM12:
+ 106 0072 00D0      		rcall LCD_WriteData
+ 107               	.LVL11:
+ 108               	.LM13:
+ 109 0074 9E01      		movw r18,r28
+ 110 0076 205D      		subi r18,lo8(-(48))
+ 111 0078 822F      		mov r24,r18
+ 112 007a 00D0      		rcall LCD_WriteData
+ 113               	/* epilogue start */
+ 114               	.LM14:
+ 115 007c DF91      		pop r29
+ 116 007e CF91      		pop r28
+ 117               	.LVL12:
+ 118 0080 1F91      		pop r17
+ 119               	.LVL13:
+ 120 0082 0F91      		pop r16
+ 121               	.LVL14:
+ 122 0084 0895      		ret
+ 123               	.LVL15:
+ 124               	.L3:
+ 125               	.LM15:
+ 126 0086 10E3      		ldi r17,lo8(48)
+ 127               	.LVL16:
+ 128 0088 00C0      		rjmp .L4
+ 129               	.LVL17:
+ 130               	.L6:
+ 131               	.LM16:
+ 132 008a 802F      		mov r24,r16
+ 133               	.LVL18:
+ 134 008c 00C0      		rjmp .L7
+ 135               	.LVL19:
+ 136               	.L2:
+ 137               	.LM17:
+ 138 008e FC01      		movw r30,r24
+ 139 0090 E85E      		subi r30,lo8(-(-1000))
+ 140 0092 F340      		sbci r31,hi8(-(-1000))
+ 141               	.LVL20:
+ 142 0094 CF01      		movw r24,r30
+ 143 0096 68EE      		ldi r22,lo8(1000)
+ 144 0098 73E0      		ldi r23,hi8(1000)
+ 145 009a 00D0      		rcall __udivmodhi4
+ 146 009c EC01      		movw r28,r24
+ 147 009e CF01      		movw r24,r30
+ 148 00a0 68EE      		ldi r22,lo8(1000)
+ 149 00a2 73E0      		ldi r23,hi8(1000)
+ 150 00a4 00D0      		rcall __udivmodhi4
+ 151               	.LM18:
+ 152 00a6 6F5C      		subi r22,lo8(-(49))
+ 153               	.LVL21:
+ 154 00a8 00E3      		ldi r16,lo8(48)
+ 155               	.LVL22:
+ 156 00aa 10E3      		ldi r17,lo8(48)
+ 157               	.LVL23:
+ 158 00ac 00C0      		rjmp .L5
+ 159               	.LVL24:
+ 160               	.L8:
+ 161               	.LM19:
+ 162 00ae 812F      		mov r24,r17
+ 163               	.LVL25:
+ 164 00b0 00C0      		rjmp .L9
+ 165               	.LFE10:
+ 167               	.global	BCD_3IntLcd
+ 169               	BCD_3IntLcd:
+ 170               	.LFB9:
+ 171               	.LM20:
+ 172               	.LVL26:
+ 173 00b2 1F93      		push r17
+ 174 00b4 CF93      		push r28
+ 175 00b6 DF93      		push r29
+ 176               	/* prologue: function */
+ 177               	/* frame size = 0 */
+ 178 00b8 EC01      		movw r28,r24
+ 179               	.LM21:
+ 180 00ba 8436      		cpi r24,100
+ 181 00bc 9105      		cpc r25,__zero_reg__
+ 182 00be 00F4      		brsh .L13
+ 183 00c0 80E2      		ldi r24,lo8(32)
+ 184               	.LVL27:
+ 185 00c2 10E2      		ldi r17,lo8(32)
+ 186               	.LVL28:
+ 187               	.L14:
+ 188               	.LM22:
+ 189 00c4 00D0      		rcall LCD_WriteData
+ 190               	.LVL29:
+ 191               	.LM23:
+ 192 00c6 CA30      		cpi r28,10
+ 193 00c8 D105      		cpc r29,__zero_reg__
+ 194 00ca 00F0      		brlo .L16
+ 195               	.LM24:
+ 196 00cc 9E01      		movw r18,r28
+ 197 00ce 2A50      		subi r18,lo8(-(-10))
+ 198 00d0 3040      		sbci r19,hi8(-(-10))
+ 199               	.LVL30:
+ 200 00d2 C901      		movw r24,r18
+ 201 00d4 6AE0      		ldi r22,lo8(10)
+ 202 00d6 70E0      		ldi r23,hi8(10)
+ 203 00d8 00D0      		rcall __udivmodhi4
+ 204 00da 462F      		mov r20,r22
+ 205 00dc C901      		movw r24,r18
+ 206 00de 6AE0      		ldi r22,lo8(10)
+ 207 00e0 70E0      		ldi r23,hi8(10)
+ 208 00e2 00D0      		rcall __udivmodhi4
+ 209 00e4 EC01      		movw r28,r24
+ 210               	.LM25:
+ 211 00e6 4F3F      		cpi r20,lo8(-1)
+ 212 00e8 01F0      		breq .L16
+ 213               	.LVL31:
+ 214 00ea 842F      		mov r24,r20
+ 215               	.LVL32:
+ 216 00ec 8F5C      		subi r24,lo8(-(49))
+ 217               	.L17:
+ 218               	.LM26:
+ 219 00ee 00D0      		rcall LCD_WriteData
+ 220               	.LVL33:
+ 221               	.LM27:
+ 222 00f0 9E01      		movw r18,r28
+ 223 00f2 205D      		subi r18,lo8(-(48))
+ 224 00f4 822F      		mov r24,r18
+ 225 00f6 00D0      		rcall LCD_WriteData
+ 226               	/* epilogue start */
+ 227               	.LM28:
+ 228 00f8 DF91      		pop r29
+ 229 00fa CF91      		pop r28
+ 230               	.LVL34:
+ 231 00fc 1F91      		pop r17
+ 232               	.LVL35:
+ 233 00fe 0895      		ret
+ 234               	.LVL36:
+ 235               	.L13:
+ 236               	.LM29:
+ 237 0100 FC01      		movw r30,r24
+ 238 0102 E456      		subi r30,lo8(-(-100))
+ 239 0104 F040      		sbci r31,hi8(-(-100))
+ 240               	.LVL37:
+ 241 0106 CF01      		movw r24,r30
+ 242 0108 64E6      		ldi r22,lo8(100)
+ 243 010a 70E0      		ldi r23,hi8(100)
+ 244 010c 00D0      		rcall __udivmodhi4
+ 245 010e EC01      		movw r28,r24
+ 246 0110 CF01      		movw r24,r30
+ 247 0112 64E6      		ldi r22,lo8(100)
+ 248 0114 70E0      		ldi r23,hi8(100)
+ 249 0116 00D0      		rcall __udivmodhi4
+ 250               	.LM30:
+ 251 0118 6F3F      		cpi r22,lo8(-1)
+ 252 011a 01F4      		brne .L15
+ 253 011c 80E2      		ldi r24,lo8(32)
+ 254               	.LVL38:
+ 255 011e 10E3      		ldi r17,lo8(48)
+ 256               	.LVL39:
+ 257 0120 00C0      		rjmp .L14
+ 258               	.LVL40:
+ 259               	.L15:
+ 260 0122 862F      		mov r24,r22
+ 261               	.LVL41:
+ 262 0124 8F5C      		subi r24,lo8(-(49))
+ 263 0126 10E3      		ldi r17,lo8(48)
+ 264               	.LVL42:
+ 265 0128 00C0      		rjmp .L14
+ 266               	.LVL43:
+ 267               	.L16:
+ 268               	.LM31:
+ 269 012a 812F      		mov r24,r17
+ 270               	.LVL44:
+ 271 012c 00C0      		rjmp .L17
+ 272               	.LFE9:
+ 274               	.global	BCD_3Lcd
+ 276               	BCD_3Lcd:
+ 277               	.LFB8:
+ 278               	.LM32:
+ 279               	.LVL45:
+ 280 012e 0F93      		push r16
+ 281 0130 1F93      		push r17
+ 282               	/* prologue: function */
+ 283               	/* frame size = 0 */
+ 284 0132 182F      		mov r17,r24
+ 285               	.LM33:
+ 286 0134 8436      		cpi r24,lo8(100)
+ 287 0136 00F4      		brsh .L20
+ 288 0138 80E2      		ldi r24,lo8(32)
+ 289               	.LVL46:
+ 290 013a 00E2      		ldi r16,lo8(32)
+ 291               	.LVL47:
+ 292               	.L21:
+ 293               	.LM34:
+ 294 013c 00D0      		rcall LCD_WriteData
+ 295               	.LVL48:
+ 296               	.LM35:
+ 297 013e 1A30      		cpi r17,lo8(10)
+ 298 0140 00F0      		brlo .L25
+ 299               	.LM36:
+ 300 0142 212F      		mov r18,r17
+ 301 0144 2A50      		subi r18,lo8(-(-10))
+ 302               	.LVL49:
+ 303 0146 822F      		mov r24,r18
+ 304 0148 6AE0      		ldi r22,lo8(10)
+ 305 014a 00D0      		rcall __udivmodqi4
+ 306 014c 382F      		mov r19,r24
+ 307               	.LVL50:
+ 308 014e 822F      		mov r24,r18
+ 309 0150 00D0      		rcall __udivmodqi4
+ 310 0152 192F      		mov r17,r25
+ 311               	.LVL51:
+ 312               	.LM37:
+ 313 0154 3F5C      		subi r19,lo8(-(49))
+ 314               	.L23:
+ 315               	.LM38:
+ 316 0156 832F      		mov r24,r19
+ 317 0158 00D0      		rcall LCD_WriteData
+ 318               	.LVL52:
+ 319               	.LM39:
+ 320 015a 812F      		mov r24,r17
+ 321 015c 805D      		subi r24,lo8(-(48))
+ 322 015e 00D0      		rcall LCD_WriteData
+ 323               	/* epilogue start */
+ 324               	.LM40:
+ 325 0160 1F91      		pop r17
+ 326               	.LVL53:
+ 327 0162 0F91      		pop r16
+ 328               	.LVL54:
+ 329 0164 0895      		ret
+ 330               	.LVL55:
+ 331               	.L20:
+ 332               	.LM41:
+ 333 0166 282F      		mov r18,r24
+ 334 0168 2456      		subi r18,lo8(-(-100))
+ 335               	.LVL56:
+ 336 016a 822F      		mov r24,r18
+ 337 016c 64E6      		ldi r22,lo8(100)
+ 338 016e 00D0      		rcall __udivmodqi4
+ 339 0170 192F      		mov r17,r25
+ 340               	.LVL57:
+ 341 0172 822F      		mov r24,r18
+ 342 0174 00D0      		rcall __udivmodqi4
+ 343               	.LM42:
+ 344 0176 8F5C      		subi r24,lo8(-(49))
+ 345               	.LVL58:
+ 346 0178 00E3      		ldi r16,lo8(48)
+ 347               	.LVL59:
+ 348 017a 00C0      		rjmp .L21
+ 349               	.LVL60:
+ 350               	.L25:
+ 351               	.LM43:
+ 352 017c 302F      		mov r19,r16
+ 353               	.LVL61:
+ 354 017e 00C0      		rjmp .L23
+ 355               	.LFE8:
+ 357               	.global	BCD_2Lcd
+ 359               	BCD_2Lcd:
+ 360               	.LFB7:
+ 361               	.LM44:
+ 362               	.LVL62:
+ 363 0180 1F93      		push r17
+ 364               	/* prologue: function */
+ 365               	/* frame size = 0 */
+ 366 0182 182F      		mov r17,r24
+ 367               	.LM45:
+ 368 0184 8A30      		cpi r24,lo8(10)
+ 369 0186 00F0      		brlo .L30
+ 370               	.LM46:
+ 371 0188 282F      		mov r18,r24
+ 372 018a 2A50      		subi r18,lo8(-(-10))
+ 373               	.LVL63:
+ 374 018c 822F      		mov r24,r18
+ 375 018e 6AE0      		ldi r22,lo8(10)
+ 376 0190 00D0      		rcall __udivmodqi4
+ 377 0192 382F      		mov r19,r24
+ 378               	.LVL64:
+ 379 0194 822F      		mov r24,r18
+ 380 0196 00D0      		rcall __udivmodqi4
+ 381 0198 192F      		mov r17,r25
+ 382               	.LVL65:
+ 383               	.LM47:
+ 384 019a 3F5C      		subi r19,lo8(-(49))
+ 385               	.LVL66:
+ 386               	.L28:
+ 387               	.LM48:
+ 388 019c 832F      		mov r24,r19
+ 389 019e 00D0      		rcall LCD_WriteData
+ 390               	.LVL67:
+ 391               	.LM49:
+ 392 01a0 812F      		mov r24,r17
+ 393 01a2 805D      		subi r24,lo8(-(48))
+ 394 01a4 00D0      		rcall LCD_WriteData
+ 395               	/* epilogue start */
+ 396               	.LM50:
+ 397 01a6 1F91      		pop r17
+ 398               	.LVL68:
+ 399 01a8 0895      		ret
+ 400               	.LVL69:
+ 401               	.L30:
+ 402               	.LM51:
+ 403 01aa 30E2      		ldi r19,lo8(32)
+ 404               	.LVL70:
+ 405 01ac 00C0      		rjmp .L28
+ 406               	.LFE7:
+ 408               	.global	BCD_1Lcd
+ 410               	BCD_1Lcd:
+ 411               	.LFB6:
+ 412               	.LM52:
+ 413               	.LVL71:
+ 414               	/* prologue: function */
+ 415               	/* frame size = 0 */
+ 416               	.LM53:
+ 417 01ae 805D      		subi r24,lo8(-(48))
+ 418               	.LVL72:
+ 419 01b0 00D0      		rcall LCD_WriteData
+ 420               	/* epilogue start */
+ 421               	.LM54:
+ 422 01b2 0895      		ret
+ 423               	.LFE6:
+ 481               	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 bcd.c
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cc1cAGIz.s:2      *ABS*:0000003f __SREG__
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cc1cAGIz.s:3      *ABS*:0000003e __SP_H__
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cc1cAGIz.s:4      *ABS*:0000003d __SP_L__
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cc1cAGIz.s:5      *ABS*:00000034 __CCP__
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cc1cAGIz.s:6      *ABS*:00000000 __tmp_reg__
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cc1cAGIz.s:7      *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cc1cAGIz.s:18     .text:00000000 BCD_4IntLcd
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cc1cAGIz.s:169    .text:000000b2 BCD_3IntLcd
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cc1cAGIz.s:276    .text:0000012e BCD_3Lcd
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cc1cAGIz.s:359    .text:00000180 BCD_2Lcd
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cc1cAGIz.s:410    .text:000001ae BCD_1Lcd
+
+UNDEFINED SYMBOLS
+LCD_WriteData
+__udivmodhi4
+__udivmodqi4

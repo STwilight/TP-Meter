@@ -1,0 +1,614 @@
+   1               		.file	"OWIHighLevelFunctions.c"
+   2               	__SREG__ = 0x3f
+   3               	__SP_H__ = 0x3e
+   4               	__SP_L__ = 0x3d
+   5               	__CCP__  = 0x34
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+  15               	.Ltext0:
+  16               	.global	FindFamily
+  18               	FindFamily:
+  19               	.LFB13:
+  20               	.LM1:
+  21               	.LVL0:
+  22               	/* prologue: function */
+  23               	/* frame size = 0 */
+  24 0000 982F      		mov r25,r24
+  25 0002 FB01      		movw r30,r22
+  26               	.LM2:
+  27 0004 2F3F      		cpi r18,lo8(-1)
+  28 0006 01F0      		breq .L12
+  29               	.LVL1:
+  30               	.LM3:
+  31 0008 2F5F      		subi r18,lo8(-(1))
+  32               	.LVL2:
+  33               	.L3:
+  34               	.LM4:
+  35 000a 2417      		cp r18,r20
+  36 000c 00F0      		brlo .L10
+  37 000e 00C0      		rjmp .L4
+  38               	.LVL3:
+  39               	.L13:
+  40               	.LM5:
+  41 0010 2F5F      		subi r18,lo8(-(1))
+  42               	.LM6:
+  43 0012 2417      		cp r18,r20
+  44 0014 00F4      		brsh .L4
+  45               	.LM7:
+  46 0016 3896      		adiw r30,8
+  47               	.LVL4:
+  48               	.L10:
+  49               	.LM8:
+  50 0018 8081      		ld r24,Z
+  51 001a 8917      		cp r24,r25
+  52 001c 01F4      		brne .L13
+  53               	.LM9:
+  54 001e 822F      		mov r24,r18
+  55               	/* epilogue start */
+  56 0020 0895      		ret
+  57               	.LVL5:
+  58               	.L4:
+  59               	.LM10:
+  60 0022 2FEF      		ldi r18,lo8(-1)
+  61               	.LM11:
+  62 0024 822F      		mov r24,r18
+  63 0026 0895      		ret
+  64               	.LVL6:
+  65               	.L12:
+  66               	.LM12:
+  67 0028 20E0      		ldi r18,lo8(0)
+  68               	.LVL7:
+  69 002a 00C0      		rjmp .L3
+  70               	.LFE13:
+  72               	.global	OWI_ReceiveByte
+  74               	OWI_ReceiveByte:
+  75               	.LFB7:
+  76               	.LM13:
+  77               	.LVL8:
+  78 002c FF92      		push r15
+  79 002e 0F93      		push r16
+  80 0030 1F93      		push r17
+  81               	/* prologue: function */
+  82               	/* frame size = 0 */
+  83 0032 F82E      		mov r15,r24
+  84               	.LM14:
+  85 0034 00E0      		ldi r16,lo8(0)
+  86               	.LVL9:
+  87 0036 10E0      		ldi r17,lo8(0)
+  88               	.LVL10:
+  89               	.L16:
+  90               	.LM15:
+  91 0038 0695      		lsr r16
+  92               	.LM16:
+  93 003a 8F2D      		mov r24,r15
+  94 003c 00D0      		rcall OWI_ReadBit
+  95 003e 8111      		cpse r24,__zero_reg__
+  96               	.LM17:
+  97 0040 0068      		ori r16,lo8(-128)
+  98               	.L15:
+  99               	.LM18:
+ 100 0042 1F5F      		subi r17,lo8(-(1))
+ 101 0044 1830      		cpi r17,lo8(8)
+ 102 0046 01F4      		brne .L16
+ 103               	.LM19:
+ 104 0048 802F      		mov r24,r16
+ 105               	/* epilogue start */
+ 106 004a 1F91      		pop r17
+ 107               	.LVL11:
+ 108 004c 0F91      		pop r16
+ 109               	.LVL12:
+ 110 004e FF90      		pop r15
+ 111               	.LVL13:
+ 112 0050 0895      		ret
+ 113               	.LFE7:
+ 115               	.global	OWI_SendByte
+ 117               	OWI_SendByte:
+ 118               	.LFB6:
+ 119               	.LM20:
+ 120               	.LVL14:
+ 121 0052 FF92      		push r15
+ 122 0054 0F93      		push r16
+ 123 0056 1F93      		push r17
+ 124               	/* prologue: function */
+ 125               	/* frame size = 0 */
+ 126 0058 082F      		mov r16,r24
+ 127 005a F62E      		mov r15,r22
+ 128               	.LM21:
+ 129 005c 10E0      		ldi r17,lo8(0)
+ 130               	.LVL15:
+ 131 005e 00C0      		rjmp .L23
+ 132               	.LVL16:
+ 133               	.L25:
+ 134               	.LM22:
+ 135 0060 8F2D      		mov r24,r15
+ 136 0062 00D0      		rcall OWI_WriteBit1
+ 137               	.LM23:
+ 138 0064 1F5F      		subi r17,lo8(-(1))
+ 139 0066 1830      		cpi r17,lo8(8)
+ 140 0068 01F0      		breq .L24
+ 141               	.L26:
+ 142               	.LM24:
+ 143 006a 0695      		lsr r16
+ 144               	.LVL17:
+ 145               	.L23:
+ 146               	.LM25:
+ 147 006c 00FD      		sbrc r16,0
+ 148 006e 00C0      		rjmp .L25
+ 149               	.LM26:
+ 150 0070 8F2D      		mov r24,r15
+ 151 0072 00D0      		rcall OWI_WriteBit0
+ 152               	.LM27:
+ 153 0074 1F5F      		subi r17,lo8(-(1))
+ 154 0076 1830      		cpi r17,lo8(8)
+ 155 0078 01F4      		brne .L26
+ 156               	.L24:
+ 157               	/* epilogue start */
+ 158               	.LM28:
+ 159 007a 1F91      		pop r17
+ 160               	.LVL18:
+ 161 007c 0F91      		pop r16
+ 162               	.LVL19:
+ 163 007e FF90      		pop r15
+ 164               	.LVL20:
+ 165 0080 0895      		ret
+ 166               	.LFE6:
+ 168               	.global	OWI_MatchRom
+ 170               	OWI_MatchRom:
+ 171               	.LFB10:
+ 172               	.LM29:
+ 173               	.LVL21:
+ 174 0082 0F93      		push r16
+ 175 0084 1F93      		push r17
+ 176 0086 CF93      		push r28
+ 177 0088 DF93      		push r29
+ 178               	/* prologue: function */
+ 179               	/* frame size = 0 */
+ 180 008a EC01      		movw r28,r24
+ 181 008c 062F      		mov r16,r22
+ 182               	.LM30:
+ 183 008e 85E5      		ldi r24,lo8(85)
+ 184               	.LVL22:
+ 185 0090 00D0      		rcall OWI_SendByte
+ 186               	.LVL23:
+ 187 0092 18E0      		ldi r17,lo8(8)
+ 188               	.LVL24:
+ 189               	.L28:
+ 190               	.LM31:
+ 191 0094 8991      		ld r24,Y+
+ 192 0096 602F      		mov r22,r16
+ 193 0098 00D0      		rcall OWI_SendByte
+ 194               	.LM32:
+ 195 009a 1150      		subi r17,lo8(-(-1))
+ 196               	.LM33:
+ 197 009c 01F4      		brne .L28
+ 198               	/* epilogue start */
+ 199               	.LM34:
+ 200 009e DF91      		pop r29
+ 201 00a0 CF91      		pop r28
+ 202               	.LVL25:
+ 203 00a2 1F91      		pop r17
+ 204               	.LVL26:
+ 205 00a4 0F91      		pop r16
+ 206               	.LVL27:
+ 207 00a6 0895      		ret
+ 208               	.LFE10:
+ 210               	.global	OWI_ReadRom
+ 212               	OWI_ReadRom:
+ 213               	.LFB9:
+ 214               	.LM35:
+ 215               	.LVL28:
+ 216 00a8 0F93      		push r16
+ 217 00aa 1F93      		push r17
+ 218 00ac CF93      		push r28
+ 219 00ae DF93      		push r29
+ 220               	/* prologue: function */
+ 221               	/* frame size = 0 */
+ 222 00b0 EC01      		movw r28,r24
+ 223 00b2 062F      		mov r16,r22
+ 224               	.LM36:
+ 225 00b4 83E3      		ldi r24,lo8(51)
+ 226               	.LVL29:
+ 227 00b6 00D0      		rcall OWI_SendByte
+ 228               	.LVL30:
+ 229 00b8 18E0      		ldi r17,lo8(8)
+ 230               	.LVL31:
+ 231               	.L32:
+ 232               	.LM37:
+ 233 00ba 802F      		mov r24,r16
+ 234 00bc 00D0      		rcall OWI_ReceiveByte
+ 235 00be 8993      		st Y+,r24
+ 236               	.LM38:
+ 237 00c0 1150      		subi r17,lo8(-(-1))
+ 238               	.LM39:
+ 239 00c2 01F4      		brne .L32
+ 240               	/* epilogue start */
+ 241               	.LM40:
+ 242 00c4 DF91      		pop r29
+ 243 00c6 CF91      		pop r28
+ 244               	.LVL32:
+ 245 00c8 1F91      		pop r17
+ 246               	.LVL33:
+ 247 00ca 0F91      		pop r16
+ 248               	.LVL34:
+ 249 00cc 0895      		ret
+ 250               	.LFE9:
+ 252               	.global	OWI_SkipRom
+ 254               	OWI_SkipRom:
+ 255               	.LFB8:
+ 256               	.LM41:
+ 257               	.LVL35:
+ 258               	/* prologue: function */
+ 259               	/* frame size = 0 */
+ 260 00ce 682F      		mov r22,r24
+ 261               	.LM42:
+ 262 00d0 8CEC      		ldi r24,lo8(-52)
+ 263               	.LVL36:
+ 264 00d2 00D0      		rcall OWI_SendByte
+ 265               	.LVL37:
+ 266               	/* epilogue start */
+ 267               	.LM43:
+ 268 00d4 0895      		ret
+ 269               	.LFE8:
+ 271               	.global	OWI_SearchRom
+ 273               	OWI_SearchRom:
+ 274               	.LFB11:
+ 275               	.LM44:
+ 276               	.LVL38:
+ 277 00d6 CF92      		push r12
+ 278 00d8 DF92      		push r13
+ 279 00da EF92      		push r14
+ 280 00dc FF92      		push r15
+ 281 00de 0F93      		push r16
+ 282 00e0 1F93      		push r17
+ 283 00e2 CF93      		push r28
+ 284 00e4 DF93      		push r29
+ 285               	/* prologue: function */
+ 286               	/* frame size = 0 */
+ 287 00e6 EC01      		movw r28,r24
+ 288 00e8 C62E      		mov r12,r22
+ 289 00ea E42E      		mov r14,r20
+ 290               	.LM45:
+ 291 00ec 80EF      		ldi r24,lo8(-16)
+ 292               	.LVL39:
+ 293 00ee 642F      		mov r22,r20
+ 294               	.LVL40:
+ 295 00f0 00D0      		rcall OWI_SendByte
+ 296               	.LVL41:
+ 297 00f2 FF24      		clr r15
+ 298 00f4 F394      		inc r15
+ 299               	.LVL42:
+ 300 00f6 DD24      		clr r13
+ 301               	.LVL43:
+ 302 00f8 01E0      		ldi r16,lo8(1)
+ 303               	.LVL44:
+ 304 00fa 00C0      		rjmp .L51
+ 305               	.LVL45:
+ 306               	.L47:
+ 307               	.LM46:
+ 308 00fc 8E2D      		mov r24,r14
+ 309               	.LVL46:
+ 310 00fe 00D0      		rcall OWI_WriteBit1
+ 311               	.L49:
+ 312               	.LM47:
+ 313 0100 F394      		inc r15
+ 314               	.LM48:
+ 315 0102 000F      		lsl r16
+ 316               	.LM49:
+ 317 0104 01F4      		brne .L50
+ 318               	.LM50:
+ 319 0106 2196      		adiw r28,1
+ 320 0108 01E0      		ldi r16,lo8(1)
+ 321               	.L50:
+ 322               	.LM51:
+ 323 010a 81E4      		ldi r24,lo8(65)
+ 324 010c F816      		cp r15,r24
+ 325 010e 01F0      		breq .L40
+ 326               	.L51:
+ 327               	.LM52:
+ 328 0110 8E2D      		mov r24,r14
+ 329 0112 00D0      		rcall OWI_ReadBit
+ 330 0114 182F      		mov r17,r24
+ 331               	.LM53:
+ 332 0116 8E2D      		mov r24,r14
+ 333 0118 00D0      		rcall OWI_ReadBit
+ 334               	.LM54:
+ 335 011a 1123      		tst r17
+ 336 011c 01F0      		breq .L38
+ 337 011e 8823      		tst r24
+ 338               	.LVL47:
+ 339 0120 01F4      		brne .L56
+ 340               	.L55:
+ 341               	.LM55:
+ 342 0122 9881      		ld r25,Y
+ 343 0124 902B      		or r25,r16
+ 344 0126 9883      		st Y,r25
+ 345               	.L43:
+ 346               	.LM56:
+ 347 0128 9023      		and r25,r16
+ 348 012a 01F4      		brne .L47
+ 349               	.LM57:
+ 350 012c 8E2D      		mov r24,r14
+ 351               	.LVL48:
+ 352 012e 00D0      		rcall OWI_WriteBit0
+ 353 0130 00C0      		rjmp .L49
+ 354               	.L38:
+ 355               	.LM58:
+ 356 0132 8823      		tst r24
+ 357               	.LVL49:
+ 358 0134 01F4      		brne .L57
+ 359               	.LM59:
+ 360 0136 FC14      		cp r15,r12
+ 361 0138 01F0      		breq .L55
+ 362               	.LM60:
+ 363 013a CF14      		cp r12,r15
+ 364 013c 00F4      		brsh .L45
+ 365               	.LM61:
+ 366 013e 902F      		mov r25,r16
+ 367 0140 9095      		com r25
+ 368 0142 8881      		ld r24,Y
+ 369               	.LVL50:
+ 370 0144 9823      		and r25,r24
+ 371 0146 9883      		st Y,r25
+ 372 0148 DF2C      		mov r13,r15
+ 373 014a 00C0      		rjmp .L43
+ 374               	.LVL51:
+ 375               	.L57:
+ 376               	.LM62:
+ 377 014c 902F      		mov r25,r16
+ 378 014e 9095      		com r25
+ 379 0150 8881      		ld r24,Y
+ 380               	.LVL52:
+ 381 0152 9823      		and r25,r24
+ 382 0154 9883      		st Y,r25
+ 383 0156 00C0      		rjmp .L43
+ 384               	.LVL53:
+ 385               	.L45:
+ 386               	.LM63:
+ 387 0158 8881      		ld r24,Y
+ 388               	.LVL54:
+ 389 015a 8023      		and r24,r16
+ 390 015c 01F4      		brne .L47
+ 391               	.LM64:
+ 392 015e DF2C      		mov r13,r15
+ 393               	.LM65:
+ 394 0160 8E2D      		mov r24,r14
+ 395 0162 00D0      		rcall OWI_WriteBit0
+ 396 0164 00C0      		rjmp .L49
+ 397               	.LVL55:
+ 398               	.L56:
+ 399               	.LM66:
+ 400 0166 DD24      		clr r13
+ 401 0168 DA94      		dec r13
+ 402               	.L40:
+ 403               	.LM67:
+ 404 016a 8D2D      		mov r24,r13
+ 405               	.LVL56:
+ 406               	/* epilogue start */
+ 407 016c DF91      		pop r29
+ 408 016e CF91      		pop r28
+ 409               	.LVL57:
+ 410 0170 1F91      		pop r17
+ 411               	.LVL58:
+ 412 0172 0F91      		pop r16
+ 413               	.LVL59:
+ 414 0174 FF90      		pop r15
+ 415               	.LVL60:
+ 416 0176 EF90      		pop r14
+ 417               	.LVL61:
+ 418 0178 DF90      		pop r13
+ 419               	.LVL62:
+ 420 017a CF90      		pop r12
+ 421               	.LVL63:
+ 422 017c 0895      		ret
+ 423               	.LFE11:
+ 425               	.global	OWI_SearchDevices
+ 427               	OWI_SearchDevices:
+ 428               	.LFB12:
+ 429               	.LM68:
+ 430               	.LVL64:
+ 431 017e BF92      		push r11
+ 432 0180 CF92      		push r12
+ 433 0182 DF92      		push r13
+ 434 0184 EF92      		push r14
+ 435 0186 FF92      		push r15
+ 436 0188 0F93      		push r16
+ 437 018a 1F93      		push r17
+ 438 018c CF93      		push r28
+ 439 018e DF93      		push r29
+ 440               	/* prologue: function */
+ 441               	/* frame size = 0 */
+ 442 0190 EC01      		movw r28,r24
+ 443 0192 B42E      		mov r11,r20
+ 444 0194 6901      		movw r12,r18
+ 445               	.LM69:
+ 446 0196 6623      		tst r22
+ 447 0198 01F0      		breq .L59
+ 448               	.LVL65:
+ 449 019a 9C01      		movw r18,r24
+ 450 019c 40E0      		ldi r20,lo8(0)
+ 451               	.LVL66:
+ 452               	.L61:
+ 453 019e 80E0      		ldi r24,lo8(0)
+ 454 01a0 90E0      		ldi r25,hi8(0)
+ 455               	.L60:
+ 456               	.LM70:
+ 457 01a2 F901      		movw r30,r18
+ 458 01a4 E80F      		add r30,r24
+ 459 01a6 F91F      		adc r31,r25
+ 460 01a8 1082      		st Z,__zero_reg__
+ 461 01aa 0196      		adiw r24,1
+ 462               	.LM71:
+ 463 01ac 8830      		cpi r24,8
+ 464 01ae 9105      		cpc r25,__zero_reg__
+ 465 01b0 01F4      		brne .L60
+ 466               	.LM72:
+ 467 01b2 4F5F      		subi r20,lo8(-(1))
+ 468 01b4 285F      		subi r18,lo8(-(8))
+ 469 01b6 3F4F      		sbci r19,hi8(-(8))
+ 470 01b8 4617      		cp r20,r22
+ 471 01ba 00F0      		brlo .L61
+ 472               	.LVL67:
+ 473               	.L59:
+ 474               	.LM73:
+ 475 01bc 8E01      		movw r16,r28
+ 476               	.LVL68:
+ 477 01be 5C2F      		mov r21,r28
+ 478               	.LVL69:
+ 479 01c0 4D2F      		mov r20,r29
+ 480               	.LVL70:
+ 481 01c2 FF24      		clr r15
+ 482               	.LVL71:
+ 483 01c4 EE24      		clr r14
+ 484               	.LVL72:
+ 485               	.L66:
+ 486               	.LM74:
+ 487 01c6 D801      		movw r26,r16
+ 488               	.LVL73:
+ 489 01c8 252F      		mov r18,r21
+ 490 01ca 342F      		mov r19,r20
+ 491 01cc C901      		movw r24,r18
+ 492 01ce FC01      		movw r30,r24
+ 493 01d0 88E0      		ldi r24,lo8(8)
+ 494               	.LVL74:
+ 495               	.L62:
+ 496 01d2 0190      		ld r0,Z+
+ 497 01d4 0D92      		st X+,r0
+ 498 01d6 8150      		subi r24,lo8(-(-1))
+ 499 01d8 01F4      		brne .L62
+ 500               	.LM75:
+ 501 01da 8B2D      		mov r24,r11
+ 502 01dc 00D0      		rcall OWI_DetectPresence
+ 503               	.LVL75:
+ 504 01de 8823      		tst r24
+ 505 01e0 01F0      		breq .L76
+ 506               	.LM76:
+ 507 01e2 C801      		movw r24,r16
+ 508               	.LVL76:
+ 509 01e4 6F2D      		mov r22,r15
+ 510 01e6 4B2D      		mov r20,r11
+ 511 01e8 00D0      		rcall OWI_SearchRom
+ 512 01ea F82E      		mov r15,r24
+ 513               	.LM77:
+ 514 01ec E394      		inc r14
+ 515               	.LM78:
+ 516 01ee 8823      		tst r24
+ 517 01f0 01F0      		breq .L65
+ 518               	.LVL77:
+ 519               	.LM79:
+ 520 01f2 8E2D      		mov r24,r14
+ 521               	.LVL78:
+ 522 01f4 90E0      		ldi r25,lo8(0)
+ 523               	.LVL79:
+ 524 01f6 880F      		lsl r24
+ 525 01f8 991F      		rol r25
+ 526 01fa 880F      		lsl r24
+ 527 01fc 991F      		rol r25
+ 528 01fe 880F      		lsl r24
+ 529 0200 991F      		rol r25
+ 530               	.LVL80:
+ 531 0202 8C0F      		add r24,r28
+ 532 0204 9D1F      		adc r25,r29
+ 533 0206 502F      		mov r21,r16
+ 534               	.LVL81:
+ 535 0208 412F      		mov r20,r17
+ 536               	.LVL82:
+ 537 020a 8C01      		movw r16,r24
+ 538               	.LVL83:
+ 539 020c 00C0      		rjmp .L66
+ 540               	.LVL84:
+ 541               	.L65:
+ 542               	.LM80:
+ 543 020e EE20      		tst r14
+ 544 0210 01F0      		breq .L77
+ 545 0212 10E0      		ldi r17,lo8(0)
+ 546               	.LVL85:
+ 547 0214 00E0      		ldi r16,lo8(0)
+ 548               	.LVL86:
+ 549 0216 00C0      		rjmp .L70
+ 550               	.LVL87:
+ 551               	.L78:
+ 552               	.LM81:
+ 553 0218 01E0      		ldi r16,lo8(1)
+ 554               	.LM82:
+ 555 021a 1F5F      		subi r17,lo8(-(1))
+ 556 021c 2896      		adiw r28,8
+ 557 021e 1E15      		cp r17,r14
+ 558 0220 00F4      		brsh .L64
+ 559               	.LVL88:
+ 560               	.L70:
+ 561               	.LM83:
+ 562 0222 CE01      		movw r24,r28
+ 563               	.LVL89:
+ 564 0224 00D0      		rcall OWI_CheckRomCRC
+ 565 0226 8823      		tst r24
+ 566 0228 01F4      		brne .L78
+ 567               	.LM84:
+ 568 022a F601      		movw r30,r12
+ 569 022c 8081      		ld r24,Z
+ 570 022e 8F5F      		subi r24,lo8(-(1))
+ 571 0230 8083      		st Z,r24
+ 572               	.LM85:
+ 573 0232 1F5F      		subi r17,lo8(-(1))
+ 574 0234 2896      		adiw r28,8
+ 575 0236 1E15      		cp r17,r14
+ 576 0238 00F0      		brlo .L70
+ 577               	.LVL90:
+ 578               	.L64:
+ 579               	.LM86:
+ 580 023a 802F      		mov r24,r16
+ 581               	/* epilogue start */
+ 582 023c DF91      		pop r29
+ 583               	.LVL91:
+ 584 023e CF91      		pop r28
+ 585               	.LVL92:
+ 586 0240 1F91      		pop r17
+ 587               	.LVL93:
+ 588 0242 0F91      		pop r16
+ 589               	.LVL94:
+ 590 0244 FF90      		pop r15
+ 591               	.LVL95:
+ 592 0246 EF90      		pop r14
+ 593               	.LVL96:
+ 594 0248 DF90      		pop r13
+ 595 024a CF90      		pop r12
+ 596               	.LVL97:
+ 597 024c BF90      		pop r11
+ 598               	.LVL98:
+ 599 024e 0895      		ret
+ 600               	.LVL99:
+ 601               	.L76:
+ 602               	.LM87:
+ 603 0250 0FEF      		ldi r16,lo8(-1)
+ 604               	.LVL100:
+ 605 0252 00C0      		rjmp .L64
+ 606               	.LVL101:
+ 607               	.L77:
+ 608               	.LM88:
+ 609 0254 00E0      		ldi r16,lo8(0)
+ 610               	.LVL102:
+ 611 0256 00C0      		rjmp .L64
+ 612               	.LFE12:
+ 694               	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 OWIHighLevelFunctions.c
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cckM6UT0.s:2      *ABS*:0000003f __SREG__
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cckM6UT0.s:3      *ABS*:0000003e __SP_H__
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cckM6UT0.s:4      *ABS*:0000003d __SP_L__
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cckM6UT0.s:5      *ABS*:00000034 __CCP__
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cckM6UT0.s:6      *ABS*:00000000 __tmp_reg__
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cckM6UT0.s:7      *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cckM6UT0.s:18     .text:00000000 FindFamily
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cckM6UT0.s:74     .text:0000002c OWI_ReceiveByte
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cckM6UT0.s:117    .text:00000052 OWI_SendByte
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cckM6UT0.s:170    .text:00000082 OWI_MatchRom
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cckM6UT0.s:212    .text:000000a8 OWI_ReadRom
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cckM6UT0.s:254    .text:000000ce OWI_SkipRom
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cckM6UT0.s:273    .text:000000d6 OWI_SearchRom
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/cckM6UT0.s:427    .text:0000017e OWI_SearchDevices
+
+UNDEFINED SYMBOLS
+OWI_ReadBit
+OWI_WriteBit1
+OWI_WriteBit0
+OWI_DetectPresence
+OWI_CheckRomCRC

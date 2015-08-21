@@ -1,0 +1,392 @@
+   1               		.file	"main.c"
+   2               	__SREG__ = 0x3f
+   3               	__SP_H__ = 0x3e
+   4               	__SP_L__ = 0x3d
+   5               	__CCP__  = 0x34
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+  15               	.Ltext0:
+  16               	.global	DS18B20_PrintTemperature
+  18               	DS18B20_PrintTemperature:
+  19               	.LFB8:
+  20               	.LM1:
+  21               	.LVL0:
+  22 0000 0F93      		push r16
+  23 0002 1F93      		push r17
+  24               	/* prologue: function */
+  25               	/* frame size = 0 */
+  26 0004 8C01      		movw r16,r24
+  27               	.LM2:
+  28 0006 97FD      		sbrc r25,7
+  29 0008 00C0      		rjmp .L2
+  30               	.LM3:
+  31 000a 8BE2      		ldi r24,lo8(43)
+  32               	.LVL1:
+  33 000c 00D0      		rcall LCD_WriteData
+  34               	.L3:
+  35               	.LM4:
+  36 000e C801      		movw r24,r16
+  37 0010 9295      		swap r25
+  38 0012 8295      		swap r24
+  39 0014 8F70      		andi r24,0x0f
+  40 0016 8927      		eor r24,r25
+  41 0018 9F70      		andi r25,0x0f
+  42 001a 8927      		eor r24,r25
+  43               	.LM5:
+  44 001c 8436      		cpi r24,lo8(100)
+  45 001e 00F0      		brlo .L8
+  46               	.LM6:
+  47 0020 00D0      		rcall BCD_3Lcd
+  48               	.L5:
+  49               	.LM7:
+  50 0022 102F      		mov r17,r16
+  51               	.LVL2:
+  52 0024 1F70      		andi r17,lo8(15)
+  53               	.LM8:
+  54 0026 012F      		mov r16,r17
+  55 0028 0695      		lsr r16
+  56 002a 1695      		lsr r17
+  57 002c 1695      		lsr r17
+  58 002e 1695      		lsr r17
+  59               	.LVL3:
+  60               	.LM9:
+  61 0030 8EE2      		ldi r24,lo8(46)
+  62 0032 00D0      		rcall LCD_WriteData
+  63               	.LM10:
+  64 0034 812F      		mov r24,r17
+  65 0036 800F      		add r24,r16
+  66 0038 00D0      		rcall BCD_1Lcd
+  67               	/* epilogue start */
+  68               	.LM11:
+  69 003a 1F91      		pop r17
+  70 003c 0F91      		pop r16
+  71 003e 0895      		ret
+  72               	.LVL4:
+  73               	.L8:
+  74               	.LM12:
+  75 0040 00D0      		rcall BCD_2Lcd
+  76 0042 00C0      		rjmp .L5
+  77               	.LVL5:
+  78               	.L2:
+  79               	.LM13:
+  80 0044 8DE2      		ldi r24,lo8(45)
+  81               	.LVL6:
+  82 0046 00D0      		rcall LCD_WriteData
+  83               	.LM14:
+  84 0048 1095      		com r17
+  85 004a 0195      		neg r16
+  86 004c 1F4F      		sbci r17,lo8(-1)
+  87 004e 00C0      		rjmp .L3
+  88               	.LFE8:
+  90               	.global	DS18B20_ReadTemperature
+  92               	DS18B20_ReadTemperature:
+  93               	.LFB7:
+  94               	.LM15:
+  95               	.LVL7:
+  96 0050 8F92      		push r8
+  97 0052 9F92      		push r9
+  98 0054 AF92      		push r10
+  99 0056 BF92      		push r11
+ 100 0058 CF92      		push r12
+ 101 005a DF92      		push r13
+ 102 005c FF92      		push r15
+ 103 005e 0F93      		push r16
+ 104 0060 1F93      		push r17
+ 105 0062 DF93      		push r29
+ 106 0064 CF93      		push r28
+ 107 0066 CDB7      		in r28,__SP_L__
+ 108 0068 DEB7      		in r29,__SP_H__
+ 109 006a 2997      		sbiw r28,9
+ 110 006c 0FB6      		in __tmp_reg__,__SREG__
+ 111 006e F894      		cli
+ 112 0070 DEBF      		out __SP_H__,r29
+ 113 0072 0FBE      		out __SREG__,__tmp_reg__
+ 114 0074 CDBF      		out __SP_L__,r28
+ 115               	/* prologue: function */
+ 116               	/* frame size = 9 */
+ 117 0076 F82E      		mov r15,r24
+ 118 0078 8B01      		movw r16,r22
+ 119 007a 4A01      		movw r8,r20
+ 120               	.LM16:
+ 121 007c 00D0      		rcall OWI_DetectPresence
+ 122               	.LVL8:
+ 123               	.LM17:
+ 124 007e C801      		movw r24,r16
+ 125 0080 6F2D      		mov r22,r15
+ 126 0082 00D0      		rcall OWI_MatchRom
+ 127               	.LM18:
+ 128 0084 84E4      		ldi r24,lo8(68)
+ 129 0086 6F2D      		mov r22,r15
+ 130 0088 00D0      		rcall OWI_SendByte
+ 131               	.L10:
+ 132               	.LM19:
+ 133 008a 8F2D      		mov r24,r15
+ 134 008c 00D0      		rcall OWI_ReadBit
+ 135 008e 8823      		tst r24
+ 136 0090 01F0      		breq .L10
+ 137               	.LM20:
+ 138 0092 8F2D      		mov r24,r15
+ 139 0094 00D0      		rcall OWI_DetectPresence
+ 140               	.LM21:
+ 141 0096 C801      		movw r24,r16
+ 142 0098 6F2D      		mov r22,r15
+ 143 009a 00D0      		rcall OWI_MatchRom
+ 144               	.LM22:
+ 145 009c 8EEB      		ldi r24,lo8(-66)
+ 146 009e 6F2D      		mov r22,r15
+ 147 00a0 00D0      		rcall OWI_SendByte
+ 148 00a2 5E01      		movw r10,r28
+ 149 00a4 0894      		sec
+ 150 00a6 A11C      		adc r10,__zero_reg__
+ 151 00a8 B11C      		adc r11,__zero_reg__
+ 152 00aa 8501      		movw r16,r10
+ 153               	.LVL9:
+ 154 00ac 3AE0      		ldi r19,lo8(10)
+ 155 00ae C32E      		mov r12,r19
+ 156 00b0 D12C      		mov r13,__zero_reg__
+ 157 00b2 CC0E      		add r12,r28
+ 158 00b4 DD1E      		adc r13,r29
+ 159               	.L11:
+ 160               	.LM23:
+ 161 00b6 8F2D      		mov r24,r15
+ 162 00b8 00D0      		rcall OWI_ReceiveByte
+ 163 00ba F801      		movw r30,r16
+ 164 00bc 8193      		st Z+,r24
+ 165 00be 8F01      		movw r16,r30
+ 166               	.LM24:
+ 167 00c0 EC15      		cp r30,r12
+ 168 00c2 FD05      		cpc r31,r13
+ 169 00c4 01F4      		brne .L11
+ 170               	.LM25:
+ 171 00c6 C501      		movw r24,r10
+ 172 00c8 00D0      		rcall OWI_CheckScratchPadCRC
+ 173 00ca 8823      		tst r24
+ 174 00cc 01F4      		brne .L17
+ 175               	.LM26:
+ 176 00ce 2981      		ldd r18,Y+1
+ 177 00d0 30E0      		ldi r19,lo8(0)
+ 178               	.LM27:
+ 179 00d2 9A81      		ldd r25,Y+2
+ 180 00d4 80E0      		ldi r24,lo8(0)
+ 181 00d6 822B      		or r24,r18
+ 182 00d8 932B      		or r25,r19
+ 183 00da F401      		movw r30,r8
+ 184 00dc 9183      		std Z+1,r25
+ 185 00de 8083      		st Z,r24
+ 186 00e0 80E0      		ldi r24,lo8(0)
+ 187               	.L13:
+ 188               	/* epilogue start */
+ 189               	.LM28:
+ 190 00e2 2996      		adiw r28,9
+ 191 00e4 0FB6      		in __tmp_reg__,__SREG__
+ 192 00e6 F894      		cli
+ 193 00e8 DEBF      		out __SP_H__,r29
+ 194 00ea 0FBE      		out __SREG__,__tmp_reg__
+ 195 00ec CDBF      		out __SP_L__,r28
+ 196 00ee CF91      		pop r28
+ 197 00f0 DF91      		pop r29
+ 198 00f2 1F91      		pop r17
+ 199 00f4 0F91      		pop r16
+ 200 00f6 FF90      		pop r15
+ 201               	.LVL10:
+ 202 00f8 DF90      		pop r13
+ 203 00fa CF90      		pop r12
+ 204 00fc BF90      		pop r11
+ 205 00fe AF90      		pop r10
+ 206 0100 9F90      		pop r9
+ 207 0102 8F90      		pop r8
+ 208               	.LVL11:
+ 209 0104 0895      		ret
+ 210               	.LVL12:
+ 211               	.L17:
+ 212               	.LM29:
+ 213 0106 81E0      		ldi r24,lo8(1)
+ 214 0108 00C0      		rjmp .L13
+ 215               	.LFE7:
+ 217               		.data
+ 218               	.LC0:
+ 219 0000 5365 6E73 		.string	"Sensors"
+ 219      6F72 7300 
+ 220               	.LC1:
+ 221 0008 4E00      		.string	"N"
+ 222               	.LC2:
+ 223 000a 2020 6E6F 		.string	"  not  "
+ 223      7420 2000 
+ 224               		.text
+ 225               	.global	main
+ 227               	main:
+ 228               	.LFB6:
+ 229               	.LM30:
+ 230 010a CF92      		push r12
+ 231 010c DF92      		push r13
+ 232 010e EF92      		push r14
+ 233 0110 FF92      		push r15
+ 234 0112 0F93      		push r16
+ 235 0114 1F93      		push r17
+ 236 0116 DF93      		push r29
+ 237 0118 CF93      		push r28
+ 238 011a 00D0      		rcall .
+ 239 011c 0F92      		push __tmp_reg__
+ 240 011e CDB7      		in r28,__SP_L__
+ 241 0120 DEB7      		in r29,__SP_H__
+ 242               	/* prologue: function */
+ 243               	/* frame size = 3 */
+ 244               	.LM31:
+ 245 0122 1B82      		std Y+3,__zero_reg__
+ 246 0124 1A82      		std Y+2,__zero_reg__
+ 247               	.LVL13:
+ 248               	.LM32:
+ 249 0126 1982      		std Y+1,__zero_reg__
+ 250               	.LVL14:
+ 251               	.LM33:
+ 252 0128 00D0      		rcall LCD_Init
+ 253               	.LM34:
+ 254 012a 00D0      		rcall LCD_Clear
+ 255               	.LM35:
+ 256 012c 83E8      		ldi r24,lo8(-125)
+ 257 012e 00D0      		rcall LCD_WriteCom
+ 258               	.LM36:
+ 259 0130 80E0      		ldi r24,lo8(.LC0)
+ 260 0132 90E0      		ldi r25,hi8(.LC0)
+ 261 0134 00D0      		rcall LCD_SendString
+ 262               	.LM37:
+ 263 0136 8EE8      		ldi r24,lo8(-114)
+ 264 0138 00D0      		rcall LCD_WriteCom
+ 265               	.LM38:
+ 266 013a 80E0      		ldi r24,lo8(.LC1)
+ 267 013c 90E0      		ldi r25,hi8(.LC1)
+ 268 013e 00D0      		rcall LCD_SendString
+ 269               	.LM39:
+ 270 0140 80E8      		ldi r24,lo8(-128)
+ 271 0142 00D0      		rcall OWI_Init
+ 272 0144 10E0      		ldi r17,lo8(0)
+ 273               	.LVL15:
+ 274 0146 6E01      		movw r12,r28
+ 275 0148 0894      		sec
+ 276 014a C11C      		adc r12,__zero_reg__
+ 277 014c D11C      		adc r13,__zero_reg__
+ 278 014e 42E0      		ldi r20,lo8(2)
+ 279 0150 E42E      		mov r14,r20
+ 280 0152 F12C      		mov r15,__zero_reg__
+ 281 0154 EC0E      		add r14,r28
+ 282 0156 FD1E      		adc r15,r29
+ 283               	.LM40:
+ 284 0158 1123      		tst r17
+ 285 015a 01F0      		breq .L26
+ 286               	.LVL16:
+ 287               	.L19:
+ 288               	.LM41:
+ 289 015c 80EC      		ldi r24,lo8(-64)
+ 290 015e 00D0      		rcall LCD_WriteCom
+ 291               	.LM42:
+ 292 0160 80E8      		ldi r24,lo8(-128)
+ 293 0162 60E0      		ldi r22,lo8(allDevices)
+ 294 0164 70E0      		ldi r23,hi8(allDevices)
+ 295 0166 A701      		movw r20,r14
+ 296 0168 00D0      		rcall DS18B20_ReadTemperature
+ 297               	.LM43:
+ 298 016a 8130      		cpi r24,lo8(1)
+ 299 016c 01F0      		breq .L20
+ 300               	.LM44:
+ 301 016e 8A81      		ldd r24,Y+2
+ 302 0170 9B81      		ldd r25,Y+3
+ 303 0172 00D0      		rcall DS18B20_PrintTemperature
+ 304               	.L21:
+ 305               	.LM45:
+ 306 0174 87EC      		ldi r24,lo8(-57)
+ 307 0176 00D0      		rcall LCD_WriteCom
+ 308               	.LM46:
+ 309 0178 80E8      		ldi r24,lo8(-128)
+ 310 017a 60E0      		ldi r22,lo8(allDevices+8)
+ 311 017c 70E0      		ldi r23,hi8(allDevices+8)
+ 312 017e A701      		movw r20,r14
+ 313 0180 00D0      		rcall DS18B20_ReadTemperature
+ 314               	.LM47:
+ 315 0182 8130      		cpi r24,lo8(1)
+ 316 0184 01F0      		breq .L22
+ 317               	.LM48:
+ 318 0186 8A81      		ldd r24,Y+2
+ 319 0188 9B81      		ldd r25,Y+3
+ 320 018a 00D0      		rcall DS18B20_PrintTemperature
+ 321               	.LM49:
+ 322 018c 1123      		tst r17
+ 323 018e 01F4      		brne .L19
+ 324               	.L26:
+ 325               	.LM50:
+ 326 0190 1982      		std Y+1,__zero_reg__
+ 327               	.LVL17:
+ 328               	.LM51:
+ 329 0192 80E0      		ldi r24,lo8(allDevices)
+ 330 0194 90E0      		ldi r25,hi8(allDevices)
+ 331 0196 62E0      		ldi r22,lo8(2)
+ 332 0198 40E8      		ldi r20,lo8(-128)
+ 333 019a 9601      		movw r18,r12
+ 334 019c 00D0      		rcall OWI_SearchDevices
+ 335 019e 082F      		mov r16,r24
+ 336               	.LM52:
+ 337 01a0 8EEC      		ldi r24,lo8(-50)
+ 338 01a2 00D0      		rcall LCD_WriteCom
+ 339               	.LM53:
+ 340 01a4 8981      		ldd r24,Y+1
+ 341 01a6 00D0      		rcall BCD_1Lcd
+ 342               	.LM54:
+ 343 01a8 8981      		ldd r24,Y+1
+ 344 01aa 8230      		cpi r24,lo8(2)
+ 345 01ac 01F4      		brne .L19
+ 346               	.LVL18:
+ 347 01ae 0130      		cpi r16,lo8(1)
+ 348 01b0 01F0      		breq .L19
+ 349 01b2 1FEF      		ldi r17,lo8(-1)
+ 350 01b4 00C0      		rjmp .L19
+ 351               	.LVL19:
+ 352               	.L22:
+ 353               	.LM55:
+ 354 01b6 80E0      		ldi r24,lo8(.LC2)
+ 355 01b8 90E0      		ldi r25,hi8(.LC2)
+ 356 01ba 00D0      		rcall LCD_SendString
+ 357 01bc 10E0      		ldi r17,lo8(0)
+ 358 01be 00C0      		rjmp .L26
+ 359               	.L20:
+ 360               	.LM56:
+ 361 01c0 80E0      		ldi r24,lo8(.LC2)
+ 362 01c2 90E0      		ldi r25,hi8(.LC2)
+ 363 01c4 00D0      		rcall LCD_SendString
+ 364 01c6 10E0      		ldi r17,lo8(0)
+ 365 01c8 00C0      		rjmp .L21
+ 366               	.LFE6:
+ 368               		.comm allDevices,16,1
+ 369               		.comm rom,8,1
+ 410               	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/ccdnwId5.s:2      *ABS*:0000003f __SREG__
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/ccdnwId5.s:3      *ABS*:0000003e __SP_H__
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/ccdnwId5.s:4      *ABS*:0000003d __SP_L__
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/ccdnwId5.s:5      *ABS*:00000034 __CCP__
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/ccdnwId5.s:6      *ABS*:00000000 __tmp_reg__
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/ccdnwId5.s:7      *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/ccdnwId5.s:18     .text:00000000 DS18B20_PrintTemperature
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/ccdnwId5.s:92     .text:00000050 DS18B20_ReadTemperature
+C:\DOCUME~1\pashgan\LOCALS~1\Temp/ccdnwId5.s:227    .text:0000010a main
+                            *COM*:00000010 allDevices
+                            *COM*:00000008 rom
+
+UNDEFINED SYMBOLS
+LCD_WriteData
+BCD_3Lcd
+BCD_1Lcd
+BCD_2Lcd
+OWI_DetectPresence
+OWI_MatchRom
+OWI_SendByte
+OWI_ReadBit
+OWI_ReceiveByte
+OWI_CheckScratchPadCRC
+LCD_Init
+LCD_Clear
+LCD_WriteCom
+LCD_SendString
+OWI_Init
+OWI_SearchDevices
+__do_copy_data
+__do_clear_bss

@@ -1,0 +1,605 @@
+Archive member included because of file (symbol)
+
+d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_udivmodqi4.o)
+                              bcd.o (__udivmodqi4)
+d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_udivmodhi4.o)
+                              bcd.o (__udivmodhi4)
+d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_exit.o)
+                              d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o (exit)
+d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_copy_data.o)
+                              main.o (__do_copy_data)
+d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_clear_bss.o)
+                              main.o (__do_clear_bss)
+
+Allocating common symbols
+Common symbol       size              file
+
+rom                 0x8               main.o
+allDevices          0x10              main.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+text             0x00000000         0x00002000         xr
+data             0x00800060         0x0000ffa0         rw !x
+eeprom           0x00810000         0x00010000         rw !x
+fuse             0x00820000         0x00000400         rw !x
+lock             0x00830000         0x00000400         rw !x
+signature        0x00840000         0x00000400         rw !x
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+LOAD main.o
+LOAD bcd.o
+LOAD lcd_lib.o
+LOAD OWISWBitFunctions.o
+LOAD OWIHighLevelFunctions.o
+LOAD OWIUARTBitFunctions.o
+LOAD common_files/OWIcrc.o
+LOAD d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4\libm.a
+LOAD d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a
+LOAD d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4\libc.a
+LOAD d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a
+
+.hash
+ *(.hash)
+
+.dynsym
+ *(.dynsym)
+
+.dynstr
+ *(.dynstr)
+
+.gnu.version
+ *(.gnu.version)
+
+.gnu.version_d
+ *(.gnu.version_d)
+
+.gnu.version_r
+ *(.gnu.version_r)
+
+.rel.init
+ *(.rel.init)
+
+.rela.init
+ *(.rela.init)
+
+.rel.text
+ *(.rel.text)
+ *(.rel.text.*)
+ *(.rel.gnu.linkonce.t*)
+
+.rela.text
+ *(.rela.text)
+ *(.rela.text.*)
+ *(.rela.gnu.linkonce.t*)
+
+.rel.fini
+ *(.rel.fini)
+
+.rela.fini
+ *(.rela.fini)
+
+.rel.rodata
+ *(.rel.rodata)
+ *(.rel.rodata.*)
+ *(.rel.gnu.linkonce.r*)
+
+.rela.rodata
+ *(.rela.rodata)
+ *(.rela.rodata.*)
+ *(.rela.gnu.linkonce.r*)
+
+.rel.data
+ *(.rel.data)
+ *(.rel.data.*)
+ *(.rel.gnu.linkonce.d*)
+
+.rela.data
+ *(.rela.data)
+ *(.rela.data.*)
+ *(.rela.gnu.linkonce.d*)
+
+.rel.ctors
+ *(.rel.ctors)
+
+.rela.ctors
+ *(.rela.ctors)
+
+.rel.dtors
+ *(.rel.dtors)
+
+.rela.dtors
+ *(.rela.dtors)
+
+.rel.got
+ *(.rel.got)
+
+.rela.got
+ *(.rela.got)
+
+.rel.bss
+ *(.rel.bss)
+
+.rela.bss
+ *(.rela.bss)
+
+.rel.plt
+ *(.rel.plt)
+
+.rela.plt
+ *(.rela.plt)
+
+.text           0x00000000      0xa3a
+ *(.vectors)
+ .vectors       0x00000000       0x2a d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+                0x00000000                __vectors
+                0x00000000                __vector_default
+ *(.vectors)
+ *(.progmem.gcc*)
+ *(.progmem*)
+                0x0000002a                . = ALIGN (0x2)
+                0x0000002a                __trampolines_start = .
+ *(.trampolines)
+ .trampolines   0x0000002a        0x0 linker stubs
+ *(.trampolines*)
+                0x0000002a                __trampolines_end = .
+ *(.jumptables)
+ *(.jumptables*)
+ *(.lowtext)
+ *(.lowtext*)
+                0x0000002a                __ctors_start = .
+ *(.ctors)
+                0x0000002a                __ctors_end = .
+                0x0000002a                __dtors_start = .
+ *(.dtors)
+                0x0000002a                __dtors_end = .
+ SORT(*)(.ctors)
+ SORT(*)(.dtors)
+ *(.init0)
+ .init0         0x0000002a        0x0 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+                0x0000002a                __init
+ *(.init0)
+ *(.init1)
+ *(.init1)
+ *(.init2)
+ .init2         0x0000002a        0xc d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+ *(.init2)
+ *(.init3)
+ *(.init3)
+ *(.init4)
+ .init4         0x00000036       0x16 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_copy_data.o)
+                0x00000036                __do_copy_data
+ .init4         0x0000004c       0x10 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_clear_bss.o)
+                0x0000004c                __do_clear_bss
+ *(.init4)
+ *(.init5)
+ *(.init5)
+ *(.init6)
+ *(.init6)
+ *(.init7)
+ *(.init7)
+ *(.init8)
+ *(.init8)
+ *(.init9)
+ .init9         0x0000005c        0x4 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+ *(.init9)
+ *(.text)
+ .text          0x00000060        0x2 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+                0x00000060                __vector_1
+                0x00000060                __vector_12
+                0x00000060                __bad_interrupt
+                0x00000060                __vector_6
+                0x00000060                __vector_3
+                0x00000060                __vector_11
+                0x00000060                __vector_13
+                0x00000060                __vector_17
+                0x00000060                __vector_19
+                0x00000060                __vector_7
+                0x00000060                __vector_5
+                0x00000060                __vector_4
+                0x00000060                __vector_9
+                0x00000060                __vector_2
+                0x00000060                __vector_15
+                0x00000060                __vector_8
+                0x00000060                __vector_14
+                0x00000060                __vector_10
+                0x00000060                __vector_16
+                0x00000060                __vector_18
+                0x00000060                __vector_20
+ .text          0x00000062      0x1ca main.o
+                0x00000062                DS18B20_PrintTemperature
+                0x000000b2                DS18B20_ReadTemperature
+                0x0000016c                main
+ .text          0x0000022c      0x1b4 bcd.o
+                0x000002de                BCD_3IntLcd
+                0x0000035a                BCD_3Lcd
+                0x0000022c                BCD_4IntLcd
+                0x000003ac                BCD_2Lcd
+                0x000003da                BCD_1Lcd
+ .text          0x000003e0      0x1f4 lcd_lib.o
+                0x000004f8                LCD_Clear
+                0x00000552                LCD_SendStringFlash
+                0x00000434                LCD_Init
+                0x0000059e                LCD_WriteData
+                0x000003e0                LCD_WriteComInit
+                0x000003fe                LCD_WriteCom
+                0x00000506                LCD_SendString
+ .text          0x000005d4       0xf6 OWISWBitFunctions.o
+                0x0000061c                OWI_WriteBit0
+                0x000005ec                OWI_WriteBit1
+                0x00000688                OWI_DetectPresence
+                0x000005d4                OWI_Init
+                0x0000064c                OWI_ReadBit
+ .text          0x000006ca      0x258 OWIHighLevelFunctions.o
+                0x000006ca                FindFamily
+                0x0000071c                OWI_SendByte
+                0x000006f6                OWI_ReceiveByte
+                0x00000772                OWI_ReadRom
+                0x0000074c                OWI_MatchRom
+                0x000007a0                OWI_SearchRom
+                0x00000848                OWI_SearchDevices
+                0x00000798                OWI_SkipRom
+ .text          0x00000922        0x0 OWIUARTBitFunctions.o
+ .text          0x00000922       0xd4 common_files/OWIcrc.o
+                0x00000922                OWI_ComputeCRC8
+                0x00000976                OWI_CheckRomCRC
+                0x00000948                OWI_ComputeCRC16
+                0x000009b6                OWI_CheckScratchPadCRC
+ .text          0x000009f6        0x0 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_udivmodqi4.o)
+ .text          0x000009f6        0x0 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_udivmodhi4.o)
+ .text          0x000009f6        0x0 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_exit.o)
+ .text          0x000009f6        0x0 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_copy_data.o)
+ .text          0x000009f6        0x0 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_clear_bss.o)
+                0x000009f6                . = ALIGN (0x2)
+ *(.text.*)
+ .text.libgcc   0x000009f6       0x18 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_udivmodqi4.o)
+                0x000009f6                __udivmodqi4
+ .text.libgcc   0x00000a0e       0x28 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_udivmodhi4.o)
+                0x00000a0e                __udivmodhi4
+ .text.libgcc   0x00000a36        0x0 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_exit.o)
+ .text.libgcc   0x00000a36        0x0 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_copy_data.o)
+ .text.libgcc   0x00000a36        0x0 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_clear_bss.o)
+                0x00000a36                . = ALIGN (0x2)
+ *(.fini9)
+ .fini9         0x00000a36        0x0 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_exit.o)
+                0x00000a36                exit
+                0x00000a36                _exit
+ *(.fini9)
+ *(.fini8)
+ *(.fini8)
+ *(.fini7)
+ *(.fini7)
+ *(.fini6)
+ *(.fini6)
+ *(.fini5)
+ *(.fini5)
+ *(.fini4)
+ *(.fini4)
+ *(.fini3)
+ *(.fini3)
+ *(.fini2)
+ *(.fini2)
+ *(.fini1)
+ *(.fini1)
+ *(.fini0)
+ .fini0         0x00000a36        0x4 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_exit.o)
+ *(.fini0)
+                0x00000a3a                _etext = .
+
+.data           0x00800060       0x12 load address 0x00000a3a
+                0x00800060                PROVIDE (__data_start, .)
+ *(.data)
+ .data          0x00800060        0x0 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+ .data          0x00800060       0x12 main.o
+ .data          0x00800072        0x0 bcd.o
+ .data          0x00800072        0x0 lcd_lib.o
+ .data          0x00800072        0x0 OWISWBitFunctions.o
+ .data          0x00800072        0x0 OWIHighLevelFunctions.o
+ .data          0x00800072        0x0 OWIUARTBitFunctions.o
+ .data          0x00800072        0x0 common_files/OWIcrc.o
+ .data          0x00800072        0x0 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_udivmodqi4.o)
+ .data          0x00800072        0x0 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_udivmodhi4.o)
+ .data          0x00800072        0x0 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_exit.o)
+ .data          0x00800072        0x0 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_copy_data.o)
+ .data          0x00800072        0x0 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_clear_bss.o)
+ *(.data*)
+ *(.rodata)
+ *(.rodata*)
+ *(.gnu.linkonce.d*)
+                0x00800072                . = ALIGN (0x2)
+                0x00800072                _edata = .
+                0x00800072                PROVIDE (__data_end, .)
+
+.bss            0x00800072       0x18
+                0x00800072                PROVIDE (__bss_start, .)
+ *(.bss)
+ .bss           0x00800072        0x0 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+ .bss           0x00800072        0x0 main.o
+ .bss           0x00800072        0x0 bcd.o
+ .bss           0x00800072        0x0 lcd_lib.o
+ .bss           0x00800072        0x0 OWISWBitFunctions.o
+ .bss           0x00800072        0x0 OWIHighLevelFunctions.o
+ .bss           0x00800072        0x0 OWIUARTBitFunctions.o
+ .bss           0x00800072        0x0 common_files/OWIcrc.o
+ .bss           0x00800072        0x0 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_udivmodqi4.o)
+ .bss           0x00800072        0x0 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_udivmodhi4.o)
+ .bss           0x00800072        0x0 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_exit.o)
+ .bss           0x00800072        0x0 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_copy_data.o)
+ .bss           0x00800072        0x0 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_clear_bss.o)
+ *(.bss*)
+ *(COMMON)
+ COMMON         0x00800072       0x18 main.o
+                0x00800072                rom
+                0x0080007a                allDevices
+                0x0080008a                PROVIDE (__bss_end, .)
+                0x00000a3a                __data_load_start = LOADADDR (.data)
+                0x00000a4c                __data_load_end = (__data_load_start + SIZEOF (.data))
+
+.noinit         0x0080008a        0x0
+                0x0080008a                PROVIDE (__noinit_start, .)
+ *(.noinit*)
+                0x0080008a                PROVIDE (__noinit_end, .)
+                0x0080008a                _end = .
+                0x0080008a                PROVIDE (__heap_start, .)
+
+.eeprom         0x00810000        0x0
+ *(.eeprom*)
+                0x00810000                __eeprom_end = .
+
+.fuse
+ *(.fuse)
+ *(.lfuse)
+ *(.hfuse)
+ *(.efuse)
+
+.lock
+ *(.lock*)
+
+.signature
+ *(.signature*)
+
+.stab
+ *(.stab)
+
+.stabstr
+ *(.stabstr)
+
+.stab.excl
+ *(.stab.excl)
+
+.stab.exclstr
+ *(.stab.exclstr)
+
+.stab.index
+ *(.stab.index)
+
+.stab.indexstr
+ *(.stab.indexstr)
+
+.comment
+ *(.comment)
+
+.debug
+ *(.debug)
+
+.line
+ *(.line)
+
+.debug_srcinfo
+ *(.debug_srcinfo)
+
+.debug_sfnames
+ *(.debug_sfnames)
+
+.debug_aranges  0x00000000       0xc0
+ *(.debug_aranges)
+ .debug_aranges
+                0x00000000       0x20 main.o
+ .debug_aranges
+                0x00000020       0x20 bcd.o
+ .debug_aranges
+                0x00000040       0x20 lcd_lib.o
+ .debug_aranges
+                0x00000060       0x20 OWISWBitFunctions.o
+ .debug_aranges
+                0x00000080       0x20 OWIHighLevelFunctions.o
+ .debug_aranges
+                0x000000a0       0x20 common_files/OWIcrc.o
+
+.debug_pubnames
+                0x00000000      0x2c7
+ *(.debug_pubnames)
+ .debug_pubnames
+                0x00000000       0x6b main.o
+ .debug_pubnames
+                0x0000006b       0x59 bcd.o
+ .debug_pubnames
+                0x000000c4       0x90 lcd_lib.o
+ .debug_pubnames
+                0x00000154       0x6a OWISWBitFunctions.o
+ .debug_pubnames
+                0x000001be       0x9f OWIHighLevelFunctions.o
+ .debug_pubnames
+                0x0000025d       0x6a common_files/OWIcrc.o
+
+.debug_info     0x00000000     0x19dc
+ *(.debug_info)
+ .debug_info    0x00000000      0x1d0 main.o
+ .debug_info    0x000001d0      0x19d bcd.o
+ .debug_info    0x0000036d      0xb1b lcd_lib.o
+ .debug_info    0x00000e88      0x549 OWISWBitFunctions.o
+ .debug_info    0x000013d1      0x3aa OWIHighLevelFunctions.o
+ .debug_info    0x0000177b       0x5e OWIUARTBitFunctions.o
+ .debug_info    0x000017d9      0x203 common_files/OWIcrc.o
+ *(.gnu.linkonce.wi.*)
+
+.debug_abbrev   0x00000000      0x737
+ *(.debug_abbrev)
+ .debug_abbrev  0x00000000      0x112 main.o
+ .debug_abbrev  0x00000112       0x7d bcd.o
+ .debug_abbrev  0x0000018f      0x1d1 lcd_lib.o
+ .debug_abbrev  0x00000360      0x121 OWISWBitFunctions.o
+ .debug_abbrev  0x00000481      0x178 OWIHighLevelFunctions.o
+ .debug_abbrev  0x000005f9       0x2a OWIUARTBitFunctions.o
+ .debug_abbrev  0x00000623      0x114 common_files/OWIcrc.o
+
+.debug_line     0x00000000     0x12ae
+ *(.debug_line)
+ .debug_line    0x00000000      0x231 main.o
+ .debug_line    0x00000231      0x20b bcd.o
+ .debug_line    0x0000043c      0x647 lcd_lib.o
+ .debug_line    0x00000a83      0x289 OWISWBitFunctions.o
+ .debug_line    0x00000d0c      0x354 OWIHighLevelFunctions.o
+ .debug_line    0x00001060       0x41 OWIUARTBitFunctions.o
+ .debug_line    0x000010a1      0x20d common_files/OWIcrc.o
+
+.debug_frame    0x00000000      0x260
+ *(.debug_frame)
+ .debug_frame   0x00000000       0x40 main.o
+ .debug_frame   0x00000040       0x60 bcd.o
+ .debug_frame   0x000000a0       0x80 lcd_lib.o
+ .debug_frame   0x00000120       0x60 OWISWBitFunctions.o
+ .debug_frame   0x00000180       0x90 OWIHighLevelFunctions.o
+ .debug_frame   0x00000210       0x50 common_files/OWIcrc.o
+
+.debug_str      0x00000000      0x4ad
+ *(.debug_str)
+ .debug_str     0x00000000       0xd8 main.o
+                                0x10c (size before relaxing)
+ .debug_str     0x000000d8       0x6b bcd.o
+                                 0xde (size before relaxing)
+ .debug_str     0x00000143      0x11c lcd_lib.o
+                                0x1b0 (size before relaxing)
+ .debug_str     0x0000025f       0x9c OWISWBitFunctions.o
+                                0x177 (size before relaxing)
+ .debug_str     0x000002fb      0x124 OWIHighLevelFunctions.o
+                                0x1c8 (size before relaxing)
+ .debug_str     0x0000041f       0x16 OWIUARTBitFunctions.o
+                                 0xa5 (size before relaxing)
+ .debug_str     0x00000435       0x78 common_files/OWIcrc.o
+                                0x120 (size before relaxing)
+
+.debug_loc      0x00000000      0xd82
+ *(.debug_loc)
+ .debug_loc     0x00000000      0x11f main.o
+ .debug_loc     0x0000011f      0x340 bcd.o
+ .debug_loc     0x0000045f      0x23c lcd_lib.o
+ .debug_loc     0x0000069b       0xc8 OWISWBitFunctions.o
+ .debug_loc     0x00000763      0x535 OWIHighLevelFunctions.o
+ .debug_loc     0x00000c98       0xea common_files/OWIcrc.o
+
+.debug_macinfo
+ *(.debug_macinfo)
+OUTPUT(main.elf elf32-avr)
+LOAD linker stubs
+
+.debug_ranges   0x00000000      0x210
+ .debug_ranges  0x00000000      0x1b0 lcd_lib.o
+ .debug_ranges  0x000001b0       0x60 common_files/OWIcrc.o
+
+Cross Reference Table
+
+Symbol                                            File
+BCD_1Lcd                                          bcd.o
+                                                  main.o
+BCD_2Lcd                                          bcd.o
+                                                  main.o
+BCD_3IntLcd                                       bcd.o
+BCD_3Lcd                                          bcd.o
+                                                  main.o
+BCD_4IntLcd                                       bcd.o
+DS18B20_PrintTemperature                          main.o
+DS18B20_ReadTemperature                           main.o
+FindFamily                                        OWIHighLevelFunctions.o
+LCD_Clear                                         lcd_lib.o
+                                                  main.o
+LCD_Init                                          lcd_lib.o
+                                                  main.o
+LCD_SendString                                    lcd_lib.o
+                                                  main.o
+LCD_SendStringFlash                               lcd_lib.o
+LCD_WriteCom                                      lcd_lib.o
+                                                  main.o
+LCD_WriteComInit                                  lcd_lib.o
+LCD_WriteData                                     lcd_lib.o
+                                                  bcd.o
+                                                  main.o
+OWI_CheckRomCRC                                   common_files/OWIcrc.o
+                                                  OWIHighLevelFunctions.o
+OWI_CheckScratchPadCRC                            common_files/OWIcrc.o
+                                                  main.o
+OWI_ComputeCRC16                                  common_files/OWIcrc.o
+OWI_ComputeCRC8                                   common_files/OWIcrc.o
+OWI_DetectPresence                                OWISWBitFunctions.o
+                                                  OWIHighLevelFunctions.o
+                                                  main.o
+OWI_Init                                          OWISWBitFunctions.o
+                                                  main.o
+OWI_MatchRom                                      OWIHighLevelFunctions.o
+                                                  main.o
+OWI_ReadBit                                       OWISWBitFunctions.o
+                                                  OWIHighLevelFunctions.o
+                                                  main.o
+OWI_ReadRom                                       OWIHighLevelFunctions.o
+OWI_ReceiveByte                                   OWIHighLevelFunctions.o
+                                                  main.o
+OWI_SearchDevices                                 OWIHighLevelFunctions.o
+                                                  main.o
+OWI_SearchRom                                     OWIHighLevelFunctions.o
+OWI_SendByte                                      OWIHighLevelFunctions.o
+                                                  main.o
+OWI_SkipRom                                       OWIHighLevelFunctions.o
+OWI_WriteBit0                                     OWISWBitFunctions.o
+                                                  OWIHighLevelFunctions.o
+OWI_WriteBit1                                     OWISWBitFunctions.o
+                                                  OWIHighLevelFunctions.o
+__bad_interrupt                                   d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__bss_end                                         d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_clear_bss.o)
+__bss_start                                       d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_clear_bss.o)
+__data_end                                        d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_copy_data.o)
+__data_load_start                                 d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_copy_data.o)
+__data_start                                      d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_copy_data.o)
+__do_clear_bss                                    d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_clear_bss.o)
+                                                  main.o
+__do_copy_data                                    d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_copy_data.o)
+                                                  main.o
+__heap_end                                        d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__init                                            d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__stack                                           d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__udivmodhi4                                      d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_udivmodhi4.o)
+                                                  bcd.o
+__udivmodqi4                                      d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_udivmodqi4.o)
+                                                  bcd.o
+__vector_1                                        d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__vector_10                                       d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__vector_11                                       d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__vector_12                                       d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__vector_13                                       d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__vector_14                                       d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__vector_15                                       d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__vector_16                                       d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__vector_17                                       d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__vector_18                                       d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__vector_19                                       d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__vector_2                                        d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__vector_20                                       d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__vector_3                                        d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__vector_4                                        d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__vector_5                                        d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__vector_6                                        d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__vector_7                                        d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__vector_8                                        d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__vector_9                                        d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__vector_default                                  d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+__vectors                                         d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+_exit                                             d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_exit.o)
+allDevices                                        main.o
+exit                                              d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/avr4\libgcc.a(_exit.o)
+                                                  d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+main                                              main.o
+                                                  d:/winavr-20090313/bin/../lib/gcc/avr/4.3.2/../../../../avr/lib/avr4/crtm8535.o
+rom                                               main.o

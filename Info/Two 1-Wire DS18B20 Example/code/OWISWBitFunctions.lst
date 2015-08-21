@@ -1,0 +1,430 @@
+   1               		.file	"OWISWBitFunctions.c"
+   2               	__SREG__ = 0x3f
+   3               	__SP_H__ = 0x3e
+   4               	__SP_L__ = 0x3d
+   5               	__CCP__  = 0x34
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+  15               	.Ltext0:
+  16               	.global	OWI_Init
+  18               	OWI_Init:
+  19               	.LFB6:
+  20               	.LM1:
+  21               	.LVL0:
+  22               	/* prologue: function */
+  23               	/* frame size = 0 */
+  24               	.LM2:
+  25 0000 91B3      		in r25,49-32
+  26 0002 8095      		com r24
+  27               	.LVL1:
+  28 0004 9823      		and r25,r24
+  29 0006 91BB      		out 49-32,r25
+  30 0008 92B3      		in r25,50-32
+  31 000a 9823      		and r25,r24
+  32 000c 92BB      		out 50-32,r25
+  33               	.LBB124:
+  34               	.LBB125:
+  35               	.LBB126:
+  36               	.LBB127:
+  37               	.LBB128:
+  38               	.LBB129:
+  39               	.LM3:
+  40 000e 8CE7      		ldi r24,lo8(1916)
+  41 0010 97E0      		ldi r25,hi8(1916)
+  42               	.LVL2:
+  43               	/* #APP */
+  44               	 ;  105 "d:/winavr-20090313/lib/gcc/../../avr/include/util/delay_basic.h" 1
+  45 0012 0197      		1: sbiw r24,1
+  46 0014 01F4      		brne 1b
+  47               	 ;  0 "" 2
+  48               	/* epilogue start */
+  49               	/* #NOAPP */
+  50               	.LBE129:
+  51               	.LBE128:
+  52               	.LBE127:
+  53               	.LBE126:
+  54               	.LBE125:
+  55               	.LBE124:
+  56               	.LM4:
+  57 0016 0895      		ret
+  58               	.LFE6:
+  60               	.global	OWI_WriteBit1
+  62               	OWI_WriteBit1:
+  63               	.LFB7:
+  64               	.LM5:
+  65               	.LVL3:
+  66               	/* prologue: function */
+  67               	/* frame size = 0 */
+  68               	.LM6:
+  69 0018 2FB7      		in r18,__SREG__
+  70               	.LVL4:
+  71               	.LM7:
+  72               	/* #APP */
+  73               	 ;  61 "OWISWBitFunctions.c" 1
+  74 001a F894      		cli
+  75               	 ;  0 "" 2
+  76               	.LM8:
+  77               	/* #NOAPP */
+  78 001c 91B3      		in r25,49-32
+  79 001e 982B      		or r25,r24
+  80 0020 91BB      		out 49-32,r25
+  81 0022 92B3      		in r25,50-32
+  82 0024 8095      		com r24
+  83               	.LVL5:
+  84 0026 9823      		and r25,r24
+  85 0028 92BB      		out 50-32,r25
+  86               	.LBB130:
+  87               	.LBB131:
+  88               	.LBB132:
+  89               	.LBB133:
+  90               	.LM9:
+  91 002a 9AE1      		ldi r25,lo8(26)
+  92               	.LVL6:
+  93               	/* #APP */
+  94               	 ;  83 "d:/winavr-20090313/lib/gcc/../../avr/include/util/delay_basic.h" 1
+  95 002c 9A95      		1: dec r25
+  96 002e 01F4      		brne 1b
+  97               	 ;  0 "" 2
+  98               	/* #NOAPP */
+  99               	.LBE133:
+ 100               	.LBE132:
+ 101               	.LBE131:
+ 102               	.LBE130:
+ 103               	.LM10:
+ 104 0030 91B3      		in r25,49-32
+ 105               	.LVL7:
+ 106 0032 9823      		and r25,r24
+ 107 0034 91BB      		out 49-32,r25
+ 108 0036 92B3      		in r25,50-32
+ 109 0038 8923      		and r24,r25
+ 110 003a 82BB      		out 50-32,r24
+ 111               	.LBB134:
+ 112               	.LBB135:
+ 113               	.LBB136:
+ 114               	.LBB137:
+ 115               	.LBB138:
+ 116               	.LBB139:
+ 117               	.LM11:
+ 118 003c 8CEF      		ldi r24,lo8(252)
+ 119 003e 90E0      		ldi r25,hi8(252)
+ 120               	.LVL8:
+ 121               	/* #APP */
+ 122               	 ;  105 "d:/winavr-20090313/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 123 0040 0197      		1: sbiw r24,1
+ 124 0042 01F4      		brne 1b
+ 125               	 ;  0 "" 2
+ 126               	/* #NOAPP */
+ 127               	.LBE139:
+ 128               	.LBE138:
+ 129               	.LBE137:
+ 130               	.LBE136:
+ 131               	.LBE135:
+ 132               	.LBE134:
+ 133               	.LM12:
+ 134 0044 2FBF      		out __SREG__,r18
+ 135               	/* epilogue start */
+ 136               	.LM13:
+ 137 0046 0895      		ret
+ 138               	.LFE7:
+ 140               	.global	OWI_WriteBit0
+ 142               	OWI_WriteBit0:
+ 143               	.LFB8:
+ 144               	.LM14:
+ 145               	.LVL9:
+ 146               	/* prologue: function */
+ 147               	/* frame size = 0 */
+ 148               	.LM15:
+ 149 0048 2FB7      		in r18,__SREG__
+ 150               	.LVL10:
+ 151               	.LM16:
+ 152               	/* #APP */
+ 153               	 ;  89 "OWISWBitFunctions.c" 1
+ 154 004a F894      		cli
+ 155               	 ;  0 "" 2
+ 156               	.LM17:
+ 157               	/* #NOAPP */
+ 158 004c 91B3      		in r25,49-32
+ 159 004e 982B      		or r25,r24
+ 160 0050 91BB      		out 49-32,r25
+ 161 0052 92B3      		in r25,50-32
+ 162 0054 8095      		com r24
+ 163               	.LVL11:
+ 164 0056 9823      		and r25,r24
+ 165 0058 92BB      		out 50-32,r25
+ 166               	.LBB140:
+ 167               	.LBB141:
+ 168               	.LBB142:
+ 169               	.LBB143:
+ 170               	.LBB144:
+ 171               	.LBB145:
+ 172               	.LM18:
+ 173 005a ECEE      		ldi r30,lo8(236)
+ 174 005c F0E0      		ldi r31,hi8(236)
+ 175               	.LVL12:
+ 176               	/* #APP */
+ 177               	 ;  105 "d:/winavr-20090313/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 178 005e 3197      		1: sbiw r30,1
+ 179 0060 01F4      		brne 1b
+ 180               	 ;  0 "" 2
+ 181               	/* #NOAPP */
+ 182               	.LBE145:
+ 183               	.LBE144:
+ 184               	.LBE143:
+ 185               	.LBE142:
+ 186               	.LBE141:
+ 187               	.LBE140:
+ 188               	.LM19:
+ 189 0062 91B3      		in r25,49-32
+ 190 0064 9823      		and r25,r24
+ 191 0066 91BB      		out 49-32,r25
+ 192 0068 92B3      		in r25,50-32
+ 193 006a 8923      		and r24,r25
+ 194 006c 82BB      		out 50-32,r24
+ 195               	.LBB146:
+ 196               	.LBB147:
+ 197               	.LBB148:
+ 198               	.LBB149:
+ 199               	.LM20:
+ 200 006e 80E3      		ldi r24,lo8(48)
+ 201               	.LVL13:
+ 202               	/* #APP */
+ 203               	 ;  83 "d:/winavr-20090313/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 204 0070 8A95      		1: dec r24
+ 205 0072 01F4      		brne 1b
+ 206               	 ;  0 "" 2
+ 207               	/* #NOAPP */
+ 208               	.LBE149:
+ 209               	.LBE148:
+ 210               	.LBE147:
+ 211               	.LBE146:
+ 212               	.LM21:
+ 213 0074 2FBF      		out __SREG__,r18
+ 214               	/* epilogue start */
+ 215               	.LM22:
+ 216 0076 0895      		ret
+ 217               	.LFE8:
+ 219               	.global	OWI_ReadBit
+ 221               	OWI_ReadBit:
+ 222               	.LFB9:
+ 223               	.LM23:
+ 224               	.LVL14:
+ 225               	/* prologue: function */
+ 226               	/* frame size = 0 */
+ 227               	.LM24:
+ 228 0078 3FB7      		in r19,__SREG__
+ 229               	.LVL15:
+ 230               	.LM25:
+ 231               	/* #APP */
+ 232               	 ;  119 "OWISWBitFunctions.c" 1
+ 233 007a F894      		cli
+ 234               	 ;  0 "" 2
+ 235               	.LM26:
+ 236               	/* #NOAPP */
+ 237 007c 91B3      		in r25,49-32
+ 238 007e 982B      		or r25,r24
+ 239 0080 91BB      		out 49-32,r25
+ 240 0082 92B3      		in r25,50-32
+ 241 0084 282F      		mov r18,r24
+ 242 0086 2095      		com r18
+ 243 0088 9223      		and r25,r18
+ 244 008a 92BB      		out 50-32,r25
+ 245               	.LBB150:
+ 246               	.LBB151:
+ 247               	.LBB152:
+ 248               	.LBB153:
+ 249               	.LM27:
+ 250 008c 9AE1      		ldi r25,lo8(26)
+ 251               	.LVL16:
+ 252               	/* #APP */
+ 253               	 ;  83 "d:/winavr-20090313/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 254 008e 9A95      		1: dec r25
+ 255 0090 01F4      		brne 1b
+ 256               	 ;  0 "" 2
+ 257               	/* #NOAPP */
+ 258               	.LBE153:
+ 259               	.LBE152:
+ 260               	.LBE151:
+ 261               	.LBE150:
+ 262               	.LM28:
+ 263 0092 91B3      		in r25,49-32
+ 264               	.LVL17:
+ 265 0094 9223      		and r25,r18
+ 266 0096 91BB      		out 49-32,r25
+ 267 0098 92B3      		in r25,50-32
+ 268 009a 2923      		and r18,r25
+ 269 009c 22BB      		out 50-32,r18
+ 270               	.LBB154:
+ 271               	.LBB155:
+ 272               	.LBB156:
+ 273               	.LBB157:
+ 274               	.LM29:
+ 275 009e 9AE2      		ldi r25,lo8(42)
+ 276               	.LVL18:
+ 277               	/* #APP */
+ 278               	 ;  83 "d:/winavr-20090313/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 279 00a0 9A95      		1: dec r25
+ 280 00a2 01F4      		brne 1b
+ 281               	 ;  0 "" 2
+ 282               	/* #NOAPP */
+ 283               	.LBE157:
+ 284               	.LBE156:
+ 285               	.LBE155:
+ 286               	.LBE154:
+ 287               	.LM30:
+ 288 00a4 90B3      		in r25,48-32
+ 289               	.LVL19:
+ 290               	.LBB158:
+ 291               	.LBB159:
+ 292               	.LBB160:
+ 293               	.LBB161:
+ 294               	.LBB162:
+ 295               	.LBB163:
+ 296               	.LM31:
+ 297 00a6 E8ED      		ldi r30,lo8(216)
+ 298 00a8 F0E0      		ldi r31,hi8(216)
+ 299               	.LVL20:
+ 300               	/* #APP */
+ 301               	 ;  105 "d:/winavr-20090313/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 302 00aa 3197      		1: sbiw r30,1
+ 303 00ac 01F4      		brne 1b
+ 304               	 ;  0 "" 2
+ 305               	/* #NOAPP */
+ 306               	.LBE163:
+ 307               	.LBE162:
+ 308               	.LBE161:
+ 309               	.LBE160:
+ 310               	.LBE159:
+ 311               	.LBE158:
+ 312               	.LM32:
+ 313 00ae 3FBF      		out __SREG__,r19
+ 314               	.LM33:
+ 315 00b0 8923      		and r24,r25
+ 316               	.LVL21:
+ 317               	/* epilogue start */
+ 318 00b2 0895      		ret
+ 319               	.LFE9:
+ 321               	.global	OWI_DetectPresence
+ 323               	OWI_DetectPresence:
+ 324               	.LFB10:
+ 325               	.LM34:
+ 326               	.LVL22:
+ 327               	/* prologue: function */
+ 328               	/* frame size = 0 */
+ 329               	.LM35:
+ 330 00b4 3FB7      		in r19,__SREG__
+ 331               	.LVL23:
+ 332               	.LM36:
+ 333               	/* #APP */
+ 334               	 ;  157 "OWISWBitFunctions.c" 1
+ 335 00b6 F894      		cli
+ 336               	 ;  0 "" 2
+ 337               	.LM37:
+ 338               	/* #NOAPP */
+ 339 00b8 91B3      		in r25,49-32
+ 340 00ba 982B      		or r25,r24
+ 341 00bc 91BB      		out 49-32,r25
+ 342 00be 92B3      		in r25,50-32
+ 343 00c0 282F      		mov r18,r24
+ 344 00c2 2095      		com r18
+ 345 00c4 9223      		and r25,r18
+ 346 00c6 92BB      		out 50-32,r25
+ 347               	.LBB164:
+ 348               	.LBB165:
+ 349               	.LBB166:
+ 350               	.LBB167:
+ 351               	.LBB168:
+ 352               	.LBB169:
+ 353               	.LM38:
+ 354 00c8 ECE7      		ldi r30,lo8(1916)
+ 355 00ca F7E0      		ldi r31,hi8(1916)
+ 356               	.LVL24:
+ 357               	/* #APP */
+ 358               	 ;  105 "d:/winavr-20090313/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 359 00cc 3197      		1: sbiw r30,1
+ 360 00ce 01F4      		brne 1b
+ 361               	 ;  0 "" 2
+ 362               	/* #NOAPP */
+ 363               	.LBE169:
+ 364               	.LBE168:
+ 365               	.LBE167:
+ 366               	.LBE166:
+ 367               	.LBE165:
+ 368               	.LBE164:
+ 369               	.LM39:
+ 370 00d0 91B3      		in r25,49-32
+ 371 00d2 9223      		and r25,r18
+ 372 00d4 91BB      		out 49-32,r25
+ 373 00d6 92B3      		in r25,50-32
+ 374 00d8 2923      		and r18,r25
+ 375 00da 22BB      		out 50-32,r18
+ 376               	.LBB170:
+ 377               	.LBB171:
+ 378               	.LBB172:
+ 379               	.LBB173:
+ 380               	.LBB174:
+ 381               	.LBB175:
+ 382               	.LM40:
+ 383 00dc E4E1      		ldi r30,lo8(276)
+ 384 00de F1E0      		ldi r31,hi8(276)
+ 385               	.LVL25:
+ 386               	/* #APP */
+ 387               	 ;  105 "d:/winavr-20090313/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 388 00e0 3197      		1: sbiw r30,1
+ 389 00e2 01F4      		brne 1b
+ 390               	 ;  0 "" 2
+ 391               	/* #NOAPP */
+ 392               	.LBE175:
+ 393               	.LBE174:
+ 394               	.LBE173:
+ 395               	.LBE172:
+ 396               	.LBE171:
+ 397               	.LBE170:
+ 398               	.LM41:
+ 399 00e4 90B3      		in r25,48-32
+ 400               	.LBB176:
+ 401               	.LBB177:
+ 402               	.LBB178:
+ 403               	.LBB179:
+ 404               	.LBB180:
+ 405               	.LBB181:
+ 406               	.LM42:
+ 407 00e6 E4E6      		ldi r30,lo8(1636)
+ 408 00e8 F6E0      		ldi r31,hi8(1636)
+ 409               	.LVL26:
+ 410               	/* #APP */
+ 411               	 ;  105 "d:/winavr-20090313/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 412 00ea 3197      		1: sbiw r30,1
+ 413 00ec 01F4      		brne 1b
+ 414               	 ;  0 "" 2
+ 415               	/* #NOAPP */
+ 416               	.LBE181:
+ 417               	.LBE180:
+ 418               	.LBE179:
+ 419               	.LBE178:
+ 420               	.LBE177:
+ 421               	.LBE176:
+ 422               	.LM43:
+ 423 00ee 3FBF      		out __SREG__,r19
+ 424 00f0 9095      		com r25
+ 425               	.LM44:
+ 426 00f2 8923      		and r24,r25
+ 427               	.LVL27:
+ 428               	/* epilogue start */
+ 429 00f4 0895      		ret
+ 430               	.LFE10:
+ 488               	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 OWISWBitFunctions.c
+C:\DOCUME~1\оюбек\LOCALS~1\Temp/ccAsGLf6.s:2      *ABS*:0000003f __SREG__
+C:\DOCUME~1\оюбек\LOCALS~1\Temp/ccAsGLf6.s:3      *ABS*:0000003e __SP_H__
+C:\DOCUME~1\оюбек\LOCALS~1\Temp/ccAsGLf6.s:4      *ABS*:0000003d __SP_L__
+C:\DOCUME~1\оюбек\LOCALS~1\Temp/ccAsGLf6.s:5      *ABS*:00000034 __CCP__
+C:\DOCUME~1\оюбек\LOCALS~1\Temp/ccAsGLf6.s:6      *ABS*:00000000 __tmp_reg__
+C:\DOCUME~1\оюбек\LOCALS~1\Temp/ccAsGLf6.s:7      *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\оюбек\LOCALS~1\Temp/ccAsGLf6.s:18     .text:00000000 OWI_Init
+C:\DOCUME~1\оюбек\LOCALS~1\Temp/ccAsGLf6.s:62     .text:00000018 OWI_WriteBit1
+C:\DOCUME~1\оюбек\LOCALS~1\Temp/ccAsGLf6.s:142    .text:00000048 OWI_WriteBit0
+C:\DOCUME~1\оюбек\LOCALS~1\Temp/ccAsGLf6.s:221    .text:00000078 OWI_ReadBit
+C:\DOCUME~1\оюбек\LOCALS~1\Temp/ccAsGLf6.s:323    .text:000000b4 OWI_DetectPresence
+
+NO UNDEFINED SYMBOLS
