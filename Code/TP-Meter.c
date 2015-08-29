@@ -110,36 +110,58 @@ void startup()
 	/* Символы для загрузки в дисплей */
     uint8_t degree[8]=
 	{
-    	0b00001110,
-    	0b00001010,
-    	0b00001110,
-    	0b00000000,
-    	0b00000000,
-    	0b00000000,
-    	0b00000000,
-    	0b00000000
+    	0b00110,
+    	0b01001,
+    	0b01001,
+    	0b00110,
+    	0b00000,
+    	0b00000,
+    	0b00000,
+    	0b00000
 	};
+    uint8_t thermometr[8]=
+    {
+        0b00100,
+        0b01010,
+        0b01010,
+        0b01110,
+        0b11111,
+        0b11111,
+        0b01110,
+		0b00000
+    };
+    uint8_t flash[8]=
+    {
+	    0b00111,
+	    0b01110,
+	    0b11100,
+	    0b11111,		
+	    0b01110,
+	    0b11100,
+	    0b10000,
+		0b00000
+    };
     uint8_t timer[8]=
     {
-        0b00000000,
-        0b00001110,
-        0b00010011,
-        0b00010101,
-        0b00010101,
-        0b00001110,
-        0b00000000,
-        0b00000000
-    };          
+	    0b11111,
+	    0b11111,
+	    0b01110,
+	    0b00100,
+	    0b01110,
+	    0b11111,
+	    0b11111,
+		0b00000,
+    };	
 
     /* Карта LCD-дисплея */
     /*
            |00|01|02|03|04|05|06|07|08|09|10|11|12|13|14|15|
         |01| *| T| 1| =| 9| 5| °| C|  | P| =| 9| 9| 9| 9| W|
-        |02| *| T| 2| =| 9| 5| °| C|  |  |  |  |  |  |  |  |
+        |02| *| T| 2| =| 9| 5| °| C|  | T| =| 0| 1| :| 4| 7|
         
            |00|01|02|03|04|05|06|07|08|09|10|11|12|13|14|15|
         |01| *| T| =| 9| 5| °| C|  | *| P| =| 9| 9| 0| 0| W|
-        |02| *| U| =| 2| 3| 0| V|  | *| t| =| 2| 5| m| i| n| 
+        |02| *| U| =| 2| 3| 0| V|  | *| T| =| 0| 1| :| 5| 0| 
         
            |00|01|02|03|04|05|06|07|08|09|10|11|12|13|14|15|
         |01|  |  |  |  | S| E| T| T| I| N| G| S|  |  |  |  |
@@ -147,10 +169,12 @@ void startup()
     */
 
     /* Инициализация дисплея */
-    lcd_init();				// инициализация дисплея
-    lcd_clrscr();           // очистка дисплея
-	lcd_load(degree, 0);	// загрузка символа градуса по Цельсию
-    lcd_load(timer, 1);     // загрузка символа таймера
+    lcd_init();					// инициализация дисплея
+    lcd_clrscr();				// очистка дисплея
+	lcd_load(degree, 0);		// загрузка символа градуса по Цельсию
+    lcd_load(thermometr, 1);	// загрузка символа термометра
+	lcd_load(flash, 2);			// загрузка символа молнии
+	lcd_load(timer, 3);			// загрузка символа таймера
     
     /* Вывод приглашения для выполнения калибровки */
     lcd_goto(1, 0);
@@ -182,11 +206,11 @@ void temp_out(uint8_t channel, uint8_t temp_value, uint8_t status)
     /* Метод для вывода значения температуры на дисплей */
     lcd_goto(channel, 0);
     if(status)        
-        lcd_prints("*");
+		lcd_prints(">");
     else
         lcd_prints(" ");
-    lcd_prints("T");
-    lcd_itostr(channel);
+    lcd_putc(1);
+	lcd_itostr(channel);
     lcd_prints("=");
     lcd_numTOstr(temp_value, 2);
     lcd_putc(0);
@@ -196,8 +220,9 @@ void power_out(uint16_t power_value)
 {
     /* Метод для вывода значения мощности на дисплей */
     lcd_goto(1, 9);
-    lcd_prints("P=");
-    lcd_numTOstr(power_value, 4);
+    lcd_putc(2);
+	lcd_prints("=");
+	lcd_numTOstr(power_value, 4);
     lcd_prints("W");
 }
 void time_out(uint8_t timer_value, uint8_t timer_current)
@@ -208,9 +233,8 @@ void time_out(uint8_t timer_value, uint8_t timer_current)
     uint8_t hours = time / 60;
     uint8_t mins = time % 60;
     lcd_goto(2, 9);
-    //lcd_prints("Tx=");
-    lcd_putc(1);
-    lcd_prints(" ");
+    lcd_putc(3);
+	lcd_prints("=");
     lcd_numTOstr(hours, 2);  
     lcd_prints(":");
     lcd_numTOstr(mins, 2);
