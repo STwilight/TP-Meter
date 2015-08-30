@@ -10,64 +10,136 @@
  */ 
 
 /* Определение рабочей частоты МК */
-#define F_CPU 8000000
+#define F_CPU           8000000
 
 /* Подключение библиотек */
 #include <avr/io.h>
 #include <util/delay.h>
+#include <avr/eeprom.h>
 #include "hd44780.h"
 
 /* Определение спец. значений */
-#define True  1
-#define False 0
+#define True            1
+#define False           0
 
 /* Определение кнопок */
-#define MODE_BUTTON  PC3
-#define PLUS_BUTTON  PC4
-#define MINUS_BUTTON PC5
+#define MODE_BUTTON     PC3
+#define PLUS_BUTTON     PC4
+#define MINUS_BUTTON    PC5
 
-/* Определение времени (в мс) для устранения дребезга контактов */
-#define debounce_interval 500
+/* Определение времени задержки (мс) для устранения дребезга контактов */
+#define DEB_INT		    500	//100
 
 /* Определение режимов работы и установок */
 /* Режимы работы */
-#define WRK_MODE      1
-#define SET_MODE      2
-#define CAL_MODE      3
+#define WRK_MODE        1
+#define SET_MODE        2
+#define CAL_MODE        3
+/* Количество режимов */
+#define MODE_CNT	    3
 /* Настройки */
-#define SET_TMP       0
-#define SET_PWR       1
-#define SET_VTG       2
-#define SET_TIM       3
-/* Количество настроек */
-#define SET_CNT       4
+#define SET_TMP         0
+#define SET_PWR         1
+#define SET_VTG         2
+#define SET_TIM         3
+#define SET_BUZ	        4
+#define SET_LUM		    5
+#define SET_CTR	        6
+/* Количество доступных настроек */
+#define SET_CNT         7 //4
 
 /* Определение границ и шага для настраиваемых значений */
-#define temp_min      20
-#define temp_max      90
-#define temp_delta    10
-#define power_min     100
-#define power_max     9900
-#define power_delta   100
-#define voltage_min   180
-#define voltage_max   240
-#define voltage_delta 10
-#define time_min      10
-#define time_max      120 
-#define time_delta    10
-
+/* Границы и шаг максимальной температуры */
+#define temp_min        20
+#define temp_max        90
+#define temp_delta      10
+/* Границы и шаг максимальной потребляемой мощности */
+#define power_min       100
+#define power_max       9900
+#define power_delta     100
+/* Границы и шаг значения входного сетевого напряжения */
+#define voltage_min     180
+#define voltage_max     250
+#define voltage_delta   10
+/* Границы и шаг таймера отключения нагрузки */
+#define timer_min       0
+#define timer_max       120 
+#define timer_delta     10
+/* Границы и шаг значения яркости дисплея */
+#define lcd_light_min   0
+#define lcd_light_max   255
+#define lcd_light_delta 5	  
+/* Границы и шаг значения контрастности дисплея */
+#define lcd_contr_min   0
+#define lcd_contr_max   255
+#define lcd_contr_delta 5
 /* Объявление глобальных переменных */
-uint8_t mode   = 0;
-uint8_t option = 0;
-uint8_t launch = True;
-uint8_t  max_tmp = 0;
-uint16_t max_pwr = 0;
-uint8_t net_vtg = 0;
-uint8_t timer_value = 0;
-uint8_t timer_current = 0;
+/* Переменные режимов работы */
+uint8_t  mode         = 0;
+uint8_t  option       = 0;
+uint8_t  launch       = True;
+/* Переменные, хранящие значения настроек */
+uint8_t           set_max_tmp  = 0;
+uint8_t  EEMEM ee_set_max_tmp  = 0;
+uint16_t          set_max_pwr  = 0;
+uint16_t EEMEM ee_set_max_pwr  = 0;
+uint8_t           set_vtg      = 0;
+uint8_t EEMEM  ee_set_vtg      = 0;
+uint8_t           set_timer    = 0;
+uint8_t EEMEM  ee_set_timer    = 0;
+uint8_t           set_light    = 0;
+uint8_t EEMEM  ee_set_light    = 0;
+uint8_t           set_contrast = 0;
+uint8_t EEMEM  ee_set_contrast = 0;
+uint8_t           set_buzzer   = True;
+uint8_t EEMEM  ee_set_buzzer   = True;
+/* Прочие переменные */
+uint8_t timer_value   = 0;
 
+void eeprom_load()
+{
+	/* Процедура для загрузки настроек из EEPROM */
+	set_max_tmp = eeprom_read_byte(&ee_set_max_tmp);
+	if((set_max_tmp < temp_min) || (set_max_tmp > temp_max))
+		set_max_tmp = temp_min;
+	
+	set_max_pwr = eeprom_read_word(&ee_set_max_pwr);
+	if((set_max_pwr < power_min) || (set_max_pwr > power_max))
+		set_max_pwr = power_min;
+	
+	set_vtg = eeprom_read_byte(&ee_set_vtg);
+	if((set_vtg < voltage_min) || (set_vtg > voltage_max))
+		set_vtg = 220;
+	
+	set_timer = eeprom_read_byte(&ee_set_timer);
+	if((set_timer < timer_min) || (set_timer > timer_max))
+		set_timer = timer_min;
+	
+	set_light = eeprom_read_byte(&ee_set_light);
+	if((set_light < lcd_light_min) || (set_light > lcd_light_max))
+		set_light = lcd_light_max;
+	
+	set_contrast = eeprom_read_byte(&ee_set_contrast);
+	if((set_contrast < lcd_contr_min) || (set_contrast > lcd_contr_max))
+		set_contrast = lcd_contr_max;
+	
+	set_buzzer = eeprom_read_byte(&ee_set_buzzer);
+	
+}
+void eeprom_save()
+{
+	/* Процедура для сохранения настроек в EEPROM */
+	eeprom_write_byte(&ee_set_max_tmp, set_max_tmp);
+	eeprom_write_word(&ee_set_max_pwr, set_max_pwr);
+	eeprom_write_byte(&ee_set_vtg, set_vtg);
+	eeprom_write_byte(&ee_set_timer, set_timer);
+	eeprom_write_byte(&ee_set_light, set_light);
+	eeprom_write_byte(&ee_set_contrast, set_contrast);
+	eeprom_write_byte(&ee_set_buzzer, set_buzzer);	
+}
 void startup()
 {
+	/* Начальная процедура настройки и запуска */
 	/* Карта портов */
     /*
         PORT B:
@@ -106,6 +178,9 @@ void startup()
     PORTC = 0x38;
     DDRD  = 0xFF;
     PORTD = 0x60;
+
+	/* Загрузка параметров из EEPROM */
+	eeprom_load();
     
 	/* Символы для загрузки в дисплей */
     uint8_t degree[8]=
@@ -150,8 +225,52 @@ void startup()
 	    0b01110,
 	    0b11111,
 	    0b11111,
-		0b00000,
-    };	
+		0b00000
+    };
+    uint8_t plug[8]=
+    {
+	    0b01010,
+	    0b01010,
+	    0b11111,
+		0b11111,
+	    0b01110,
+	    0b00100,
+	    0b00010,
+	    0b00100
+    };
+    uint8_t light[8]=
+    {
+	    0b01110,
+	    0b10001,
+	    0b11011,
+	    0b10101,
+	    0b01110,
+	    0b01110,
+	    0b00100,
+		0b00000
+    };
+    uint8_t contrast[8]=
+    {
+	    0b01110,
+	    0b10111,
+		0b10011,
+	    0b10011,
+	    0b10011,
+		0b10111,
+	    0b01110,
+	    0b00000
+    };
+    uint8_t sound[8]=
+    {
+	    0b00110,
+	    0b01010,
+	    0b10011,
+		0b10011,
+	    0b10011,
+	    0b01010,
+	    0b00110,
+	    0b00000
+    };		
 
     /* Карта LCD-дисплея */
     /*
@@ -175,6 +294,10 @@ void startup()
     lcd_load(thermometr, 1);	// загрузка символа термометра
 	lcd_load(flash, 2);			// загрузка символа молнии
 	lcd_load(timer, 3);			// загрузка символа таймера
+	lcd_load(plug, 4);			// загрузка символа вилки
+	lcd_load(light, 5);			// загрузка символа лампочки
+	lcd_load(contrast, 6);		// загрузка символа контрастности
+	lcd_load(sound, 7);			// загрузка символа динамика
     
     /* Вывод приглашения для выполнения калибровки */
     lcd_goto(1, 0);
@@ -182,7 +305,7 @@ void startup()
     lcd_goto(2, 0);
     lcd_prints("\tPress \"MODE\"");
 }
-void calibrating()
+void calibrate()
 {
     /* Процедура калибровки АЦП для устранения шумов */
     lcd_clrscr();
@@ -197,9 +320,73 @@ void calibrating()
     lcd_clrscr();
     mode = WRK_MODE;
 }
-void setup()
+void settings()
 {
-    /* Процедура для установки значений */
+    /* Процедура для настройки параметров */
+    lcd_goto(1, 0);
+    lcd_prints("\t\tSETTINGS");  
+	lcd_goto(2, 0);
+	switch(option)
+    {
+	    case SET_TMP:
+			// Настройка максимально-допустимой температуры
+			lcd_prints("\t ");
+			lcd_putc(1);
+			lcd_prints("max: ");
+			lcd_numTOstr(set_max_tmp, 2);
+			lcd_putc(0);
+			lcd_prints("C");
+			break;
+	    case SET_PWR:
+			// Настройка максимально-допустимой мощности
+			lcd_prints("\t");
+			lcd_putc(2);
+			lcd_prints("max: ");
+			lcd_numTOstr(set_max_pwr, 4);
+			lcd_prints(" W");
+			break;
+	    case SET_VTG:
+			// Настройка напряжения сети
+			lcd_prints("\t ");
+			lcd_putc(4);
+			lcd_prints("in: ");
+			lcd_numTOstr(set_vtg, 3);
+			lcd_prints(" V");
+			break;
+	    case SET_TIM:
+			// Настройка таймера отключения нагревателя (поддержание заданной температуры)
+			lcd_prints("\t\t");
+			lcd_putc(3);
+			lcd_prints(": ");
+			lcd_numTOstr(set_timer / 60, 2);
+			lcd_prints(":");
+			lcd_numTOstr(set_timer % 60, 2);
+			break;
+	    case SET_BUZ:
+			// Настройка звукового оповещения
+			lcd_prints("\t\t ");
+			lcd_putc(7);
+			lcd_prints(": ");
+			if(set_buzzer)
+				lcd_prints("ON ");
+			else
+				lcd_prints("OFF");
+			break;			
+	    case SET_LUM:
+			// Настройка яркости дисплея
+			lcd_prints("\t\t ");
+			lcd_putc(5);
+			lcd_prints(": ");
+			lcd_numTOstr(set_light, 3);
+			break;
+	    case SET_CTR:
+			// Настройка контрастности дисплея
+			lcd_prints("\t\t ");
+			lcd_putc(6);
+			lcd_prints(": ");
+			lcd_numTOstr(set_contrast, 3);
+			break;						
+    }	
 }
 void temp_out(uint8_t channel, uint8_t temp_value, uint8_t status)
 {
@@ -225,11 +412,10 @@ void power_out(uint16_t power_value)
 	lcd_numTOstr(power_value, 4);
     lcd_prints("W");
 }
-void time_out(uint8_t timer_value, uint8_t timer_current)
+void time_out(uint8_t set_timer, uint8_t timer_value)
 {
     /* Метод для вывода оставшегося времени на дисплей */
-    // время, переданное в минутах, переводится в часы
-    uint8_t time = timer_value - timer_current;
+    uint8_t time = set_timer - timer_value;
     uint8_t hours = time / 60;
     uint8_t mins = time % 60;
     lcd_goto(2, 9);
@@ -239,15 +425,22 @@ void time_out(uint8_t timer_value, uint8_t timer_current)
     lcd_prints(":");
     lcd_numTOstr(mins, 2);
 }
-void measure(uint8_t temperature, uint16_t power)
+void display()
 {
-    /* Процедура измерения входных параметров */
+	/* Метод вывода данных на основной экран */
+	temp_out(1, 27, False);
+	temp_out(2, 32, True);
+	power_out(9900);
+	if(set_timer != 0)
+		time_out(set_timer, timer_value);
+	// таймер = 85 мин = 1:25, прошло = 0:13, осталось = 1:12
 }
 void buttons_check()
 {
-    if(CHECKBIT(PINC, MODE_BUTTON) == 0)
+    /* Процедура проверки нажатия кнопок */
+	if(CHECKBIT(PINC, MODE_BUTTON) == 0)
     {
-        _delay_ms(debounce_interval);
+        _delay_ms(DEB_INT);
         if(launch == True)
         {
             launch = False;
@@ -258,23 +451,103 @@ void buttons_check()
             lcd_clrscr();
             if(mode == SET_MODE)
             {
-                if(option < SET_CNT-1)
+				if(option < SET_CNT-1)
                     option++;
                 else
                 {
-                    option = SET_TMP;
+					// !!! CHECK THIS FEATURE IN HARDWARE, IN SIMULATOR IT DOESN'T WORK
+					eeprom_save();
+					option = SET_TMP;
                     mode = WRK_MODE;
                 }
             }
             else
             {
-                if(mode < SET_MODE)
+                if(mode < MODE_CNT-1)
                     mode++;
                 else
-                    mode = WRK_MODE;            
+					mode = WRK_MODE;
             }
         }
-    }   
+    }
+	if(mode == SET_MODE)
+	{
+		if(CHECKBIT(PINC, PLUS_BUTTON) == 0)
+		{
+			_delay_ms(DEB_INT);
+			switch(option)
+			{
+				case SET_TMP:
+ 					if(set_max_tmp < temp_max)
+ 						set_max_tmp += temp_delta;
+					break;
+				case SET_PWR:
+					if(set_max_pwr < power_max)
+						set_max_pwr += power_delta;
+					break;
+				case SET_VTG:
+					if(set_vtg < voltage_max)
+						set_vtg += voltage_delta;
+					break;
+				case SET_TIM:
+					if(set_timer < timer_max)
+						set_timer += timer_delta;
+					break;
+				case SET_BUZ:
+					if(set_buzzer)
+						set_buzzer = False;
+					else
+						set_buzzer = True;
+					break;
+				case SET_LUM:
+					if(set_light < lcd_light_max)
+						set_light += lcd_light_delta;
+					break;
+				case SET_CTR:
+					if(set_contrast < lcd_contr_max)
+						set_contrast += lcd_contr_delta;
+					break;											
+			}
+		}
+		else if(CHECKBIT(PINC, MINUS_BUTTON) == 0)
+		{
+			_delay_ms(DEB_INT);
+			switch(option)
+			{
+				case SET_TMP:
+					if(set_max_tmp > temp_min)
+						set_max_tmp -= temp_delta;
+					break;
+				case SET_PWR:
+					if(set_max_pwr > power_min)
+						set_max_pwr -= power_delta;
+					break;
+				case SET_VTG:
+					if(set_vtg > voltage_min)
+						set_vtg -= voltage_delta;
+					break;
+				case SET_TIM:
+					if(set_timer > timer_min)
+						set_timer -= timer_delta;
+					break;
+				case SET_BUZ:
+					if(set_buzzer)
+						set_buzzer = False;
+					else
+						set_buzzer = True;
+					break;
+				case SET_LUM:
+					if(set_light > lcd_light_min)
+						set_light -= lcd_light_delta;
+					break;
+				case SET_CTR:
+					if(set_contrast > lcd_contr_min)
+						set_contrast -= lcd_contr_delta;
+					break;
+			}
+		}		
+	}
+	
 }
 
 int main(void)
@@ -286,60 +559,13 @@ int main(void)
         switch(mode)
         {
             case WRK_MODE:
-                temp_out(1, 27, False);
-                temp_out(2, 32, True);
-                power_out(9900);
-                time_out(85, 13); // таймер = 85 мин = 1:25, прошло = 0:13, осталось = 1:12
+				display();
                 break;
             case SET_MODE:
-                switch(option)
-                {
-                    case SET_TMP:
-                        // Настройка максимально-допустимой температуры
-                        lcd_goto(1, 0);
-                        lcd_prints("\t\tSETTINGS");
-                        lcd_goto(2, 0);
-                        lcd_prints("\tTmax = ");
-                        lcd_numTOstr(max_tmp, 2);
-                        lcd_prints(" ");
-                        lcd_putc(0);
-                        lcd_prints("C");             
-                        break;
-                    case SET_PWR:
-                        // Настройка максимально-допустимой мощности
-                        lcd_goto(1, 0);
-                        lcd_prints("\t\tSETTINGS");
-                        lcd_goto(2, 0);
-                        lcd_prints("\tPmax = ");
-                        lcd_numTOstr(max_pwr, 4);
-                        lcd_prints(" ");
-                        lcd_prints("W");                                       
-                        break;                    
-                    case SET_VTG:
-                        // Настройка напряжения сети
-                        lcd_goto(1, 0);
-                        lcd_prints("\t\tSETTINGS");
-                        lcd_goto(2, 0);
-                        lcd_prints("\tUin = ");
-                        lcd_numTOstr(net_vtg, 3);
-                        lcd_prints(" ");
-                        lcd_prints("V");                                         
-                        break;                    
-                    case SET_TIM:
-                        // Настройка таймера отключения нагревателя (поддержание заданной температуры)
-                        lcd_goto(1, 0);
-                        lcd_goto(1, 0);
-                        lcd_prints("\t\tSETTINGS");
-                        lcd_goto(2, 0);
-                        lcd_prints(" TIMER = ");
-                        lcd_numTOstr(timer_value, 3);
-                        lcd_prints(" ");
-                        lcd_prints("min");
-                        break;                    
-                }
+				settings();
                 break;
             case CAL_MODE:
-                calibrating();
+                calibrate();
                 break;            
         }
     }
