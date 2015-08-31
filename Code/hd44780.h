@@ -45,12 +45,12 @@ extern "C" {
 /* SET LCD<->MCU CONNECTIONS */
 //-------------------------------
 #define LCD_WIRE          		      PORTB // select your microcontroller gpio port
-#define E  		 	   	  		      1 // pin number in selected port
-#define RS 		  	   	  		      0 // pin number in selected port
-#define D7 		 	   	  		      5 // pin number in selected port
-#define D6 		 	   	  		      4 // pin number in selected port
-#define D5 		 	   	  		      3 // pin number in selected port
-#define D4 		  	   	  		      2 // pin number in selected port
+#define E  		 	   	  		      4 // pin number in selected port
+#define RS 		  	   	  		      5 // pin number in selected port
+#define D7 		 	   	  		      0 // pin number in selected port
+#define D6 		 	   	  		      1 // pin number in selected port
+#define D5 		 	   	  		      2 // pin number in selected port
+#define D4 		  	   	  		      3 // pin number in selected port
 //-------------------------------
 // SELECT MCU FREQUENCE
 //-------------------------------

@@ -43,10 +43,9 @@
 #define SET_VTG         2
 #define SET_TIM         3
 #define SET_BUZ	        4
-#define SET_LUM		    5
-#define SET_CTR	        6
+#define SET_CTR	        5
 /* Количество доступных настроек */
-#define SET_CNT         7 //4
+#define SET_CNT         6 //4
 
 /* Определение границ и шага для настраиваемых значений */
 /* Границы и шаг максимальной температуры */
@@ -64,11 +63,7 @@
 /* Границы и шаг таймера отключения нагрузки */
 #define timer_min       0
 #define timer_max       120 
-#define timer_delta     10
-/* Границы и шаг значения яркости дисплея */
-#define lcd_light_min   0
-#define lcd_light_max   255
-#define lcd_light_delta 5	  
+#define timer_delta     10	  
 /* Границы и шаг значения контрастности дисплея */
 #define lcd_contr_min   0
 #define lcd_contr_max   255
@@ -87,8 +82,6 @@ uint8_t           set_vtg      = 0;
 uint8_t EEMEM  ee_set_vtg      = 0;
 uint8_t           set_timer    = 0;
 uint8_t EEMEM  ee_set_timer    = 0;
-uint8_t           set_light    = 0;
-uint8_t EEMEM  ee_set_light    = 0;
 uint8_t           set_contrast = 0;
 uint8_t EEMEM  ee_set_contrast = 0;
 uint8_t           set_buzzer   = True;
@@ -114,11 +107,7 @@ void eeprom_load()
 	set_timer = eeprom_read_byte(&ee_set_timer);
 	if((set_timer < timer_min) || (set_timer > timer_max))
 		set_timer = timer_min;
-	
-	set_light = eeprom_read_byte(&ee_set_light);
-	if((set_light < lcd_light_min) || (set_light > lcd_light_max))
-		set_light = lcd_light_max;
-	
+		
 	set_contrast = eeprom_read_byte(&ee_set_contrast);
 	if((set_contrast < lcd_contr_min) || (set_contrast > lcd_contr_max))
 		set_contrast = lcd_contr_max;
@@ -133,7 +122,6 @@ void eeprom_save()
 	eeprom_write_word(&ee_set_max_pwr, set_max_pwr);
 	eeprom_write_byte(&ee_set_vtg, set_vtg);
 	eeprom_write_byte(&ee_set_timer, set_timer);
-	eeprom_write_byte(&ee_set_light, set_light);
 	eeprom_write_byte(&ee_set_contrast, set_contrast);
 	eeprom_write_byte(&ee_set_buzzer, set_buzzer);	
 }
@@ -166,8 +154,8 @@ void startup()
                PD2 – N/A;              (N/A, OUT, 0);
                PD3 – BUZZER            (OC2B, OUT, 0);
                PD4 – N/A;              (N/A, OUT, 0);
-               PD5 – BACKLIGHT         (OC0B, OUT, 1);
-               PD6 – CONTRAST          (OC0A, OUT, 1);
+               PD5 – CONTRAST          (OC0B, OUT, 1);
+               PD6 – N/A               (N/A, OUT, 0);
                PD7 – N/A;              (N/A, OUT, 0);
     */
 
@@ -177,100 +165,10 @@ void startup()
     DDRC  = 0x86;
     PORTC = 0x38;
     DDRD  = 0xFF;
-    PORTD = 0x60;
+    PORTD = 0x32;
 
 	/* Загрузка параметров из EEPROM */
-	eeprom_load();
-    
-	/* Символы для загрузки в дисплей */
-    uint8_t degree[8]=
-	{
-    	0b00110,
-    	0b01001,
-    	0b01001,
-    	0b00110,
-    	0b00000,
-    	0b00000,
-    	0b00000,
-    	0b00000
-	};
-    uint8_t thermometr[8]=
-    {
-        0b00100,
-        0b01010,
-        0b01010,
-        0b01110,
-        0b11111,
-        0b11111,
-        0b01110,
-		0b00000
-    };
-    uint8_t flash[8]=
-    {
-	    0b00111,
-	    0b01110,
-	    0b11100,
-	    0b11111,		
-	    0b01110,
-	    0b11100,
-	    0b10000,
-		0b00000
-    };
-    uint8_t timer[8]=
-    {
-	    0b11111,
-	    0b11111,
-	    0b01110,
-	    0b00100,
-	    0b01110,
-	    0b11111,
-	    0b11111,
-		0b00000
-    };
-    uint8_t plug[8]=
-    {
-	    0b01010,
-	    0b01010,
-	    0b11111,
-		0b11111,
-	    0b01110,
-	    0b00100,
-	    0b00010,
-	    0b00100
-    };
-    uint8_t light[8]=
-    {
-	    0b01110,
-	    0b10001,
-	    0b11011,
-	    0b10101,
-	    0b01110,
-	    0b01110,
-	    0b00100,
-		0b00000
-    };
-    uint8_t contrast[8]=
-    {
-	    0b01110,
-	    0b10111,
-		0b10011,
-	    0b10011,
-	    0b10011,
-		0b10111,
-	    0b01110,
-	    0b00000
-    };
-    uint8_t sound[8]=
-    {
-	    0b00110,
-	    0b01010,
-	    0b10011,
-		0b10011,
-	    0b10011,
-	    0b01010,
-	    0b00110,
-	    0b00000
-    };		
+	eeprom_load();		
 
     /* Карта LCD-дисплея */
     /*
@@ -290,20 +188,102 @@ void startup()
     /* Инициализация дисплея */
     lcd_init();					// инициализация дисплея
     lcd_clrscr();				// очистка дисплея
-	lcd_load(degree, 0);		// загрузка символа градуса по Цельсию
-    lcd_load(thermometr, 1);	// загрузка символа термометра
-	lcd_load(flash, 2);			// загрузка символа молнии
-	lcd_load(timer, 3);			// загрузка символа таймера
-	lcd_load(plug, 4);			// загрузка символа вилки
-	lcd_load(light, 5);			// загрузка символа лампочки
-	lcd_load(contrast, 6);		// загрузка символа контрастности
-	lcd_load(sound, 7);			// загрузка символа динамика
     
     /* Вывод приглашения для выполнения калибровки */
     lcd_goto(1, 0);
     lcd_prints("\tTo calibrate");
     lcd_goto(2, 0);
     lcd_prints("\tPress \"MODE\"");
+}
+void symbols_load()
+{
+	/* Символы для загрузки в дисплей */
+	uint8_t degree[8]=
+	{
+		0b00110,
+		0b01001,
+		0b01001,
+		0b00110,
+		0b00000,
+		0b00000,
+		0b00000,
+		0b00000
+	};
+	uint8_t thermometr[8]=
+	{
+		0b00100,
+		0b01010,
+		0b01010,
+		0b01110,
+		0b11111,
+		0b11111,
+		0b01110,
+		0b00000
+	};
+	uint8_t flash[8]=
+	{
+		0b00111,
+		0b01110,
+		0b11100,
+		0b11111,
+		0b01110,
+		0b11100,
+		0b10000,
+		0b00000
+	};
+	uint8_t timer[8]=
+	{
+		0b11111,
+		0b11111,
+		0b01110,
+		0b00100,
+		0b01110,
+		0b11111,
+		0b11111,
+		0b00000
+	};
+	uint8_t plug[8]=
+	{
+		0b01010,
+		0b01010,
+		0b11111,
+		0b11111,
+		0b01110,
+		0b00100,
+		0b00010,
+		0b00100
+	};
+	uint8_t contrast[8]=
+	{
+		0b01110,
+		0b10111,
+		0b10011,
+		0b10011,
+		0b10011,
+		0b10111,
+		0b01110,
+		0b00000
+	};
+	uint8_t sound[8]=
+	{
+		0b00110,
+		0b01010,
+		0b10011,
+		0b10011,
+		0b10011,
+		0b01010,
+		0b00110,
+		0b00000
+	};
+	
+	/* Загрузка символов в память дисплея */
+	lcd_load(degree, 0);		// загрузка символа градуса по Цельсию
+	lcd_load(thermometr, 1);	// загрузка символа термометра
+	lcd_load(flash, 2);			// загрузка символа молнии
+	lcd_load(timer, 3);			// загрузка символа таймера
+	lcd_load(plug, 4);			// загрузка символа вилки
+	lcd_load(contrast, 5);		// загрузка символа контрастности
+	lcd_load(sound, 6);			// загрузка символа динамика		
 }
 void calibrate()
 {
@@ -318,6 +298,7 @@ void calibrate()
         _delay_ms(5);
     }
     lcd_clrscr();
+	symbols_load();
     mode = WRK_MODE;
 }
 void settings()
@@ -365,24 +346,17 @@ void settings()
 	    case SET_BUZ:
 			// Настройка звукового оповещения
 			lcd_prints("\t\t ");
-			lcd_putc(7);
+			lcd_putc(6);
 			lcd_prints(": ");
 			if(set_buzzer)
 				lcd_prints("ON ");
 			else
 				lcd_prints("OFF");
-			break;			
-	    case SET_LUM:
-			// Настройка яркости дисплея
-			lcd_prints("\t\t ");
-			lcd_putc(5);
-			lcd_prints(": ");
-			lcd_numTOstr(set_light, 3);
 			break;
 	    case SET_CTR:
 			// Настройка контрастности дисплея
 			lcd_prints("\t\t ");
-			lcd_putc(6);
+			lcd_putc(5);
 			lcd_prints(": ");
 			lcd_numTOstr(set_contrast, 3);
 			break;						
@@ -455,7 +429,6 @@ void buttons_check()
                     option++;
                 else
                 {
-					// !!! CHECK THIS FEATURE IN HARDWARE, IN SIMULATOR IT DOESN'T WORK
 					eeprom_save();
 					option = SET_TMP;
                     mode = WRK_MODE;
@@ -499,10 +472,6 @@ void buttons_check()
 					else
 						set_buzzer = True;
 					break;
-				case SET_LUM:
-					if(set_light < lcd_light_max)
-						set_light += lcd_light_delta;
-					break;
 				case SET_CTR:
 					if(set_contrast < lcd_contr_max)
 						set_contrast += lcd_contr_delta;
@@ -535,10 +504,6 @@ void buttons_check()
 						set_buzzer = False;
 					else
 						set_buzzer = True;
-					break;
-				case SET_LUM:
-					if(set_light > lcd_light_min)
-						set_light -= lcd_light_delta;
 					break;
 				case SET_CTR:
 					if(set_contrast > lcd_contr_min)
