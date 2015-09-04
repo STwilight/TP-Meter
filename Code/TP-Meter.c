@@ -86,8 +86,9 @@ uint8_t           set_contrast = 0;
 uint8_t EEMEM  ee_set_contrast = 0;
 uint8_t           set_buzzer   = True;
 uint8_t EEMEM  ee_set_buzzer   = True;
-/* Прочие переменные */
+/* Прочие переменные и определения */
 uint8_t timer_value   = 0;
+#define CONTRAST OCR0B
 
 void eeprom_load()
 {
@@ -167,6 +168,14 @@ void startup()
     DDRD  = 0xFF;
     PORTD = 0x32;
 
+	/* Настройка таймеров */
+	TCCR0A|=(0<<COM0A1)|(0<<COM0A0)|(1<<COM0B1)|(0<<COM0B0)|(0<<WGM01)|(1<<WGM00);
+	// PD6 (OC0A) Output Disabled, PD5 (OC0B) Output is Phase-Correct PWM, TOP = 0xFF
+	TCCR0B|=(0<<WGM02)|(0<<CS02)|(0<<CS01)|(1<<CS00);
+	// Prescaller = 1, f = 8 MHz / (1 * 510) = 15.686275 kHz
+	//TCCR0B|=(0<<WGM02)|(1<<CS02)|(0<<CS01)|(1<<CS00);
+	// Proteus Debug: Prescaller = 1024, f = 8 MHz / (1024 * 510) = 7.659314 Hz
+
 	/* Загрузка параметров из EEPROM */
 	eeprom_load();		
 
@@ -190,10 +199,12 @@ void startup()
     lcd_clrscr();				// очистка дисплея
     
     /* Вывод приглашения для выполнения калибровки */
-    lcd_goto(1, 0);
-    lcd_prints("\tTo calibrate");
-    lcd_goto(2, 0);
-    lcd_prints("\tPress \"MODE\"");
+//     lcd_goto(1, 0);
+//     lcd_prints("\tTo calibrate");
+//     lcd_goto(2, 0);
+//     lcd_prints("\tPress \"MODE\"");
+	mode = SET_MODE;
+	option = SET_CTR;
 }
 void symbols_load()
 {
@@ -533,6 +544,7 @@ int main(void)
                 calibrate();
                 break;            
         }
+		CONTRAST = set_contrast;
     }
     return 0;
 }

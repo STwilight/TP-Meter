@@ -280,7 +280,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0xcf8
+.text           0x00000000      0xcfe
  *(.vectors)
  .vectors       0x00000000       0x34 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4/crtm48.o
                 0x00000000                __vector_default
@@ -443,42 +443,42 @@ END GROUP
  .text.buttons_check
                 0x00000a1c      0x1cc TP-Meter.o
                 0x00000a1c                buttons_check
- .text.main     0x00000be8       0x20 TP-Meter.o
+ .text.main     0x00000be8       0x26 TP-Meter.o
                 0x00000be8                main
  .text.libgcc.div
-                0x00000c08       0x28 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_divmodsi4.o)
-                0x00000c08                __divmodsi4
+                0x00000c0e       0x28 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_divmodsi4.o)
+                0x00000c0e                __divmodsi4
  .text.libgcc.div
-                0x00000c30       0x10 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_negsi2.o)
-                0x00000c30                __negsi2
+                0x00000c36       0x10 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_negsi2.o)
+                0x00000c36                __negsi2
  .text.libgcc.mul
-                0x00000c40       0x18 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_umulhisi3.o)
-                0x00000c40                __umulhisi3
+                0x00000c46       0x18 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_umulhisi3.o)
+                0x00000c46                __umulhisi3
  .text.libgcc.div
-                0x00000c58       0x44 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
-                0x00000c58                __udivmodsi4
+                0x00000c5e       0x44 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
+                0x00000c5e                __udivmodsi4
  .text.avr-libc
-                0x00000c9c       0x10 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eerd_byte_atmega48.o)
-                0x00000c9c                __eerd_byte_m48
+                0x00000ca2       0x10 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eerd_byte_atmega48.o)
+                0x00000ca2                __eerd_byte_m48
  .text.avr-libc
-                0x00000cac        0x8 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eerd_word_atmega48.o)
-                0x00000cac                __eerd_word_m48
+                0x00000cb2        0x8 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eerd_word_atmega48.o)
+                0x00000cb2                __eerd_word_m48
  .text.avr-libc
-                0x00000cb4       0x1c c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eewr_byte_atmega48.o)
-                0x00000cb4                __eewr_byte_m48
-                0x00000cb6                __eewr_r18_m48
+                0x00000cba       0x1c c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eewr_byte_atmega48.o)
+                0x00000cba                __eewr_byte_m48
+                0x00000cbc                __eewr_r18_m48
  .text.avr-libc
-                0x00000cd0        0x6 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eewr_word_atmega48.o)
-                0x00000cd0                __eewr_word_m48
+                0x00000cd6        0x6 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eewr_word_atmega48.o)
+                0x00000cd6                __eewr_word_m48
  .text.avr-libc
-                0x00000cd6       0x1e c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eerd_block_atmega48.o)
-                0x00000cd6                __eerd_block_m48
-                0x00000cda                __eerd_blraw_m48
-                0x00000cf4                . = ALIGN (0x2)
+                0x00000cdc       0x1e c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eerd_block_atmega48.o)
+                0x00000cdc                __eerd_block_m48
+                0x00000ce0                __eerd_blraw_m48
+                0x00000cfa                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00000cf4        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_exit.o)
-                0x00000cf4                _exit
-                0x00000cf4                exit
+ .fini9         0x00000cfa        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_exit.o)
+                0x00000cfa                _exit
+                0x00000cfa                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -497,11 +497,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00000cf4        0x4 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_exit.o)
+ .fini0         0x00000cfa        0x4 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_exit.o)
  *(.fini0)
-                0x00000cf8                _etext = .
+                0x00000cfe                _etext = .
 
-.data           0x00800100       0xa0 load address 0x00000cf8
+.data           0x00800100       0x84 load address 0x00000cfe
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -516,52 +516,52 @@ END GROUP
  .rodata.progress_bar
                 0x0080013a        0x6 hd44780.o
  .rodata.str1.1
-                0x00800140       0x5f TP-Meter.o
-                                 0x6b (size before relaxing)
+                0x00800140       0x43 TP-Meter.o
+                                 0x4f (size before relaxing)
  *(.gnu.linkonce.d*)
-                0x008001a0                . = ALIGN (0x2)
- *fill*         0x0080019f        0x1 
-                0x008001a0                _edata = .
-                0x008001a0                PROVIDE (__data_end, .)
+                0x00800184                . = ALIGN (0x2)
+ *fill*         0x00800183        0x1 
+                0x00800184                _edata = .
+                0x00800184                PROVIDE (__data_end, .)
 
-.bss            0x008001a0        0xa
-                0x008001a0                PROVIDE (__bss_start, .)
+.bss            0x00800184        0xa
+                0x00800184                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
  .bss.current_bar_load
-                0x008001a0        0x1 hd44780.o
+                0x00800184        0x1 hd44780.o
  .bss.timer_value
-                0x008001a1        0x1 TP-Meter.o
-                0x008001a1                timer_value
+                0x00800185        0x1 TP-Meter.o
+                0x00800185                timer_value
  .bss.set_contrast
-                0x008001a2        0x1 TP-Meter.o
-                0x008001a2                set_contrast
+                0x00800186        0x1 TP-Meter.o
+                0x00800186                set_contrast
  .bss.set_timer
-                0x008001a3        0x1 TP-Meter.o
-                0x008001a3                set_timer
- .bss.set_vtg   0x008001a4        0x1 TP-Meter.o
-                0x008001a4                set_vtg
+                0x00800187        0x1 TP-Meter.o
+                0x00800187                set_timer
+ .bss.set_vtg   0x00800188        0x1 TP-Meter.o
+                0x00800188                set_vtg
  .bss.set_max_pwr
-                0x008001a5        0x2 TP-Meter.o
-                0x008001a5                set_max_pwr
+                0x00800189        0x2 TP-Meter.o
+                0x00800189                set_max_pwr
  .bss.set_max_tmp
-                0x008001a7        0x1 TP-Meter.o
-                0x008001a7                set_max_tmp
- .bss.option    0x008001a8        0x1 TP-Meter.o
-                0x008001a8                option
- .bss.mode      0x008001a9        0x1 TP-Meter.o
-                0x008001a9                mode
+                0x0080018b        0x1 TP-Meter.o
+                0x0080018b                set_max_tmp
+ .bss.option    0x0080018c        0x1 TP-Meter.o
+                0x0080018c                option
+ .bss.mode      0x0080018d        0x1 TP-Meter.o
+                0x0080018d                mode
  *(COMMON)
-                0x008001aa                PROVIDE (__bss_end, .)
-                0x00000cf8                __data_load_start = LOADADDR (.data)
-                0x00000d98                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x0080018e                PROVIDE (__bss_end, .)
+                0x00000cfe                __data_load_start = LOADADDR (.data)
+                0x00000d82                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x008001aa        0x0
-                0x008001aa                PROVIDE (__noinit_start, .)
+.noinit         0x0080018e        0x0
+                0x0080018e                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x008001aa                PROVIDE (__noinit_end, .)
-                0x008001aa                _end = .
-                0x008001aa                PROVIDE (__heap_start, .)
+                0x0080018e                PROVIDE (__noinit_end, .)
+                0x0080018e                _end = .
+                0x0080018e                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x7
  *(.eeprom*)
@@ -638,20 +638,20 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x19e9
+.debug_info     0x00000000     0x1986
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0xa8c hd44780.o
- .debug_info    0x00000a8c      0xf5d TP-Meter.o
+ .debug_info    0x00000a8c      0xefa TP-Meter.o
 
 .debug_abbrev   0x00000000      0x40f
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x1a1 hd44780.o
  .debug_abbrev  0x000001a1      0x26e TP-Meter.o
 
-.debug_line     0x00000000      0x68f
+.debug_line     0x00000000      0x690
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x33b hd44780.o
- .debug_line    0x0000033b      0x354 TP-Meter.o
+ .debug_line    0x0000033b      0x355 TP-Meter.o
 
 .debug_frame    0x00000000      0x374
  *(.debug_frame)
