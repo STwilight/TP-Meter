@@ -44,7 +44,7 @@ extern "C" {
 //-------------------------------
 /* SET LCD<->MCU CONNECTIONS */
 //-------------------------------
-#define LCD_WIRE          		      PORTB // select your microcontroller gpio port
+#define LCD_WIRE          		      PORTD // select your microcontroller gpio port
 #define E  		 	   	  		      4 // pin number in selected port
 #define RS 		  	   	  		      5 // pin number in selected port
 #define D7 		 	   	  		      0 // pin number in selected port

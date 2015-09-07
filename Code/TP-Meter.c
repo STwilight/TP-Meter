@@ -2,7 +2,7 @@
  * TP-Meter.c
  *
  * Created:     21.08.2015 16:36:53
- * CPU:         ATMega48V
+ * CPU:         ATMega8
  * LCD:         WH1602
  * Frequency:   8 MHz
  * Author:      Symrak
@@ -14,8 +14,8 @@
 
 /* ѕодключение библиотек */
 #include <avr/io.h>
-#include <util/delay.h>
 #include <avr/eeprom.h>
+#include <util/delay.h>
 #include "hd44780.h"
 
 /* ќпределение спец. значений */
@@ -23,12 +23,12 @@
 #define False           0
 
 /* ќпределение кнопок */
-#define MODE_BUTTON     PC3
-#define PLUS_BUTTON     PC4
-#define MINUS_BUTTON    PC5
+#define MODE_BUTTON     PD6
+#define PLUS_BUTTON     PD7
+#define MINUS_BUTTON    PB0
 
 /* ќпределение времени задержки (мс) дл€ устранени€ дребезга контактов */
-#define DEB_INT		    500	//100
+#define DEB_INT		    500
 
 /* ќпределение режимов работы и установок */
 /* –ежимы работы */
@@ -43,9 +43,12 @@
 #define SET_VTG         2
 #define SET_TIM         3
 #define SET_BUZ	        4
-#define SET_CTR	        5
-/*  оличество доступных настроек */
-#define SET_CNT         6 //4
+#define SET_LUM		    5
+#define SET_CTR	        6
+/* ќбщее количество настроек и количество доступных настроек */
+#define SET_EASTER_EGG	True
+#define SET_CNT_MAX		7
+uint8_t SET_CNT       = 3;
 
 /* ќпределение границ и шага дл€ настраиваемых значений */
 /* √раницы и шаг максимальной температуры */
@@ -63,7 +66,11 @@
 /* √раницы и шаг таймера отключени€ нагрузки */
 #define timer_min       0
 #define timer_max       120 
-#define timer_delta     10	  
+#define timer_delta     10
+/* √раницы и шаг значени€ €ркости диспле€ */
+#define lcd_light_min   0
+#define lcd_light_max   255
+#define lcd_light_delta 5
 /* √раницы и шаг значени€ контрастности диспле€ */
 #define lcd_contr_min   0
 #define lcd_contr_max   255
@@ -82,13 +89,15 @@ uint8_t           set_vtg      = 0;
 uint8_t EEMEM  ee_set_vtg      = 0;
 uint8_t           set_timer    = 0;
 uint8_t EEMEM  ee_set_timer    = 0;
+uint8_t           set_light    = 0;
+uint8_t EEMEM  ee_set_light    = 0;
 uint8_t           set_contrast = 0;
 uint8_t EEMEM  ee_set_contrast = 0;
 uint8_t           set_buzzer   = True;
 uint8_t EEMEM  ee_set_buzzer   = True;
 /* ѕрочие переменные и определени€ */
 uint8_t timer_value   = 0;
-#define CONTRAST OCR0B
+#define CONTRAST OCR1B
 
 void eeprom_load()
 {
@@ -108,7 +117,11 @@ void eeprom_load()
 	set_timer = eeprom_read_byte(&ee_set_timer);
 	if((set_timer < timer_min) || (set_timer > timer_max))
 		set_timer = timer_min;
-		
+
+	set_light = eeprom_read_byte(&ee_set_light);
+		if((set_light < lcd_light_min) || (set_light > lcd_light_max))
+			set_light = lcd_light_max;
+
 	set_contrast = eeprom_read_byte(&ee_set_contrast);
 	if((set_contrast < lcd_contr_min) || (set_contrast > lcd_contr_max))
 		set_contrast = lcd_contr_max;
@@ -123,6 +136,7 @@ void eeprom_save()
 	eeprom_write_word(&ee_set_max_pwr, set_max_pwr);
 	eeprom_write_byte(&ee_set_vtg, set_vtg);
 	eeprom_write_byte(&ee_set_timer, set_timer);
+	eeprom_write_byte(&ee_set_light, set_light);
 	eeprom_write_byte(&ee_set_contrast, set_contrast);
 	eeprom_write_byte(&ee_set_buzzer, set_buzzer);	
 }
@@ -132,46 +146,46 @@ void startup()
 	/*  арта портов */
     /*
         PORT B:
-               PB0 Ц LCD PIN           (RS, OUT, 0);
-               PB1 Ц LCD PIN           (E, OUT, 0);
-               PB2 Ц LCD PIN           (D4, OUT, 0);
-               PB3 Ц LCD PIN           (D5, OUT, 0);
-               PB4 Ц LCD PIN           (D6, OUT, 0);
-               PB5 Ц LCD PIN           (D7, OUT, 0);
+               PB0 Ц MINUS BUTTON      (MODE, IN, PULLUP);
+               PB1 Ц LIGHT	           (OC1A, OUT, 1);
+               PB2 Ц CONTRAST          (OC1B, OUT, 1);
+               PB3 Ц BUZZER            (OC2, OUT, 0);
+               PB4 Ц N/A;              (N/A, OUT, 0);
+               PB5 Ц N/A;              (N/A, OUT, 0);
                PB6 Ц OSC PIN           (8 MHz, IN, NO PULLUP);
                PB7 Ц OSC PIN           (8 MHz, IN, NO PULLUP);
         PORT C:
-               PC0 Ц POWER MEASUREMENT (ADC0, IN, NO PULLUP);
-               PC1 Ц CHANNEL 1 CONTROL (CH1, OUT, 0);
-               PC2 Ц CHANNEL 2 CONTROL (CH2, OUT, 0);
-               PC3 Ц MODE BUTTON       (MODE, IN, PULLUP);
-               PC4 Ц PLUS BUTTON       (MODE, IN, PULLUP);
-               PC5 Ц MINUS BUTTON      (MODE, IN, PULLUP);
+               PC0 Ц N/A;              (N/A, OUT, 0);
+               PC1 Ц CHANNEL 2 CONTROL (CH2, OUT, 0);
+               PC2 Ц CHANNEL 1 CONTROL (CH1, OUT, 0);
+               PC3 Ц TEMP MEASUREMENT  (1-WIRE, OUT, 0);
+               PC4 Ц N/A;              (N/A, OUT, 0);
+               PC5 Ц POWER MEASUREMENT (ADC5, IN, NO PULLUP);
                PC6 Ц RESET PIN         (RESET, IN, NO PULLUP);
                PC7 Ц N/A;              (N/A, OUT, 0);
         PORT D:
-               PD0 Ц TEMP MEASUREMENT  (1-WIRE, OUT, 0);
-               PD1 Ц N/A;              (N/A, OUT, 0);
-               PD2 Ц N/A;              (N/A, OUT, 0);
-               PD3 Ц BUZZER            (OC2B, OUT, 0);
-               PD4 Ц N/A;              (N/A, OUT, 0);
-               PD5 Ц CONTRAST          (OC0B, OUT, 1);
-               PD6 Ц N/A               (N/A, OUT, 0);
-               PD7 Ц N/A;              (N/A, OUT, 0);
+			   PD0 Ц LCD PIN           (D7, OUT, 0);
+			   PD1 Ц LCD PIN           (D6, OUT, 0);
+			   PD2 Ц LCD PIN           (D5, OUT, 0);
+			   PD3 Ц LCD PIN           (D4, OUT, 0);
+			   PD4 Ц LCD PIN           (E, OUT, 0);
+			   PD5 Ц LCD PIN           (RS, OUT, 0);
+			   PD6 Ц MODE BUTTON       (MODE, IN, PULLUP);
+			   PD7 Ц PLUS BUTTON       (MODE, IN, PULLUP);   
     */
 
     /* »нициализаци€ портов */
-    DDRB  = 0x3F;
-	PORTB = 0x00;
-    DDRC  = 0x86;
-    PORTC = 0x38;
-    DDRD  = 0xFF;
-    PORTD = 0x32;
+    DDRB  = 0x3E;
+	PORTB = 0x07;
+    DDRC  = 0x9F;
+    PORTC = 0x00;
+    DDRD  = 0x3F;
+    PORTD = 0xC0;
 
 	/* Ќастройка таймеров */
-	TCCR0A|=(0<<COM0A1)|(0<<COM0A0)|(1<<COM0B1)|(0<<COM0B0)|(0<<WGM01)|(1<<WGM00);
+	//TCCR0A|=(0<<COM0A1)|(0<<COM0A0)|(1<<COM0B1)|(0<<COM0B0)|(0<<WGM01)|(1<<WGM00);
 	// PD6 (OC0A) Output Disabled, PD5 (OC0B) Output is Phase-Correct PWM, TOP = 0xFF
-	TCCR0B|=(0<<WGM02)|(0<<CS02)|(0<<CS01)|(1<<CS00);
+	//TCCR0B|=(0<<WGM02)|(0<<CS02)|(0<<CS01)|(1<<CS00);
 	// Prescaller = 1, f = 8 MHz / (1 * 510) = 15.686275 kHz
 	//TCCR0B|=(0<<WGM02)|(1<<CS02)|(0<<CS01)|(1<<CS00);
 	// Proteus Debug: Prescaller = 1024, f = 8 MHz / (1024 * 510) = 7.659314 Hz
@@ -199,12 +213,10 @@ void startup()
     lcd_clrscr();				// очистка диспле€
     
     /* ¬ывод приглашени€ дл€ выполнени€ калибровки */
-//     lcd_goto(1, 0);
-//     lcd_prints("\tTo calibrate");
-//     lcd_goto(2, 0);
-//     lcd_prints("\tPress \"MODE\"");
-	mode = SET_MODE;
-	option = SET_CTR;
+    lcd_goto(1, 0);
+    lcd_prints("\tTo calibrate");
+    lcd_goto(2, 0);
+    lcd_prints("\tPress \"MODE\"");
 }
 void symbols_load()
 {
@@ -264,6 +276,17 @@ void symbols_load()
 		0b00010,
 		0b00100
 	};
+    uint8_t light[8]=
+    {
+	    0b01110,
+	    0b10001,
+	    0b11011,
+	    0b10101,
+	    0b01110,
+	    0b01110,
+	    0b00100,
+	    0b00000
+    };	
 	uint8_t contrast[8]=
 	{
 		0b01110,
@@ -293,8 +316,9 @@ void symbols_load()
 	lcd_load(flash, 2);			// загрузка символа молнии
 	lcd_load(timer, 3);			// загрузка символа таймера
 	lcd_load(plug, 4);			// загрузка символа вилки
-	lcd_load(contrast, 5);		// загрузка символа контрастности
-	lcd_load(sound, 6);			// загрузка символа динамика		
+	lcd_load(light, 5);			// загрузка символа лампочки
+	lcd_load(contrast, 6);		// загрузка символа контрастности
+	lcd_load(sound, 7);			// загрузка символа динамика	
 }
 void calibrate()
 {
@@ -357,17 +381,24 @@ void settings()
 	    case SET_BUZ:
 			// Ќастройка звукового оповещени€
 			lcd_prints("\t\t ");
-			lcd_putc(6);
+			lcd_putc(7);
 			lcd_prints(": ");
 			if(set_buzzer)
 				lcd_prints("ON ");
 			else
 				lcd_prints("OFF");
 			break;
-	    case SET_CTR:
-			// Ќастройка контрастности диспле€
+		case SET_LUM:
+			// Ќастройка €ркости диспле€
 			lcd_prints("\t\t ");
 			lcd_putc(5);
+			lcd_prints(": ");
+			lcd_numTOstr(set_light, 3);
+			break;
+		case SET_CTR:
+			// Ќастройка контрастности диспле€
+			lcd_prints("\t\t ");
+			lcd_putc(6);
 			lcd_prints(": ");
 			lcd_numTOstr(set_contrast, 3);
 			break;						
@@ -423,7 +454,7 @@ void display()
 void buttons_check()
 {
     /* ѕроцедура проверки нажати€ кнопок */
-	if(CHECKBIT(PINC, MODE_BUTTON) == 0)
+	if(CHECKBIT(PIND, MODE_BUTTON) == 0)
     {
         _delay_ms(DEB_INT);
         if(launch == True)
@@ -456,7 +487,7 @@ void buttons_check()
     }
 	if(mode == SET_MODE)
 	{
-		if(CHECKBIT(PINC, PLUS_BUTTON) == 0)
+		if(CHECKBIT(PIND, PLUS_BUTTON) == 0)
 		{
 			_delay_ms(DEB_INT);
 			switch(option)
@@ -478,18 +509,19 @@ void buttons_check()
 						set_timer += timer_delta;
 					break;
 				case SET_BUZ:
-					if(set_buzzer)
-						set_buzzer = False;
-					else
-						set_buzzer = True;
+					set_buzzer = ~set_buzzer;
 					break;
+				case SET_LUM:
+					if(set_light < lcd_light_max)
+						set_light += lcd_light_delta;
+					break;					
 				case SET_CTR:
 					if(set_contrast < lcd_contr_max)
 						set_contrast += lcd_contr_delta;
 					break;											
 			}
 		}
-		else if(CHECKBIT(PINC, MINUS_BUTTON) == 0)
+		else if(CHECKBIT(PINB, MINUS_BUTTON) == 0)
 		{
 			_delay_ms(DEB_INT);
 			switch(option)
@@ -511,11 +543,12 @@ void buttons_check()
 						set_timer -= timer_delta;
 					break;
 				case SET_BUZ:
-					if(set_buzzer)
-						set_buzzer = False;
-					else
-						set_buzzer = True;
+					set_buzzer = ~set_buzzer;
 					break;
+				case SET_LUM:
+					if(set_light > lcd_light_min)
+						set_light -= lcd_light_delta;
+					break;					
 				case SET_CTR:
 					if(set_contrast > lcd_contr_min)
 						set_contrast -= lcd_contr_delta;
@@ -523,7 +556,11 @@ void buttons_check()
 			}
 		}		
 	}
-	
+	else if(SET_EASTER_EGG)
+	{
+		if((CHECKBIT(PIND, PLUS_BUTTON) == 0) && (CHECKBIT(PINB, MINUS_BUTTON) == 0))
+			SET_CNT = SET_CNT_MAX;
+	}
 }
 
 int main(void)
