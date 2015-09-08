@@ -17,7 +17,11 @@
 		– проверить работу процедуры генерации звука в железе
 		– проверить работу опроса датчиков по прерыванию таймера в железе
 		– проверить работу процелуры управления каналами в зависимости от настроек времени таймера обратного отсчета в железе
+		– проверить работу процедуры аварийного отключения каналов нагрузки в случае превышения мощности в железе
+		– проверить работу процедуры управления каналом нагрузки в зависимости от температуры на нем в железе
+		– проверить верное определение первого запуска устройства в железе
 		– проверить работу Easter Egg в железе
+		– проверить работу аппаратной блокировки включения Easter Egg в железе
 		
 		– настроить модуль АЦП на измерение на канале ADC5 по запросу
 		– написать функцию выполнения калибровки АЦП (измерение уровня шума)
@@ -28,17 +32,7 @@
 		– разобраться с принципом определения номера датчика
 		– получить значения температур с каждого из датчиков и вывести их на экран
 		– проверить работу в железе
-		
-		– написать процедуру управления каналом нагрузки в зависимости от температуры на нем
-		– проверить работу процедуры в железе
-		
-		– написать процедуру аварийного отключения каналов нагрузки в случае превышения мощности
-		– проверить работу процедуры в железе
-		
-	ADDITIONAL:
-		
-		– добавить аппаратную блокировку включения Easter Egg
-		– проверить работу процелуры в железе
+
 */
 
 /* Определение рабочей частоты МК */
@@ -82,6 +76,7 @@
 #define SET_CTR	        6
 /* Общее количество настроек и количество доступных настроек */
 #define SET_EASTER_EGG	True
+uint8_t enable_eegg	  =	False;
 #define SET_CNT_MAX		7
 uint8_t SET_CNT       = 3;
 
@@ -110,7 +105,7 @@ uint8_t SET_CNT       = 3;
 #define lcd_light_delta 5
 /* Границы и шаг значения контрастности дисплея */
 #define lcd_contr_min   0
-#define lcd_contr_max   250
+#define lcd_contr_max   255
 #define lcd_contr_delta 5
 #define lcd_contr_def   100
 
@@ -134,6 +129,8 @@ uint8_t           set_contrast = 0;
 uint8_t EEMEM  ee_set_contrast = 0;
 uint8_t           set_buzzer   = False;
 uint8_t EEMEM  ee_set_buzzer   = False;
+/* Определение первого запуска устройства */
+uint8_t EEMEM  ee_first_run    = False;
 
 /* Определение регистров таймеров для вывода ШИМ */
 #define LIGHTNESS       OCR1A
@@ -162,9 +159,21 @@ uint8_t BUZZED_TIMES  = 0;
 uint8_t BUZZ_PART     = 0;
 uint8_t BUZZ_CFG      = 0;
 
+/* Значения температур каналов и общей мощности */
+uint8_t CH1_temp      = 0;
+uint8_t CH2_temp	  = 0;
+uint16_t cur_power    = 0;
+/* Флаг превышения потребляемой мощности */
+uint8_t overpower	  = False;
+
 void eeprom_load()
 {
 	/* Процедура загрузки настроек из EEPROM */
+	/* Определение первого запуска */
+	uint8_t first_run = eeprom_read_byte(&ee_first_run);
+	if(first_run != False)
+		eeprom_write_byte(&ee_first_run, False);
+	/* Загрузка настроек из EEPROM */
 	set_max_tmp = eeprom_read_byte(&ee_set_max_tmp);
 	if((set_max_tmp < temp_min) || (set_max_tmp > temp_max))
 		set_max_tmp = temp_min;
@@ -186,15 +195,14 @@ void eeprom_load()
 			set_light = lcd_light_max;
 
 	set_contrast = eeprom_read_byte(&ee_set_contrast);
-	if((set_contrast < lcd_contr_min) || (set_contrast > lcd_contr_max))
+	if((set_contrast < lcd_contr_min) || (set_contrast > lcd_contr_max) || (first_run == 0xFF))
 		set_contrast = lcd_contr_def;
 	
 	set_buzzer = eeprom_read_byte(&ee_set_buzzer);
-	if((set_buzzer < 0) || (set_buzzer > 1))
-		set_buzzer = False;
-	else
+	if((set_buzzer < 0) || (set_buzzer >= 1))
 		set_buzzer = True;
-	
+	else
+		set_buzzer = False;
 }
 void eeprom_save()
 {
@@ -350,19 +358,19 @@ void startup()
                PB1 – LIGHT	           (OC1A, OUT, 1);
                PB2 – CONTRAST          (OC1B, OUT, 1);
                PB3 – BUZZER            (OC2, OUT, 0);
-               PB4 – N/A;              (N/A, OUT, 0);
-               PB5 – N/A;              (N/A, OUT, 0);
+               PB4 – N/A               (N/A, OUT, 0);
+               PB5 – N/A               (N/A, OUT, 0);
                PB6 – OSC PIN           (8 MHz, IN, NO PULLUP);
                PB7 – OSC PIN           (8 MHz, IN, NO PULLUP);
         PORT C:
-               PC0 – N/A;              (N/A, OUT, 0);
+               PC0 – N/A               (N/A, OUT, 0);
                PC1 – CHANNEL 2 CONTROL (CH2, OUT, 0);
                PC2 – CHANNEL 1 CONTROL (CH1, OUT, 0);
                PC3 – TEMP MEASUREMENT  (1-WIRE, OUT, 0);
-               PC4 – N/A;              (N/A, OUT, 0);
+               PC4 – EASTER EGG        (EE, IN, PULLUP);
                PC5 – POWER MEASUREMENT (ADC5, IN, NO PULLUP);
                PC6 – RESET PIN         (RESET, IN, NO PULLUP);
-               PC7 – N/A;              (N/A, OUT, 0);
+               PC7 – N/A               (N/A, OUT, 0);
         PORT D:
 			   PD0 – LCD PIN           (D7, OUT, 0);
 			   PD1 – LCD PIN           (D6, OUT, 0);
@@ -377,8 +385,8 @@ void startup()
     /* Инициализация портов */
     DDRB  = 0x3E;
 	PORTB = 0x07;
-    DDRC  = 0x9F;
-    PORTC = 0x00;
+    DDRC  = 0x8F;
+    PORTC = 0x10;
     DDRD  = 0x3F;
     PORTD = 0xC0;
 
@@ -412,6 +420,12 @@ void startup()
 	
 	/* Выключение Buzzer */
 	BUZZER   = 0;
+
+	/* Проверка аппаратной возможности использовать Easter Egg */
+	if(CHECKBIT(PINC, PC4) == 0)
+		enable_eegg = True;
+	else
+		enable_eegg = False;
 
 	/* Загрузка параметров из EEPROM */
 	eeprom_load();		
@@ -520,7 +534,36 @@ void buzz(uint8_t state)
 }
 void values_refresh()
 {
-	/* Процедура обновления значений таймеров, генерирующих ШИМ, при их изменении */
+	/* Процедура обновления значений параметров, при их изменении.
+	   Вдобавок, так же выключает нагрузки при достижении температуры канала/превышении мощности. */
+	/* Получение значения потребляемой мощности */
+//	cur_power =
+	/* Получение температур каналов */
+// 	CH1_temp =
+// 	CH2_temp =
+	/* Аварийное отключение нагрузки при превышении потребляемой мощности */
+	if(cur_power >= set_max_pwr)
+	{
+		overpower = True;
+		load_control(0, Off);
+	}
+	else
+		overpower = False;
+	/* Управление каналами нагрузки в зависимости от температуры */
+	if((!overpower) && (mode != 0) && (mode != CAL_MODE))
+	{
+		if(CH1_temp < set_max_tmp)
+			load_control(1, On);
+		else
+			load_control(1, Off);
+		if(CH2_temp < set_max_tmp)
+			load_control(2, On);
+		else
+			load_control(2, Off);
+	}
+	else
+		load_control(0, Off);
+	/* Обновление значений яркости и контраста для таймера */
 	if(LIGHTNESS != set_light)
 		LIGHTNESS = set_light;
 	if(CONTRAST != set_contrast)
@@ -578,12 +621,26 @@ void time_out(uint8_t set_timer, uint8_t timer_value)
 void display()
 {
 	/* Процедура вывода данных на основной экран */
-	lcd_clrscr();
-	temp_out(1, 27, CHECKBIT(LOAD_PORT, CH1));
-	temp_out(2, 32, CHECKBIT(LOAD_PORT, CH2));
-	power_out(9900);
-	if(set_timer != 0)
-		time_out(set_timer, timer_mins);
+	if(!overpower)
+	{
+		if(!timer_out && !set_buzzer)
+			BUZZER = 0;
+		lcd_clrscr();
+		temp_out(1, CH1_temp, CHECKBIT(LOAD_PORT, CH1));
+		temp_out(2, CH2_temp, CHECKBIT(LOAD_PORT, CH2));
+		power_out(cur_power);
+		if(set_timer != 0)
+			time_out(set_timer, timer_mins);
+	}
+	else
+	{
+		timer_enable = False;
+		BUZZER = BUZZ_CFG;
+		lcd_goto(1, 0);
+		lcd_prints("W A R N I N G !");
+		lcd_goto(2, 0);
+		lcd_prints("\tOVERPOWER!!!");
+	}
 }
 void calibrate()
 {
@@ -718,9 +775,9 @@ void buttons_check()
 			}
 		}		
 	}
-	else if(SET_EASTER_EGG)
+	else if(SET_EASTER_EGG && enable_eegg)
 	{
-		if(mode == WRK_MODE && (CHECKBIT(PIND, PLUS_BUTTON) == 0) && (CHECKBIT(PINB, MINUS_BUTTON) == 0))
+		if((mode == WRK_MODE) && (CHECKBIT(PIND, PLUS_BUTTON) == 0) && (CHECKBIT(PINB, MINUS_BUTTON) == 0))
 			SET_CNT = SET_CNT_MAX;
 	}
 }
@@ -793,6 +850,11 @@ ISR(TIMER0_OVF_vect)
 int main(void)
 {
     startup();
+	/* TEST BLOCK */
+	cur_power = 50;
+	CH1_temp = 19;
+	CH2_temp = 20;
+	/* TEST BLOCK */
 	while(1)
     {
         buttons_check();
