@@ -113,10 +113,19 @@
     <Compile Include="hd44780.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="hd44780.h">
+    <Compile Include="OWIcrc.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="mac.h">
+    <Compile Include="OWIHighLevelFunctions.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="OWIPolled.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="OWISWBitFunctions.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="OWIUARTBitFunctions.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="TP-Meter.c">

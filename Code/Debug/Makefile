@@ -38,6 +38,10 @@ SUBDIRS :=
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
 ../hd44780.c \
+../OWIcrc.c \
+../OWIHighLevelFunctions.c \
+../OWISWBitFunctions.c \
+../OWIUARTBitFunctions.c \
 ../TP-Meter.c
 
 
@@ -49,18 +53,34 @@ ASM_SRCS +=
 
 OBJS +=  \
 hd44780.o \
+OWIcrc.o \
+OWIHighLevelFunctions.o \
+OWISWBitFunctions.o \
+OWIUARTBitFunctions.o \
 TP-Meter.o
 
 OBJS_AS_ARGS +=  \
 hd44780.o \
+OWIcrc.o \
+OWIHighLevelFunctions.o \
+OWISWBitFunctions.o \
+OWIUARTBitFunctions.o \
 TP-Meter.o
 
 C_DEPS +=  \
 hd44780.d \
+OWIcrc.d \
+OWIHighLevelFunctions.d \
+OWISWBitFunctions.d \
+OWIUARTBitFunctions.d \
 TP-Meter.d
 
 C_DEPS_AS_ARGS +=  \
 hd44780.d \
+OWIcrc.d \
+OWIHighLevelFunctions.d \
+OWISWBitFunctions.d \
+OWIUARTBitFunctions.d \
 TP-Meter.d
 
 OUTPUT_FILE_PATH +=TP-Meter.elf
@@ -77,6 +97,14 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
+
+
+
+
+
+
 
 
 

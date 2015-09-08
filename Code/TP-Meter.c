@@ -36,7 +36,7 @@
 */
 
 /* Определение рабочей частоты МК */
-#define F_CPU           8000000
+#define F_CPU 8000000
 
 /* Подключение библиотек */
 #include <avr/io.h>
@@ -44,12 +44,45 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include "hd44780.h"
+/* Билиотеки для работы с шиной 1-Wire */
+#include "OWIPolled.h"
+#include "OWIHighLevelFunctions.h"
+#include "OWIBitFunctions.h"
+#include "OWIcrc.h"
 
 /* Определение спец. значений */
 #define True            1
 #define False           0
 #define On				1
 #define Off				0
+
+/* Определения для шины 1-Wire */
+/* Код семейства и коды команд DS18B20 */
+#define DS18B20_FAMILY_ID           0x28
+#define DS18B20_CONVERT_T           0x44
+#define DS18B20_READ_SCRATCHPAD     0xBE
+#define DS18B20_WRITE_SCRATCHPAD    0x4E
+#define DS18B20_COPY_SCRATCHPAD     0x48
+#define DS18B20_RECALL_E            0xB8
+#define DS18B20_READ_POWER_SUPPLY   0xB4
+/* Опредеделние вывода под шину 1-Wire */
+#define BUS							OWI_PIN_3
+/* Количество устройств на шине 1-Wire */
+#define MAX_DEVICES					2
+/* Коды ошибок для функции чтения температуры */
+#define READ_SUCCESSFUL				0x00
+#define READ_CRC_ERROR				0x01
+#define SEARCH_SENSORS				0x00
+#define SENSORS_FOUND				0xFF
+/* Переменные для использования шины 1-Wire */
+/* Массив структур для хранения адресов */
+OWI_device allDevices[MAX_DEVICES];
+/* Адрес устройства */
+unsigned char rom[8];
+/* Прочие переменые для шины 1-Wire */
+unsigned char searchFlag = SEARCH_SENSORS;
+unsigned char crcFlag = 0;
+unsigned char dev_num = 0;
 
 /* Определение кнопок */
 #define MODE_BUTTON     PD6
@@ -427,6 +460,9 @@ void startup()
 	else
 		enable_eegg = False;
 
+	/* Инициализация шины 1-Wire */
+	OWI_Init(BUS);
+
 	/* Загрузка параметров из EEPROM */
 	eeprom_load();		
 
@@ -446,10 +482,10 @@ void startup()
     lcd_clrscr();	// очистка дисплея
     
 	/* Вывод приглашения для выполнения калибровки */
-	lcd_goto(1, 0);
-	lcd_prints("\tTo calibrate");
-	lcd_goto(2, 0);
-	lcd_prints("\tPress \"MODE\"");
+// 	lcd_goto(1, 0);
+// 	lcd_prints("\tTo calibrate");
+// 	lcd_goto(2, 0);
+// 	lcd_prints("\tPress \"MODE\"");
 	
 	/* Глобальное разрешение прерываний:
 			– команда asm("sei") вынесена в процедуру calibrate(),
@@ -568,6 +604,76 @@ void values_refresh()
 		LIGHTNESS = set_light;
 	if(CONTRAST != set_contrast)
 		CONTRAST = set_contrast;	
+}
+void ds18b20_search()
+{
+    /* Процедура поиска датчиков температуры */
+	/* Если флаг сброшен - выполнить поиск 1-Wire устройств.
+       Если кол-во заданных устройсв совпадает с кол-вом найденных -
+	   устанавливаем флаг, чтобы функция поиска больше не выполнялась. */
+    if (searchFlag == SEARCH_SENSORS)
+	{
+		dev_num = 0;
+		crcFlag = OWI_SearchDevices(allDevices, MAX_DEVICES, BUS, &dev_num);
+		/* TEST BLOCK */
+		lcd_goto(1, 0);
+		lcd_prints("N = ");
+		lcd_numTOstr(dev_num, 1);
+		/* TEST BLOCK */
+		if((dev_num == MAX_DEVICES) && (crcFlag != SEARCH_CRC_ERROR))
+			searchFlag = SENSORS_FOUND;
+    }	
+}
+unsigned char ds18b20_read_temp(unsigned char bus, unsigned char * id, unsigned int* temperature)
+{
+    /* Процедура чтения температуры с датчика */
+	unsigned char scratchpad[9];
+    unsigned char i;
+    /* Подаем сигнал сброса.
+	   Подаем команду адрессации 1-Wire устройства на шине.
+       Подаем команду запуска преобразования. */
+    OWI_DetectPresence(bus);
+    OWI_MatchRom(id, bus);
+    OWI_SendByte(DS18B20_CONVERT_T ,bus);
+    /* Ждем завершения преобразования */ 
+    while(!OWI_ReadBit(bus));
+    /* Подаем сигнал сброса.
+	   Подаем команду для адрессации 1-Wire устройства на шине.
+       Подаем команду чтения внутренней памяти.
+       Считываем внутреннюю память датчика в массив. */	
+    OWI_DetectPresence(bus);
+    OWI_MatchRom(id, bus);
+    OWI_SendByte(DS18B20_READ_SCRATCHPAD, bus);
+    for(i=0; i<=8; i++)
+		scratchpad[i] = OWI_ReceiveByte(bus);
+    if(OWI_CheckScratchPadCRC(scratchpad) != OWI_CRC_OK)
+		return READ_CRC_ERROR;
+    
+    *temperature =(unsigned int)scratchpad[0];
+    *temperature|=((unsigned int)scratchpad[1]<<8);
+    
+    return READ_SUCCESSFUL;
+}
+void ds18b20_convert_temp(unsigned int temperature)
+{
+	/* Процедура конвертации температуры */
+	unsigned char tmp = 0;
+	/* Если температура отрицательная, выполняем преобразование */ 
+	if((temperature & 0x8000) != 0)
+		temperature = ~temperature + 1;
+	/* Целая часть температуры */   
+	tmp = (unsigned char)(temperature>>4);
+	/* TEST BLOCK */
+	lcd_goto(2, 0);
+	lcd_numTOstr(tmp, 3);
+	/* TEST BLOCK */
+	/* Дробная часть температуры */  
+	tmp = (unsigned char)(temperature&15);
+	tmp = (tmp>>1) + (tmp>>3);
+	/* TEST BLOCK */
+	lcd_prints(".");
+	lcd_numTOstr(tmp, 3);
+	/* TEST BLOCK */	
 }
 void temp_out(uint8_t channel, uint8_t temp_value, uint8_t status)
 {
@@ -857,7 +963,23 @@ int main(void)
 	/* TEST BLOCK */
 	while(1)
     {
-        buttons_check();
+        ds18b20_search();
+		/* TEST BLOCK */
+		if(dev_num == MAX_DEVICES)
+		{
+			unsigned int temperature = 0;
+			crcFlag = ds18b20_read_temp(BUS, allDevices[0].id, &temperature);
+			if(crcFlag != READ_CRC_ERROR)
+				ds18b20_convert_temp(temperature);
+			else
+			{
+				lcd_goto(2, 0);
+				lcd_prints("ERR!");
+				searchFlag = SEARCH_SENSORS;
+			}
+		}	
+		/* TEST BLOCK */
+		buttons_check();
         switch(mode)
         {
             case SET_MODE:

@@ -4,5 +4,13 @@
 
 hd44780.c
 
+OWIcrc.c
+
+OWIHighLevelFunctions.c
+
+OWISWBitFunctions.c
+
+OWIUARTBitFunctions.c
+
 TP-Meter.c
 
