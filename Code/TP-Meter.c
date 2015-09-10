@@ -715,42 +715,25 @@ void power_out(uint16_t power_value)
 	lcd_numTOstr(power_value, 4);
     lcd_prints("W");
 }
-void time_out(uint8_t set_timer, uint8_t timer_secs)
+void time_out(uint16_t set_timer, uint16_t timer_secs)
 {
     /* Процедура вывода оставшегося времени на дисплей */
 	if(timer_enable && !timer_out)
 	{
-		uint16_t time = set_timer - timer_secs;
-		uint16_t tmp  = (time / 3600) * 3600;
-		// 	uint16_t time   = 7143;
-		// 	uint8_t hours   = time / 3600;
-		// 	uint8_t minutes = (time - (hours * 3600)) / 60;
-		// 	uint8_t seconds = time - (hours * 3600) - (minutes * 60);
-		uint8_t first = 0;
+		uint16_t time  = set_timer-timer_secs;
+		uint16_t tmp   = (time/3600)*3600;
+		uint8_t  first = 0;
 		uint8_t second = 0;
 		if(time < 3600)
 		{
-			first  = (time - tmp) / 60;			// минуты
-			second = time - tmp - (first * 60);	// секунды
+			first  = (time-tmp)/60;		  // минуты
+			second = time-tmp-(first*60); // секунды
 		}
 		else
 		{
-			first  = time / 3600;		// часы
-			second = (time - tmp) / 60;	// минуты
+			first  = time/3600;		      // часы
+			second = (time-tmp)/60;	      // минуты
 		}
-// 		if(((time * 60) - timer_secs) < 3600)
-// 		{
-// 			first  = time - 1;			  // минуты
-// 			if(timer_mins != 60)
-// 				second = 60 - timer_secs - 1; // секунды
-// 			else
-// 				second = 60 - timer_secs;
-// 		}
-// 		else
-// 		{
-// 			first  = time / 60;	// часы
-// 			second = time % 60; // минуты
-// 		}
 		lcd_goto(2, 9);
 		lcd_putc(3);
 		lcd_prints("=");
@@ -991,9 +974,10 @@ int main(void)
 {
     startup();
 	/* TEST BLOCK */
-	cur_power = 200;
+	set_max_tmp = 45;
 	CH1_temp = 50;
 	CH2_temp = 30;
+	cur_power = 50;	
 	/* TEST BLOCK */
 	while(1)
     {
