@@ -90,7 +90,7 @@ unsigned char dev_num = 0;
 #define MINUS_BUTTON    PB0
 
 /* Определение времени задержки (мс) для устранения дребезга контактов */
-#define DEB_INT		    500
+#define DEB_INT		    150
 
 /* Определение режимов работы и установок */
 /* Режимы работы */
@@ -108,7 +108,7 @@ unsigned char dev_num = 0;
 #define SET_LUM		    5
 #define SET_CTR	        6
 /* Общее количество настроек и количество доступных настроек */
-#define SET_EASTER_EGG	True
+#define SET_EASTER_EGG	False
 uint8_t enable_eegg	  =	False;
 #define SET_CNT_MAX		7
 uint8_t SET_CNT       = 3;
@@ -117,20 +117,20 @@ uint8_t SET_CNT       = 3;
 /* Границы и шаг максимальной температуры */
 #define temp_min        20
 #define temp_max        90
-#define temp_delta      10
+#define temp_delta      5
 /* Границы и шаг максимальной потребляемой мощности */
 #define power_min       100
 #define power_max       9900
-#define power_delta     100
+#define power_delta     50
 /* Границы и шаг значения входного сетевого напряжения */
 #define voltage_min     180
 #define voltage_max     250
-#define voltage_delta   10
+#define voltage_delta   5
 #define voltage_default 220
 /* Границы и шаг таймера отключения нагрузки */
 #define timer_min       0
-#define timer_max       120 
-#define timer_delta     1
+#define timer_max       7200 // значение в секундах = 120 минут
+#define timer_delta     60	 // значение в секундах = 1 минута
 #define timer_default   0
 /* Границы и шаг значения яркости дисплея */
 #define lcd_light_min   0
@@ -154,14 +154,14 @@ uint16_t          set_max_pwr  = 0;
 uint16_t EEMEM ee_set_max_pwr  = 0;
 uint8_t           set_vtg      = 0;
 uint8_t EEMEM  ee_set_vtg      = 0;
-uint8_t           set_timer    = 0;
-uint8_t EEMEM  ee_set_timer    = 0;
+uint16_t		  set_timer    = 0;
+uint16_t EEMEM ee_set_timer    = 0;
 uint8_t           set_light    = 0;
 uint8_t EEMEM  ee_set_light    = 0;
 uint8_t           set_contrast = 0;
 uint8_t EEMEM  ee_set_contrast = 0;
-uint8_t           set_buzzer   = False;
-uint8_t EEMEM  ee_set_buzzer   = False;
+uint8_t           set_buzzer   = True;
+uint8_t EEMEM  ee_set_buzzer   = True;
 /* Определение первого запуска устройства */
 uint8_t EEMEM  ee_first_run    = False;
 
@@ -183,8 +183,7 @@ uint16_t timer_counter = 0;
 /* Переменные таймера обратного отсчета */
 uint8_t timer_enable  = False;
 uint8_t timer_out     = False;
-uint8_t timer_secs    = 0;
-uint8_t timer_mins	  = 0;
+uint16_t timer_secs   = 0;
 
 /* Переменные модуля выдачи звукового оповещения */
 #define BUZZ_SIG_CNT    5
@@ -219,7 +218,7 @@ void eeprom_load()
 	if((set_vtg < voltage_min) || (set_vtg > voltage_max))
 		set_vtg = voltage_default;
 	
-	set_timer = eeprom_read_byte(&ee_set_timer);
+	set_timer = eeprom_read_word(&ee_set_timer);
 	if((set_timer < timer_min) || (set_timer > timer_max))
 		set_timer = timer_default;
 
@@ -243,7 +242,7 @@ void eeprom_save()
 	eeprom_write_byte(&ee_set_max_tmp, set_max_tmp);
 	eeprom_write_word(&ee_set_max_pwr, set_max_pwr);
 	eeprom_write_byte(&ee_set_vtg, set_vtg);
-	eeprom_write_byte(&ee_set_timer, set_timer);
+	eeprom_write_word(&ee_set_timer, set_timer);
 	eeprom_write_byte(&ee_set_light, set_light);
 	eeprom_write_byte(&ee_set_contrast, set_contrast);
 	eeprom_write_byte(&ee_set_buzzer, set_buzzer);	
@@ -446,13 +445,15 @@ void startup()
 		// Prescaller: N = 1024, f = 8 MHz / (2 * N * TOP) = 15.318627 Hz
 		TCCR2|=(1<<COM21)|(0<<COM20)|(1<<WGM21)|(1<<WGM20)|(1<<CS22)|(1<<CS21)|(1<<CS20);
 		// Prescaller: N = 1024, f = 8 MHz / (1024 * 256) = 30.517578 Hz
+		SET_CNT = SET_CNT_MAX;
+		// Включено ВСЕ меню
 	/* Блок для отладки в PROTEUS */
 	
 	/* Сохранение настроек таймера OC2 для Buzzer */
 	BUZZ_CFG = BUZZER;
 	
 	/* Выключение Buzzer */
-	BUZZER   = 0;
+	BUZZER = 0;
 
 	/* Проверка аппаратной возможности использовать Easter Egg */
 	if(CHECKBIT(PINC, PC4) == 0)
@@ -482,10 +483,10 @@ void startup()
     lcd_clrscr();	// очистка дисплея
     
 	/* Вывод приглашения для выполнения калибровки */
-// 	lcd_goto(1, 0);
-// 	lcd_prints("\tTo calibrate");
-// 	lcd_goto(2, 0);
-// 	lcd_prints("\tPress \"MODE\"");
+	lcd_goto(1, 0);
+	lcd_prints("\tTo calibrate");
+	lcd_goto(2, 0);
+	lcd_prints("\tPress \"MODE\"");
 	
 	/* Глобальное разрешение прерываний:
 			– команда asm("sei") вынесена в процедуру calibrate(),
@@ -530,9 +531,9 @@ void settings()
 			lcd_prints("\t\t");
 			lcd_putc(3);
 			lcd_prints(": ");
-			lcd_numTOstr(set_timer / 60, 2);
+			lcd_numTOstr(set_timer/3600, 2);
 			lcd_prints(":");
-			lcd_numTOstr(set_timer % 60, 2);
+			lcd_numTOstr((set_timer/60)%60, 2);
 			break;
 	    case SET_BUZ:
 			// Настройка звукового оповещения
@@ -568,6 +569,12 @@ void buzz(uint8_t state)
 	else
 		BUZZER = 0;
 }
+void timer_reset()
+{
+	timer_enable = False;
+	timer_out = False;
+	timer_secs = 0;	
+}
 void values_refresh()
 {
 	/* Процедура обновления значений параметров, при их изменении.
@@ -581,21 +588,30 @@ void values_refresh()
 	if(cur_power >= set_max_pwr)
 	{
 		overpower = True;
+		timer_reset();		
 		load_control(0, Off);
+		buzz(On);
 	}
 	else
+	{
 		overpower = False;
+		if(!timer_out)
+			buzz(Off);
+	}
 	/* Управление каналами нагрузки в зависимости от температуры */
 	if((!overpower) && (mode != 0) && (mode != CAL_MODE))
 	{
-		if(CH1_temp < set_max_tmp)
-			load_control(1, On);
-		else
-			load_control(1, Off);
-		if(CH2_temp < set_max_tmp)
-			load_control(2, On);
-		else
-			load_control(2, Off);
+		if(set_timer == 0)
+		{
+			if(CH1_temp < set_max_tmp)
+				load_control(1, On);
+			else
+				load_control(1, Off);
+			if(CH2_temp < set_max_tmp)
+				load_control(2, On);
+			else
+				load_control(2, Off);
+		}
 	}
 	else
 		load_control(0, Off);
@@ -699,29 +715,62 @@ void power_out(uint16_t power_value)
 	lcd_numTOstr(power_value, 4);
     lcd_prints("W");
 }
-void time_out(uint8_t set_timer, uint8_t timer_value)
+void time_out(uint8_t set_timer, uint8_t timer_secs)
 {
     /* Процедура вывода оставшегося времени на дисплей */
 	if(timer_enable && !timer_out)
 	{
-		uint8_t time = set_timer - timer_value;
-		uint8_t hours = time / 60;
-		uint8_t mins = time % 60;
+		uint16_t time = set_timer - timer_secs;
+		uint16_t tmp  = (time / 3600) * 3600;
+		// 	uint16_t time   = 7143;
+		// 	uint8_t hours   = time / 3600;
+		// 	uint8_t minutes = (time - (hours * 3600)) / 60;
+		// 	uint8_t seconds = time - (hours * 3600) - (minutes * 60);
+		uint8_t first = 0;
+		uint8_t second = 0;
+		if(time < 3600)
+		{
+			first  = (time - tmp) / 60;			// минуты
+			second = time - tmp - (first * 60);	// секунды
+		}
+		else
+		{
+			first  = time / 3600;		// часы
+			second = (time - tmp) / 60;	// минуты
+		}
+// 		if(((time * 60) - timer_secs) < 3600)
+// 		{
+// 			first  = time - 1;			  // минуты
+// 			if(timer_mins != 60)
+// 				second = 60 - timer_secs - 1; // секунды
+// 			else
+// 				second = 60 - timer_secs;
+// 		}
+// 		else
+// 		{
+// 			first  = time / 60;	// часы
+// 			second = time % 60; // минуты
+// 		}
 		lcd_goto(2, 9);
 		lcd_putc(3);
 		lcd_prints("=");
-		lcd_numTOstr(hours, 2);
+		lcd_numTOstr(first, 2);
 		if((timer_secs % 2) == 0)
 			lcd_prints(":");
 		else
 			lcd_prints(" ");
-		lcd_numTOstr(mins, 2);
+		lcd_numTOstr(second, 2);
 	}
-	else if(!timer_enable && timer_out)
+	else if(timer_out)
 	{
 		lcd_goto(2, 9);
 		lcd_putc(3);
 		lcd_prints("=--:--");	
+	}
+	else
+	{
+		lcd_goto(2, 9);
+		lcd_prints("       ");		
 	}
 }
 void display()
@@ -729,21 +778,15 @@ void display()
 	/* Процедура вывода данных на основной экран */
 	if(!overpower)
 	{
-		if(!timer_out && !set_buzzer)
-			BUZZER = 0;
-		lcd_clrscr();
 		temp_out(1, CH1_temp, CHECKBIT(LOAD_PORT, CH1));
 		temp_out(2, CH2_temp, CHECKBIT(LOAD_PORT, CH2));
 		power_out(cur_power);
-		if(set_timer != 0)
-			time_out(set_timer, timer_mins);
+		time_out(set_timer, timer_secs);
 	}
 	else
 	{
-		timer_enable = False;
-		BUZZER = BUZZ_CFG;
 		lcd_goto(1, 0);
-		lcd_prints("W A R N I N G !");
+		lcd_prints("W A R N I N G!!!");
 		lcd_goto(2, 0);
 		lcd_prints("\tOVERPOWER!!!");
 	}
@@ -767,7 +810,6 @@ void calibrate()
 	asm("sei");
 
 	/* Переход в рабочий режим */
-	display();
 	mode = WRK_MODE;
 }
 void buttons_check()
@@ -793,8 +835,13 @@ void buttons_check()
 					eeprom_save();
 					option = SET_TMP;
 					if(set_timer != 0)
+					{
+						timer_reset();
 						timer_enable = True;
-                    display();
+					}
+					else
+						if(timer_enable)
+							timer_reset();
 					mode = WRK_MODE;
                 }
             }
@@ -804,7 +851,6 @@ void buttons_check()
                     mode++;
                 else
 				{
-					display();
 					mode = WRK_MODE;
 				}
             }
@@ -834,7 +880,7 @@ void buttons_check()
 						set_timer += timer_delta;
 					break;
 				case SET_BUZ:
-					set_buzzer = ~set_buzzer;
+					set_buzzer ^= On;
 					break;
 				case SET_LUM:
 					if(set_light < lcd_light_max)
@@ -868,7 +914,7 @@ void buttons_check()
 						set_timer -= timer_delta;
 					break;
 				case SET_BUZ:
-					set_buzzer = ~set_buzzer;
+					set_buzzer ^= On;
 					break;
 				case SET_LUM:
 					if(set_light > lcd_light_min)
@@ -900,24 +946,15 @@ ISR(TIMER0_OVF_vect)
 		{
 			/* Увеличение счетчика секунд */
 			timer_secs++;
-			if(timer_secs>=60)
+			if(timer_secs >= set_timer)
 			{
-				/* Увеличение счетчика минут */
-				timer_mins++;
-				timer_secs = 0;
-				if(timer_mins>=set_timer)
-				{
-					/* Действия при завершении таймера обратного отсчета */
-					/* Отключаем таймер обратного отсчета */
-					timer_enable = False;
-					/* Отключаем все нагрузки */
-					load_control(0, Off);
-					/* Обнуляем счетчики минут и секунд */
-					timer_mins   = 0;
-					timer_secs   = 0;
-					/* Помечаем таймер, как отработавший */
-					timer_out    = True;	
-				}
+				/* Действия при завершении таймера обратного отсчета */
+				/* Отключаем таймер обратного отсчета, обнуляя счетчики минут и секунд */
+				timer_reset();
+				/* Отключаем все нагрузки */
+				load_control(0, Off);
+				/* Помечаем таймер, как отработавший */
+				timer_out = True;	
 			}
 		}
 		/* Обработчик для выдачи звукового сигнала */
@@ -939,15 +976,12 @@ ISR(TIMER0_OVF_vect)
 			}
 			else
 			{
-				timer_out    = False;
+				timer_out = False;
 				BUZZED_TIMES = 0;  
 			}
 		}
 		else
 			timer_out = False;
-		/* Обработчик для обновления содержимого дисплея в рабочем режиме */
-		if(mode == WRK_MODE)
-			display();
 		/* Обнуление счетчика прерываний таймера Т0 */
 		timer_counter = 0;		
 	}
@@ -957,32 +991,35 @@ int main(void)
 {
     startup();
 	/* TEST BLOCK */
-	cur_power = 50;
-	CH1_temp = 19;
-	CH2_temp = 20;
+	cur_power = 200;
+	CH1_temp = 50;
+	CH2_temp = 30;
 	/* TEST BLOCK */
 	while(1)
     {
-        ds18b20_search();
-		/* TEST BLOCK */
-		if(dev_num == MAX_DEVICES)
-		{
-			unsigned int temperature = 0;
-			crcFlag = ds18b20_read_temp(BUS, allDevices[0].id, &temperature);
-			if(crcFlag != READ_CRC_ERROR)
-				ds18b20_convert_temp(temperature);
-			else
-			{
-				lcd_goto(2, 0);
-				lcd_prints("ERR!");
-				searchFlag = SEARCH_SENSORS;
-			}
-		}	
-		/* TEST BLOCK */
+//         ds18b20_search();
+// 		/* TEST BLOCK */
+// 		//if(dev_num == MAX_DEVICES)
+// 		//{
+// 			unsigned int temperature = 0;
+// 			crcFlag = ds18b20_read_temp(BUS, allDevices[0].id, &temperature);
+// 			if(crcFlag != READ_CRC_ERROR)
+// 				ds18b20_convert_temp(temperature);
+// 			else
+// 			{
+// 				lcd_goto(2, 0);
+// 				lcd_prints("ERR!");
+// 				searchFlag = SEARCH_SENSORS;
+// 			}
+// 		//}	
+// 		/* TEST BLOCK */
 		buttons_check();
         switch(mode)
         {
-            case SET_MODE:
+			case WRK_MODE:
+				display();				
+				break;
+			case SET_MODE:
 				settings();
                 break;
             case CAL_MODE:
