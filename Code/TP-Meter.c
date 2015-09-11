@@ -198,8 +198,14 @@ uint8_t BUZZ_CFG      = 0;
 uint8_t CH1_temp      = 0;
 uint8_t CH2_temp	  = 0;
 uint16_t cur_power    = 0;
+
 /* Флаг превышения потребляемой мощности */
 uint8_t overpower	  = False;
+
+/* Переменные, необходимые для работы АЦП */
+unsigned long adc_value   = 0;
+uint16_t      adc_counter = 0;
+uint16_t      adc_noise   = 0;
 
 void eeprom_load()
 {
@@ -442,6 +448,12 @@ void startup()
 			S = T/t = TOP/OCR2 = 255/127 = 2.007874
 			t = T/S = 1.024/2.007874 = 0.509992 s
 	*/
+	
+	/* Настройка АЦП */
+	ADMUX|=(1<<REFS1)|(1<<REFS0)|(0<<MUX3)|(1<<MUX2)|(0<<MUX1)|(1<<MUX0);
+	// ИОН: внутренний, 2.56V; вход АЦП: ADC5
+	ADCSRA|=(0<<ADSC)|(0<<ADFR)|(1<<ADIE)|(0<<ADPS2)|(0<<ADPS1)|(0<<ADPS0);
+	// Измерение по запросу, прерывание по окончании преобразования, делитель 2: f ADC = 8 MHz / 2 = 4 MHz	
 	
 	/* Блок для отладки в PROTEUS */
 		TCCR1B|=(0<<WGM13)|(0<<WGM12)|(1<<CS12)|(0<<CS11)|(1<<CS10);
@@ -788,25 +800,57 @@ void display()
 		lcd_prints("\tOVERPOWER!!!");
 	}
 }
+uint16_t get_adc_value(uint16_t count)
+{
+	adc_value   = 0;
+	adc_counter = 0;
+	if(mode != CAL_MODE)
+	{
+		for(uint16_t i=0; i<count; i++)
+			ADCSRA|=(1<<ADSC);
+	}
+	else
+	{
+		uint16_t bar_count = count/NUMBER_OF_BAR_ELEMENTS;
+		for(uint16_t i=0; i<count; i++)
+		{
+			ADCSRA|=(1<<ADSC);
+			lcd_drawbar(i/bar_count);
+		}
+	}
+	return adc_value / adc_counter;
+}
 void calibrate()
 {
 	/* Процедура калибровки АЦП для устранения шумов */
+	/* Включение АЦП */
+	ADCSRA|=(1<<ADEN);
+	/* Запуск первого преобразования АЦП */
+	ADCSRA|=(1<<ADSC);
+	/* Вывод информации */
 	lcd_clrscr();
 	lcd_goto(1, 0);
 	lcd_prints(" CALIBRATING...");
 	lcd_goto(2, 0);
-	for(int i=0; i<NUMBER_OF_BAR_ELEMENTS; i++)
-	{
-		lcd_drawbar(i);
-		_delay_ms(5);
-	}
-	lcd_clrscr();
-	symbols_load();
-	
 	/* Глобальное разрешение прерываний */
-	asm("sei");
-
+	sei();
+	/* Вычисление значения шума */	
+	adc_noise = get_adc_value(1000);
+	/* TEST BLOCK */
+		lcd_clrscr();
+		lcd_goto(1, 0);
+		lcd_prints("ADC Noise = ");
+		lcd_itostr(adc_noise);
+		_delay_ms(2000);
+	/* TEST BLOCK */
+	/* Глобальный запрет прерываний */
+	cli();
+	/* Загрузка символов в дисплей */
+	symbols_load();
+	/* Глобальное разрешение прерываний */
+	sei();
 	/* Переход в рабочий режим */
+	lcd_clrscr();
 	mode = WRK_MODE;
 }
 void buttons_check()
@@ -986,32 +1030,37 @@ ISR(TIMER0_OVF_vect)
 		timer_counter = 0;		
 	}
 }
+ISR(ADC_vect)
+{
+	adc_value += ADC;
+	adc_counter++;
+}
 
 int main(void)
 {
     startup();
 	
 	/* TEST BLOCK */
-// 		set_max_tmp = 45;
-// 		CH1_temp = 50;
-// 		CH2_temp = 30;
-// 		cur_power = 50;
+		set_max_tmp = 55;
+		CH1_temp = 50;
+		CH2_temp = 30;
+		cur_power = 50;
 	/* TEST BLOCK */
 	
 	/* TEST BLOCK - GET TEMP */	
-		lcd_clrscr();
+/*		lcd_clrscr();*/
 	/* TEST BLOCK - GET TEMP */	
 	
 	while(1)
     {	
 		/* TEST BLOCK - GET TEMP */
-			ds18b20_search();
-			lcd_goto(2, 0);
-			lcd_prints("T1=");
-			ds18b20_show_temp(0);
-			lcd_goto(2, 8);
-			lcd_prints("T2=");		
-			ds18b20_show_temp(1);	
+// 			ds18b20_search();
+// 			lcd_goto(2, 0);
+// 			lcd_prints("T1=");
+// 			ds18b20_show_temp(0);
+// 			lcd_goto(2, 8);
+// 			lcd_prints("T2=");		
+// 			ds18b20_show_temp(1);	
 		/* TEST BLOCK - GET TEMP */
 		buttons_check();
         switch(mode)
