@@ -113,6 +113,12 @@
     <Compile Include="hd44780.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="hd44780.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="mac.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="OWIcrc.c">
       <SubType>compile</SubType>
     </Compile>

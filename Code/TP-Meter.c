@@ -79,10 +79,13 @@
 OWI_device allDevices[MAX_DEVICES];
 /* Адрес устройства */
 unsigned char rom[8];
-/* Прочие переменые для шины 1-Wire */
-unsigned char searchFlag = SEARCH_SENSORS;
-unsigned char crcFlag = 0;
-unsigned char dev_num = 0;
+/* Флаги для шины 1-Wire */
+unsigned char searchFlag          = SEARCH_SENSORS;
+unsigned char crcFlag             = 0;
+/* Текущее количество устройств на шине 1-Wire */
+unsigned char dev_num             = 0;
+/* Переменная для временного хранения значения "сырой" температуры с дачтика */
+unsigned int  temperature         = 0;
 
 /* Определение кнопок */
 #define MODE_BUTTON     PD6
@@ -108,7 +111,7 @@ unsigned char dev_num = 0;
 #define SET_LUM		    5
 #define SET_CTR	        6
 /* Общее количество настроек и количество доступных настроек */
-#define SET_EASTER_EGG	False
+#define SET_EASTER_EGG	True
 uint8_t enable_eegg	  =	False;
 #define SET_CNT_MAX		7
 uint8_t SET_CNT       = 3;
@@ -601,7 +604,8 @@ void values_refresh()
 	/* Управление каналами нагрузки в зависимости от температуры */
 	if((!overpower) && (mode != 0) && (mode != CAL_MODE))
 	{
-		if(set_timer == 0)
+		/* Если таймер выключен */
+		if((set_timer == 0) || (timer_enable))
 		{
 			if(CH1_temp < set_max_tmp)
 				load_control(1, On);
@@ -632,9 +636,9 @@ void ds18b20_search()
 		dev_num = 0;
 		crcFlag = OWI_SearchDevices(allDevices, MAX_DEVICES, BUS, &dev_num);
 		/* TEST BLOCK */
-		lcd_goto(1, 0);
-		lcd_prints("N = ");
-		lcd_numTOstr(dev_num, 1);
+			lcd_goto(1, 0);
+			lcd_prints("N = ");
+			lcd_itostr(dev_num);
 		/* TEST BLOCK */
 		if((dev_num == MAX_DEVICES) && (crcFlag != SEARCH_CRC_ERROR))
 			searchFlag = SENSORS_FOUND;
@@ -680,16 +684,26 @@ void ds18b20_convert_temp(unsigned int temperature)
 	/* Целая часть температуры */   
 	tmp = (unsigned char)(temperature>>4);
 	/* TEST BLOCK */
-	lcd_goto(2, 0);
-	lcd_numTOstr(tmp, 3);
+		lcd_itostr(tmp);
 	/* TEST BLOCK */
 	/* Дробная часть температуры */  
 	tmp = (unsigned char)(temperature&15);
 	tmp = (tmp>>1) + (tmp>>3);
 	/* TEST BLOCK */
-	lcd_prints(".");
-	lcd_numTOstr(tmp, 3);
+		lcd_prints(".");
+		lcd_itostr(tmp);
 	/* TEST BLOCK */	
+}
+void ds18b20_show_temp(uint8_t dev_id)
+{
+	crcFlag = ds18b20_read_temp(BUS, allDevices[dev_id].id, &temperature);
+	if(crcFlag != READ_CRC_ERROR)
+		ds18b20_convert_temp(temperature);
+	else
+	{
+		lcd_prints("N/A");
+		searchFlag = SEARCH_SENSORS;
+	}	
 }
 void temp_out(uint8_t channel, uint8_t temp_value, uint8_t status)
 {
@@ -912,8 +926,11 @@ void buttons_check()
 	}
 	else if(SET_EASTER_EGG && enable_eegg)
 	{
-		if((mode == WRK_MODE) && (CHECKBIT(PIND, PLUS_BUTTON) == 0) && (CHECKBIT(PINB, MINUS_BUTTON) == 0))
-			SET_CNT = SET_CNT_MAX;
+		if(CHECKBIT(PINC, PC4) != 0)
+		{
+			if((mode == WRK_MODE) && (CHECKBIT(PIND, PLUS_BUTTON) == 0) && (CHECKBIT(PINB, MINUS_BUTTON) == 0))
+				SET_CNT = SET_CNT_MAX;
+		}
 	}
 }
 
@@ -973,30 +990,29 @@ ISR(TIMER0_OVF_vect)
 int main(void)
 {
     startup();
+	
 	/* TEST BLOCK */
-	set_max_tmp = 45;
-	CH1_temp = 50;
-	CH2_temp = 30;
-	cur_power = 50;	
+// 		set_max_tmp = 45;
+// 		CH1_temp = 50;
+// 		CH2_temp = 30;
+// 		cur_power = 50;
 	/* TEST BLOCK */
+	
+	/* TEST BLOCK - GET TEMP */	
+		lcd_clrscr();
+	/* TEST BLOCK - GET TEMP */	
+	
 	while(1)
-    {
-//         ds18b20_search();
-// 		/* TEST BLOCK */
-// 		//if(dev_num == MAX_DEVICES)
-// 		//{
-// 			unsigned int temperature = 0;
-// 			crcFlag = ds18b20_read_temp(BUS, allDevices[0].id, &temperature);
-// 			if(crcFlag != READ_CRC_ERROR)
-// 				ds18b20_convert_temp(temperature);
-// 			else
-// 			{
-// 				lcd_goto(2, 0);
-// 				lcd_prints("ERR!");
-// 				searchFlag = SEARCH_SENSORS;
-// 			}
-// 		//}	
-// 		/* TEST BLOCK */
+    {	
+		/* TEST BLOCK - GET TEMP */
+			ds18b20_search();
+			lcd_goto(2, 0);
+			lcd_prints("T1=");
+			ds18b20_show_temp(0);
+			lcd_goto(2, 8);
+			lcd_prints("T2=");		
+			ds18b20_show_temp(1);	
+		/* TEST BLOCK - GET TEMP */
 		buttons_check();
         switch(mode)
         {
