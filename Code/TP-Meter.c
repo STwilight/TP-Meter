@@ -23,12 +23,9 @@
 		– проверить работу Easter Egg в железе
 		– проверить работу аппаратной блокировки включения Easter Egg в железе
 		
-		– настроить модуль АЦП на измерение на канале ADC5 по запросу
-		– написать функцию выполнения калибровки АЦП (измерение уровня шума)
 		– написать функцию конвертации полученного значения в необходимую величину и вывести ее на экран
 		– проверить работу АЦП в железе
 		
-		– подключить библиотеку 1-Wire
 		– разобраться с принципом определения номера датчика
 		– получить значения температур с каждого из датчиков и вывести их на экран
 		– проверить работу в железе
@@ -39,6 +36,7 @@
 #define F_CPU 8000000
 
 /* Подключение библиотек */
+#include <stdlib.h>
 #include <avr/io.h>
 #include <avr/eeprom.h>
 #include <util/delay.h>
@@ -361,6 +359,7 @@ void symbols_load()
 }
 void load_control(uint8_t channel, uint8_t state)
 {
+	/* Процедура упраления нагрузкой */
 	switch (channel)
 	{
 		case 1:
@@ -586,57 +585,12 @@ void buzz(uint8_t state)
 }
 void timer_reset()
 {
+	/* Процедура сброса таймера */
 	timer_enable = False;
 	timer_out = False;
 	timer_secs = 0;	
 }
-void values_refresh()
-{
-	/* Процедура обновления значений параметров, при их изменении.
-	   Вдобавок, так же выключает нагрузки при достижении температуры канала/превышении мощности. */
-	/* Получение значения потребляемой мощности */
-//	cur_power =
-	/* Получение температур каналов */
-// 	CH1_temp =
-// 	CH2_temp =
-	/* Аварийное отключение нагрузки при превышении потребляемой мощности */
-	if(cur_power >= set_max_pwr)
-	{
-		overpower = True;
-		timer_reset();		
-		load_control(0, Off);
-		buzz(On);
-	}
-	else
-	{
-		overpower = False;
-		if(!timer_out)
-			buzz(Off);
-	}
-	/* Управление каналами нагрузки в зависимости от температуры */
-	if((!overpower) && (mode != 0) && (mode != CAL_MODE))
-	{
-		/* Если таймер выключен */
-		if((set_timer == 0) || (timer_enable))
-		{
-			if(CH1_temp < set_max_tmp)
-				load_control(1, On);
-			else
-				load_control(1, Off);
-			if(CH2_temp < set_max_tmp)
-				load_control(2, On);
-			else
-				load_control(2, Off);
-		}
-	}
-	else
-		load_control(0, Off);
-	/* Обновление значений яркости и контраста для таймера */
-	if(LIGHTNESS != set_light)
-		LIGHTNESS = set_light;
-	if(CONTRAST != set_contrast)
-		CONTRAST = set_contrast;	
-}
+
 void ds18b20_search()
 {
     /* Процедура поиска датчиков температуры */
@@ -708,6 +662,7 @@ void ds18b20_convert_temp(unsigned int temperature)
 }
 void ds18b20_show_temp(uint8_t dev_id)
 {
+	/* Процедура вывода температуры */
 	crcFlag = ds18b20_read_temp(BUS, allDevices[dev_id].id, &temperature);
 	if(crcFlag != READ_CRC_ERROR)
 		ds18b20_convert_temp(temperature);
@@ -716,6 +671,100 @@ void ds18b20_show_temp(uint8_t dev_id)
 		lcd_prints("N/A");
 		searchFlag = SEARCH_SENSORS;
 	}	
+}
+uint16_t get_adc_value(uint16_t count)
+{
+	/* Процедура получения значения с АЦП */
+	adc_value   = 0;
+	adc_counter = 0;
+	unsigned long adc_values_accumulator = 0;
+	uint16_t bar_count = count/NUMBER_OF_BAR_ELEMENTS;
+	/* Сбор данных с АЦП и вывод шкалы прогресса (в случае режима калибровки) */
+	for(uint16_t i=0; i<count; i++)
+	{
+		ADCSRA|=(1<<ADSC);
+		adc_values_accumulator += adc_value;
+		if(mode == CAL_MODE)
+			lcd_drawbar(i/bar_count);
+	}
+	/* Возвращение значения */
+	return adc_values_accumulator / adc_counter;
+}
+uint16_t get_power_value()
+{
+	/* Таблица значений "величина-ток" для датчика SCT-013-000:
+	      50 mV => 100 A
+	       2 mV => 1 A
+		   1 mV => 0.5 A
+	     0.1 mV => 0.05 A
+		  U(mV) =  I(A) * 0.5
+	  
+	  Данные АЦП:
+		BITs = 1024
+		Vref = 2.56 V
+		 ADC = ((Vin * 1024) / Vref)
+		  dV = 2.56 / 1024 = 2.5 mV / bit => 0.0025 V / bit
+	*/
+	
+	/* Получаем значение напряжения с АЦП и вычитаем из него шум */
+	uint16_t power_value = get_adc_value(10) - adc_noise;
+	/* Переводим полученное значение в напряжение датчика */
+	//power_value = (power_value * 2.56) / 1024;
+	/* Переводим полученное значение в ток потребления */
+	/* TEST BLOCK */
+		// здесь нужно написать код для преобразования напряжения в ток
+	/* TEST BLOCK */
+	/* Вычисляем значение потребляемой мощности */
+	//power_value = power_value * set_vtg;
+	/* Возвращаем полученное значение */
+	return power_value;
+}
+void values_refresh()
+{
+	/* Процедура обновления значений параметров, при их изменении.
+	   Вдобавок, так же выключает нагрузки при достижении температуры канала/превышении мощности. */
+	/* Получение значения потребляемой мощности */
+//	cur_power = get_power_value();
+	/* Получение температур каналов */
+// 	CH1_temp =
+// 	CH2_temp =
+	/* Аварийное отключение нагрузки при превышении потребляемой мощности */
+	if(cur_power >= set_max_pwr)
+	{
+		overpower = True;
+		timer_reset();		
+		load_control(0, Off);
+		buzz(On);
+	}
+	else
+	{
+		overpower = False;
+		if(!timer_out)
+			buzz(Off);
+	}
+	/* Управление каналами нагрузки в зависимости от температуры */
+	if((!overpower) && (mode != 0) && (mode != CAL_MODE))
+	{
+		/* Если таймер выключен */
+		if((set_timer == 0) || (timer_enable))
+		{
+			if(CH1_temp < set_max_tmp)
+				load_control(1, On);
+			else
+				load_control(1, Off);
+			if(CH2_temp < set_max_tmp)
+				load_control(2, On);
+			else
+				load_control(2, Off);
+		}
+	}
+	else
+		load_control(0, Off);
+	/* Обновление значений яркости и контраста для таймера */
+	if(LIGHTNESS != set_light)
+		LIGHTNESS = set_light;
+	if(CONTRAST != set_contrast)
+		CONTRAST = set_contrast;	
 }
 void temp_out(uint8_t channel, uint8_t temp_value, uint8_t status)
 {
@@ -800,26 +849,6 @@ void display()
 		lcd_prints("\tOVERPOWER!!!");
 	}
 }
-uint16_t get_adc_value(uint16_t count)
-{
-	adc_value   = 0;
-	adc_counter = 0;
-	if(mode != CAL_MODE)
-	{
-		for(uint16_t i=0; i<count; i++)
-			ADCSRA|=(1<<ADSC);
-	}
-	else
-	{
-		uint16_t bar_count = count/NUMBER_OF_BAR_ELEMENTS;
-		for(uint16_t i=0; i<count; i++)
-		{
-			ADCSRA|=(1<<ADSC);
-			lcd_drawbar(i/bar_count);
-		}
-	}
-	return adc_value / adc_counter;
-}
 void calibrate()
 {
 	/* Процедура калибровки АЦП для устранения шумов */
@@ -835,12 +864,17 @@ void calibrate()
 	/* Глобальное разрешение прерываний */
 	sei();
 	/* Вычисление значения шума */	
-	adc_noise = get_adc_value(1000);
+	adc_noise = get_adc_value(1000);	// значение шума
 	/* TEST BLOCK */
 		lcd_clrscr();
 		lcd_goto(1, 0);
 		lcd_prints("ADC Noise = ");
 		lcd_itostr(adc_noise);
+		char ch_array[10];
+		lcd_goto(2, 0);
+		lcd_prints("U Noise = ");
+		dtostrf(adc_noise*0.0025, 1, 4, ch_array);
+		lcd_prints(ch_array);
 		_delay_ms(2000);
 	/* TEST BLOCK */
 	/* Глобальный запрет прерываний */
@@ -1032,7 +1066,7 @@ ISR(TIMER0_OVF_vect)
 }
 ISR(ADC_vect)
 {
-	adc_value += ADC;
+	adc_value = ADC;
 	adc_counter++;
 }
 
@@ -1044,7 +1078,6 @@ int main(void)
 		set_max_tmp = 55;
 		CH1_temp = 50;
 		CH2_temp = 30;
-		cur_power = 50;
 	/* TEST BLOCK */
 	
 	/* TEST BLOCK - GET TEMP */	
