@@ -27,7 +27,6 @@
 		Ц проверить работу ј÷ѕ в железе
 		
 		Ц разобратьс€ с принципом определени€ номера датчика
-		Ц получить значени€ температур с каждого из датчиков и вывести их на экран
 		Ц проверить работу в железе
 
 */
@@ -475,9 +474,6 @@ void startup()
 	else
 		enable_eegg = False;
 
-	/* »нициализаци€ шины 1-Wire */
-	OWI_Init(BUS);
-
 	/* «агрузка параметров из EEPROM */
 	eeprom_load();		
 
@@ -492,16 +488,18 @@ void startup()
         |02|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |               
     */
 
+	/* »нициализаци€ шины 1-Wire */
+	OWI_Init(BUS);
+
     /* »нициализаци€ диспле€ */
     lcd_init();		// инициализаци€ диспле€
-    lcd_clrscr();	// очистка диспле€
-    
+    lcd_clrscr();	// очистка диспле€	
+	
 	/* ¬ывод приглашени€ дл€ выполнени€ калибровки */
 	lcd_goto(1, 0);
 	lcd_prints("\tTo calibrate");
 	lcd_goto(2, 0);
-	lcd_prints("\tPress \"MODE\"");
-	
+	lcd_prints("\tPress \"MODE\"");	
 	/* √лобальное разрешение прерываний:
 			Ц команда asm("sei") вынесена в процедуру calibrate(),
 			  т.к. так не "глючит" пам€ть.
@@ -870,11 +868,11 @@ void calibrate()
 		lcd_goto(1, 0);
 		lcd_prints("ADC Noise = ");
 		lcd_itostr(adc_noise);
-		char ch_array[10];
-		lcd_goto(2, 0);
-		lcd_prints("U Noise = ");
-		dtostrf(adc_noise*0.0025, 1, 4, ch_array);
-		lcd_prints(ch_array);
+// 		char ch_array[10];
+// 		lcd_goto(2, 0);
+// 		lcd_prints("U Noise = ");
+// 		dtostrf(adc_noise*0.0025, 1, 4, ch_array);
+// 		lcd_prints(ch_array);
 		_delay_ms(2000);
 	/* TEST BLOCK */
 	/* √лобальный запрет прерываний */
@@ -1081,19 +1079,19 @@ int main(void)
 	/* TEST BLOCK */
 	
 	/* TEST BLOCK - GET TEMP */	
-/*		lcd_clrscr();*/
+		lcd_clrscr();
 	/* TEST BLOCK - GET TEMP */	
 	
 	while(1)
     {	
 		/* TEST BLOCK - GET TEMP */
-// 			ds18b20_search();
-// 			lcd_goto(2, 0);
-// 			lcd_prints("T1=");
-// 			ds18b20_show_temp(0);
-// 			lcd_goto(2, 8);
-// 			lcd_prints("T2=");		
-// 			ds18b20_show_temp(1);	
+			ds18b20_search();
+			lcd_goto(2, 0);
+			lcd_prints("T1=");
+			ds18b20_show_temp(0);
+			lcd_goto(2, 8);
+			lcd_prints("T2=");		
+			ds18b20_show_temp(1);	
 		/* TEST BLOCK - GET TEMP */
 		buttons_check();
         switch(mode)
