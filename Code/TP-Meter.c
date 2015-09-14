@@ -28,6 +28,12 @@
 		
 		– разобраться с принципом определения номера датчика
 		– проверить работу в железе
+        
+        – устранить зависание дисплея при инициализации устройства
+        
+        – протестировать работу прошивки с передачей параметров в железе
+        
+        – протестировать работу финальной прошивки в железе
 
 */
 
@@ -79,10 +85,9 @@ unsigned char rom[8];
 /* Флаги для шины 1-Wire */
 unsigned char searchFlag          = SEARCH_SENSORS;
 unsigned char crcFlag             = 0;
+uint8_t dev_searching             = True;
 /* Текущее количество устройств на шине 1-Wire */
 unsigned char dev_num             = 0;
-/* Переменная для временного хранения значения "сырой" температуры с дачтика */
-unsigned int  temperature         = 0;
 
 /* Определение кнопок */
 #define MODE_BUTTON     PD6
@@ -203,6 +208,8 @@ uint8_t overpower	  = False;
 unsigned long adc_value   = 0;
 uint16_t      adc_counter = 0;
 uint16_t      adc_noise   = 0;
+#define NOISE_CAL_CNT 1000
+#define POWER_GET_CNT 10
 
 void eeprom_load()
 {
@@ -387,6 +394,20 @@ void load_control(uint8_t channel, uint8_t state)
 			break;
 	}
 }
+void ds18b20_search()
+{
+    /* Процедура поиска датчиков температуры */
+	/* Если флаг сброшен - выполнить поиск 1-Wire устройств.
+       Если кол-во заданных устройсв совпадает с кол-вом найденных -
+	   устанавливаем флаг, чтобы функция поиска больше не выполнялась. */
+    if (searchFlag == SEARCH_SENSORS)
+	{
+		dev_num = 0;
+		crcFlag = OWI_SearchDevices(allDevices, MAX_DEVICES, BUS, &dev_num);
+		if((dev_num == MAX_DEVICES) && (crcFlag != SEARCH_CRC_ERROR))
+			searchFlag = SENSORS_FOUND;
+    }	
+}
 void startup()
 {
 	/* Начальная процедура настройки и запуска */
@@ -428,7 +449,7 @@ void startup()
     PORTC = 0x10;
     DDRD  = 0x3F;
     PORTD = 0xC0;
-
+    
 	/* Настройка таймеров */
 	TIMSK|=(1<<TOIE0);
 	// Разрашение прерывания по переполнению таймера T0
@@ -488,19 +509,37 @@ void startup()
         |02|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |               
     */
 
+    /* Инициализация дисплея */
+    lcd_init();
+    lcd_clrscr();
+
+	/* Вывод информации о поиске датчиков */
+	lcd_goto(1, 0);
+	lcd_prints("\tTemp. sensors");
+	lcd_goto(2, 0);
+	lcd_prints("\tdetecting...");
+
 	/* Инициализация шины 1-Wire */
 	OWI_Init(BUS);
-
-    /* Инициализация дисплея */
-    lcd_init();		// инициализация дисплея
-    lcd_clrscr();	// очистка дисплея	
-	
+    
+    /* Поиск датчиков на шине */
+    while(searchFlag != SENSORS_FOUND)
+        ds18b20_search();
+    _delay_ms(500);
+    dev_searching = False;
+    
 	/* Вывод приглашения для выполнения калибровки */
-	lcd_goto(1, 0);
+	lcd_clrscr();
+    lcd_goto(1, 0);
 	lcd_prints("\tTo calibrate");
 	lcd_goto(2, 0);
 	lcd_prints("\tPress \"MODE\"");	
-	/* Глобальное разрешение прерываний:
+	
+    /* ЕСЛИ ДИСПЛЕЙ ЗАВИСАЕТ – перенести его инициализацию в самое начало (после инициализации портов) или попробовать увеличить время инициализации МК фьюзами 
+       ПОПРОБОВАТЬ более высокую (>16.000) и меньшую (8.000) частоту для 1-Wire в железе 
+       ЕСЛИ кнопки имеют плохую отзывчивость – добавить buttons_check(); в таймер */
+    
+    /* Глобальное разрешение прерываний:
 			– команда asm("sei") вынесена в процедуру calibrate(),
 			  т.к. так не "глючит" память.
 	*/
@@ -588,26 +627,6 @@ void timer_reset()
 	timer_out = False;
 	timer_secs = 0;	
 }
-
-void ds18b20_search()
-{
-    /* Процедура поиска датчиков температуры */
-	/* Если флаг сброшен - выполнить поиск 1-Wire устройств.
-       Если кол-во заданных устройсв совпадает с кол-вом найденных -
-	   устанавливаем флаг, чтобы функция поиска больше не выполнялась. */
-    if (searchFlag == SEARCH_SENSORS)
-	{
-		dev_num = 0;
-		crcFlag = OWI_SearchDevices(allDevices, MAX_DEVICES, BUS, &dev_num);
-		/* TEST BLOCK */
-			lcd_goto(1, 0);
-			lcd_prints("N = ");
-			lcd_itostr(dev_num);
-		/* TEST BLOCK */
-		if((dev_num == MAX_DEVICES) && (crcFlag != SEARCH_CRC_ERROR))
-			searchFlag = SENSORS_FOUND;
-    }	
-}
 unsigned char ds18b20_read_temp(unsigned char bus, unsigned char * id, unsigned int* temperature)
 {
     /* Процедура чтения температуры с датчика */
@@ -638,37 +657,29 @@ unsigned char ds18b20_read_temp(unsigned char bus, unsigned char * id, unsigned 
     
     return READ_SUCCESSFUL;
 }
-void ds18b20_convert_temp(unsigned int temperature)
+uint8_t ds18b20_get_temp(uint8_t dev_id)
 {
-	/* Процедура конвертации температуры */
-	unsigned char tmp = 0;
-	/* Если температура отрицательная, выполняем преобразование */ 
-	if((temperature & 0x8000) != 0)
-		temperature = ~temperature + 1;
-	/* Целая часть температуры */   
-	tmp = (unsigned char)(temperature>>4);
-	/* TEST BLOCK */
-		lcd_itostr(tmp);
-	/* TEST BLOCK */
-	/* Дробная часть температуры */  
-	tmp = (unsigned char)(temperature&15);
-	tmp = (tmp>>1) + (tmp>>3);
-	/* TEST BLOCK */
-		lcd_prints(".");
-		lcd_itostr(tmp);
-	/* TEST BLOCK */	
-}
-void ds18b20_show_temp(uint8_t dev_id)
-{
-	/* Процедура вывода температуры */
-	crcFlag = ds18b20_read_temp(BUS, allDevices[dev_id].id, &temperature);
+	/* Процедура конвертации и возврата температуры с указанного датчика */
+    /* Переменная для хранения "сырой" температуры с дачтика */
+    unsigned int temperature = 0;
+    /* Переменная для возвращения температуры */
+    uint8_t tmp = 0;
+    /* Опрос датчика */
+    crcFlag = ds18b20_read_temp(BUS, allDevices[dev_id].id, &temperature);
 	if(crcFlag != READ_CRC_ERROR)
-		ds18b20_convert_temp(temperature);
-	else
 	{
-		lcd_prints("N/A");
-		searchFlag = SEARCH_SENSORS;
-	}	
+        /* Если температура отрицательная, выполняем преобразование */
+        if((temperature & 0x8000) != 0)
+            temperature = ~temperature + 1;
+        /* Целая часть температуры */
+        tmp = (uint8_t)(temperature>>4);
+        /* Дробная часть температуры */
+        // 	tmp = (unsigned char)(temperature&15);
+        // 	tmp = (tmp>>1) + (tmp>>3);
+    }
+	else
+        searchFlag = SEARCH_SENSORS;   
+    return tmp;
 }
 uint16_t get_adc_value(uint16_t count)
 {
@@ -688,7 +699,7 @@ uint16_t get_adc_value(uint16_t count)
 	/* Возвращение значения */
 	return adc_values_accumulator / adc_counter;
 }
-uint16_t get_power_value()
+uint16_t get_power_value(/* TESTS ARE THERE */)
 {
 	/* Таблица значений "величина-ток" для датчика SCT-013-000:
 	      50 mV => 100 A
@@ -705,7 +716,7 @@ uint16_t get_power_value()
 	*/
 	
 	/* Получаем значение напряжения с АЦП и вычитаем из него шум */
-	uint16_t power_value = get_adc_value(10) - adc_noise;
+	uint16_t power_value = get_adc_value(POWER_GET_CNT) - adc_noise;
 	/* Переводим полученное значение в напряжение датчика */
 	//power_value = (power_value * 2.56) / 1024;
 	/* Переводим полученное значение в ток потребления */
@@ -717,42 +728,58 @@ uint16_t get_power_value()
 	/* Возвращаем полученное значение */
 	return power_value;
 }
-void values_refresh()
+void values_refresh(/* TESTS ARE THERE */)
 {
 	/* Процедура обновления значений параметров, при их изменении.
 	   Вдобавок, так же выключает нагрузки при достижении температуры канала/превышении мощности. */
 	/* Получение значения потребляемой мощности */
-//	cur_power = get_power_value();
+    cur_power = get_power_value();
 	/* Получение температур каналов */
-// 	CH1_temp =
-// 	CH2_temp =
+    /* TEST BLOCK */
+    CH1_temp = ds18b20_get_temp(0);
+    CH2_temp = ds18b20_get_temp(1);
+    /* TEST BLOCK */
 	/* Аварийное отключение нагрузки при превышении потребляемой мощности */
 	if(cur_power >= set_max_pwr)
 	{
-		overpower = True;
+        overpower = True;
 		timer_reset();		
 		load_control(0, Off);
 		buzz(On);
 	}
 	else
 	{
-		overpower = False;
-		if(!timer_out)
-			buzz(Off);
+		if(overpower)
+        {
+            lcd_clrscr();
+            overpower = False;
+		    if(!timer_out)
+			    buzz(Off);
+        }        
 	}
 	/* Управление каналами нагрузки в зависимости от температуры */
 	if((!overpower) && (mode != 0) && (mode != CAL_MODE))
 	{
-		/* Если таймер выключен */
+		/* Если время таймера = 0 (выключен) или еще не истекло (работает) */
 		if((set_timer == 0) || (timer_enable))
 		{
 			if(CH1_temp < set_max_tmp)
-				load_control(1, On);
-			else
+            {
+                if(CH1_temp != 0)
+				    load_control(1, On);
+                else
+                    load_control(2, Off);                    
+            }			
+            else
 				load_control(1, Off);
 			if(CH2_temp < set_max_tmp)
-				load_control(2, On);
-			else
+            {
+                if(CH2_temp != 0)
+				    load_control(2, On);
+                else
+                    load_control(2, Off);
+            }			
+            else
 				load_control(2, Off);
 		}
 	}
@@ -847,7 +874,7 @@ void display()
 		lcd_prints("\tOVERPOWER!!!");
 	}
 }
-void calibrate()
+void calibrate(/* TESTS ARE THERE */)
 {
 	/* Процедура калибровки АЦП для устранения шумов */
 	/* Включение АЦП */
@@ -862,7 +889,7 @@ void calibrate()
 	/* Глобальное разрешение прерываний */
 	sei();
 	/* Вычисление значения шума */	
-	adc_noise = get_adc_value(1000);	// значение шума
+	adc_noise = get_adc_value(NOISE_CAL_CNT);	// значение шума
 	/* TEST BLOCK */
 		lcd_clrscr();
 		lcd_goto(1, 0);
@@ -888,7 +915,7 @@ void calibrate()
 void buttons_check()
 {
     /* Процедура проверки нажатия кнопок */
-	if(CHECKBIT(PIND, MODE_BUTTON) == 0)
+	if((CHECKBIT(PIND, MODE_BUTTON) == 0) && (!dev_searching))
     {
         _delay_ms(DEB_INT);
         if(launch == True)
@@ -1068,32 +1095,20 @@ ISR(ADC_vect)
 	adc_counter++;
 }
 
-int main(void)
+int main(void/* TESTS ARE THERE */)
 {
     startup();
-	
+
 	/* TEST BLOCK */
-		set_max_tmp = 55;
-		CH1_temp = 50;
-		CH2_temp = 30;
+        set_max_pwr = 9999;
 	/* TEST BLOCK */
-	
-	/* TEST BLOCK - GET TEMP */	
-		lcd_clrscr();
-	/* TEST BLOCK - GET TEMP */	
-	
+
 	while(1)
     {	
-		/* TEST BLOCK - GET TEMP */
-			ds18b20_search();
-			lcd_goto(2, 0);
-			lcd_prints("T1=");
-			ds18b20_show_temp(0);
-			lcd_goto(2, 8);
-			lcd_prints("T2=");		
-			ds18b20_show_temp(1);	
-		/* TEST BLOCK - GET TEMP */
 		buttons_check();
+        /* TEST BLOCK */
+/*            ds18b20_search();*/
+        /* TEST BLOCK */
         switch(mode)
         {
 			case WRK_MODE:
