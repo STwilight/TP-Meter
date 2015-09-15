@@ -54,9 +54,9 @@ extern "C" {
 //-------------------------------
 // SELECT MCU FREQUENCE
 //-------------------------------
-#define MCU_CLK_VALUE				  8 /* in MHz. Minimal value - 1 MHz */
+#define MCU_CLK_VALUE				  16 /* in MHz. Minimal value - 1 MHz */
 #define MCU_CLK						  ((MCU_CLK_VALUE - 1)/4)
-#define MCU_WAIT_CYCLES				  250
+#define MCU_WAIT_CYCLES				  280	// 250 for 8 MHz, 280 for 16 MHz
 //-------------------------------
 // DISPLAY CONFIG MACROS
 //-------------------------------

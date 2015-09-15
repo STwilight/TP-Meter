@@ -91,7 +91,7 @@ unsigned char dev_num             = 0;
 #define MINUS_BUTTON    PB0
 
 /* Определение времени задержки (мс) для устранения дребезга контактов */
-#define DEB_INT		    150
+#define DEB_INT		    0 //150
 
 /* Определение режимов работы и установок */
 /* Режимы работы */
@@ -208,8 +208,12 @@ uint16_t      adc_noise   = 0;
 #define POWER_GET_CNT 10
 
 /* Переменные для отладки */
-#define PROTEUS             True
+#define PROTEUS             False
 #define FULL_MENU           True
+
+/* INTERRUPT BUTTON */
+uint8_t  BUTTON_PRESSED   = False;
+uint16_t BTN_TIMER		  = 0;
 
 void eeprom_load()
 {
@@ -1042,6 +1046,21 @@ ISR(TIMER0_OVF_vect)
 {
 	/* Вектор прерывания по переполнению таймера Т0 */
 	timer_counter++;
+	/* TEST BLOCK - INTERRUPT BUTTON */
+		BTN_TIMER++;
+		if((CHECKBIT(PIND, MODE_BUTTON) == 0) && !BUTTON_PRESSED)
+			BUTTON_PRESSED = True;
+		/* Действия по прошествии 200 мс */
+		if(BTN_TIMER>=6250)
+		{
+			if((CHECKBIT(PIND, MODE_BUTTON) == 0) && BUTTON_PRESSED)
+			{
+				PORTC^=(1<<PC2);
+				BUTTON_PRESSED = False;
+			}
+			BTN_TIMER = 0;
+		}
+	/* TEST BLOCK - INTERRUPT BUTTON */
 	/* Действия по прошествии одной секунды */
 	if(timer_counter>=31250)
 	{
@@ -1101,12 +1120,13 @@ int main(void)
     startup();
 
 	/* TEST BLOCK */
+		sei();
         set_max_pwr = power_max;
 	/* TEST BLOCK */
 
 	while(1)
     {	
-		buttons_check();
+		//buttons_check();
         switch(mode)
         {
 			case WRK_MODE:
