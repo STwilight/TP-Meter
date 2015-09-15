@@ -4,7 +4,7 @@
  * Created:     21.08.2015 16:36:53
  * CPU:         ATMega8
  * LCD:         WH1602
- * Frequency:   8 MHz
+ * Frequency:   16 MHz
  * Author:      Symrak
  *
  */
@@ -34,7 +34,7 @@
 */
 
 /* Определение рабочей частоты МК */
-#define F_CPU 8000000
+#define F_CPU 16000000
 
 /* Подключение библиотек */
 #include <stdlib.h>
@@ -91,7 +91,7 @@ unsigned char dev_num             = 0;
 #define MINUS_BUTTON    PB0
 
 /* Определение времени задержки (мс) для устранения дребезга контактов */
-#define DEB_INT		    0 //150
+#define DEB_INT		    150
 
 /* Определение режимов работы и установок */
 /* Режимы работы */
@@ -145,9 +145,9 @@ uint8_t SET_CNT       = 3;
 
 /* Объявление глобальных переменных */
 /* Переменные запуска и режимов работы */
-uint8_t  mode         = 0;
-uint8_t  option       = 0;
-uint8_t  launch       = True;
+uint8_t mode          = 0;
+uint8_t option        = 0;
+uint8_t launch        = True;
 /* Переменные, хранящие значения настроек */
 uint8_t           set_max_tmp  = 0;
 uint8_t  EEMEM ee_set_max_tmp  = 0;
@@ -206,6 +206,10 @@ uint16_t      adc_counter = 0;
 uint16_t      adc_noise   = 0;
 #define NOISE_CAL_CNT 1000
 #define POWER_GET_CNT 10
+
+/* Переменные для отладки */
+#define PROTEUS             True
+#define FULL_MENU           True
 
 void eeprom_load()
 {
@@ -470,14 +474,17 @@ void startup()
 	ADCSRA|=(0<<ADSC)|(0<<ADFR)|(1<<ADIE)|(0<<ADPS2)|(0<<ADPS1)|(0<<ADPS0);
 	// Измерение по запросу, прерывание по окончании преобразования, делитель 2: f ADC = 8 MHz / 2 = 4 MHz	
 	
-	/* Блок для отладки в PROTEUS */
-		//TCCR1B|=(0<<WGM13)|(0<<WGM12)|(1<<CS12)|(0<<CS11)|(1<<CS10);
-		// Prescaller: N = 1024, f = 8 MHz / (2 * N * TOP) = 15.318627 Hz
-		//TCCR2|=(1<<COM21)|(0<<COM20)|(1<<WGM21)|(1<<WGM20)|(1<<CS22)|(1<<CS21)|(1<<CS20);
-		// Prescaller: N = 1024, f = 8 MHz / (1024 * 256) = 30.517578 Hz
-		SET_CNT = SET_CNT_MAX;
-		// Включено ВСЕ меню
-	/* Блок для отладки в PROTEUS */
+	/* Блок для отладки */
+		if(PROTEUS)
+        {
+            TCCR1B|=(0<<WGM13)|(0<<WGM12)|(1<<CS12)|(0<<CS11)|(1<<CS10);
+            // Prescaller: N = 1024, f = 8 MHz / (2 * N * TOP) = 15.318627 Hz
+            TCCR2|=(1<<COM21)|(0<<COM20)|(1<<WGM21)|(1<<WGM20)|(1<<CS22)|(1<<CS21)|(1<<CS20);
+            // Prescaller: N = 1024, f = 8 MHz / (1024 * 256) = 30.517578 Hz            
+        }
+		if(FULL_MENU)
+            SET_CNT = SET_CNT_MAX;
+	/* Блок для отладки */
 	
 	/* Сохранение настроек таймера OC2 для Buzzer */
 	BUZZ_CFG = BUZZER;
@@ -493,6 +500,10 @@ void startup()
 
 	/* Загрузка параметров из EEPROM */
 	eeprom_load();		
+
+    /* Применение параметров яркости и контраста */
+    LIGHTNESS = set_light;
+    CONTRAST  = set_contrast;
 
     /* Карта LCD-дисплея */
     /*
@@ -628,7 +639,7 @@ unsigned char ds18b20_read_temp(unsigned char bus, unsigned char * id, unsigned 
        Подаем команду запуска преобразования. */
     OWI_DetectPresence(bus);
     OWI_MatchRom(id, bus);
-    OWI_SendByte(DS18B20_CONVERT_T ,bus);
+    OWI_SendByte(DS18B20_CONVERT_T, bus);
     /* Ждем завершения преобразования */ 
     while(!OWI_ReadBit(bus));
     /* Подаем сигнал сброса.
@@ -667,9 +678,7 @@ uint8_t ds18b20_get_temp(uint8_t dev_id)
         /* Дробная часть температуры */
         // 	tmp = (unsigned char)(temperature&15);
         // 	tmp = (tmp>>1) + (tmp>>3);
-    }
-	else
-        searchFlag = SEARCH_SENSORS;   
+    }  
     return tmp;
 }
 uint16_t get_adc_value(uint16_t count)
@@ -746,8 +755,8 @@ void values_refresh()
 			    buzz(Off);
         }        
 	}
-	/* Управление каналами нагрузки в зависимости от температуры */
-	if((!overpower) && (mode != 0) && (mode != CAL_MODE))
+	/* Управление каналами нагрузки в зависимости от температуры и мощности */
+	if(!overpower)
 	{
 		/* Если время таймера = 0 (выключен) или еще не истекло (работает) */
 		if((set_timer == 0) || (timer_enable))
@@ -775,10 +784,13 @@ void values_refresh()
 	else
 		load_control(0, Off);
 	/* Обновление значений яркости и контраста для таймера */
-	if(LIGHTNESS != set_light)
-		LIGHTNESS = set_light;
-	if(CONTRAST != set_contrast)
-		CONTRAST = set_contrast;	
+	if(mode == SET_MODE)
+    {
+        if(LIGHTNESS != set_light)
+            LIGHTNESS = set_light;
+        if(CONTRAST != set_contrast)
+            CONTRAST = set_contrast;       
+    }	
 }
 void temp_out(uint8_t channel, uint8_t temp_value, uint8_t status)
 {
@@ -889,7 +901,7 @@ void calibrate(/* TESTS ARE THERE */)
 // 		lcd_prints("U Noise = ");
 // 		dtostrf(adc_noise*0.0025, 1, 4, ch_array);
 // 		lcd_prints(ch_array);
-		_delay_ms(2000);
+		_delay_ms(1000);
 	/* TEST BLOCK */
 	/* Глобальный запрет прерываний */
 	cli();
@@ -1107,7 +1119,8 @@ int main(void)
                 calibrate();
                 break;            
         }
-		values_refresh();
+		if((mode != 0) && (mode != CAL_MODE))
+            values_refresh();
     }
     return 0;
 }
