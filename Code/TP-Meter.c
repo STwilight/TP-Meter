@@ -208,7 +208,7 @@ uint16_t      adc_noise   = 0;
 #define POWER_GET_CNT 10
 
 /* Переменные для отладки */
-#define PROTEUS             False
+#define PROTEUS             True
 #define FULL_MENU           True
 
 /* INTERRUPT BUTTON */
@@ -458,13 +458,13 @@ void startup()
 	TIMSK|=(1<<TOIE0);
 	// Разрашение прерывания по переполнению таймера T0
 	TCCR0|=(0<<CS02)|(0<<CS01)|(1<<CS00);
-	// Prescaller: N = 1; f = 8 MHz 
+	// Prescaller: N = 1; f = 16 MHz 
 	TCCR1A|=(1<<COM1A1)|(0<<COM1A0)|(1<<COM1B1)|(0<<COM1B0)|(0<<WGM11)|(1<<WGM10);
 	// PB1 (OC1A = LIGHT) и PB2 (OC1B = CONTRAST) выдают Phase-Correct PWM, 8-bit, TOP = 0x00FF
 	TCCR1B|=(0<<WGM13)|(0<<WGM12)|(0<<CS12)|(0<<CS11)|(1<<CS10);
-	// Prescaller: N = 1, f = 8 MHz / (2 * N * TOP) = 15.686275 kHz
-	TCCR2|=(1<<COM21)|(0<<COM20)|(1<<WGM21)|(1<<WGM20)|(0<<CS22)|(1<<CS21)|(1<<CS20);
-	// PB3 (OC2 = BUZZER) выдает Fast PWM, TOP = 0xFF, Prescaller: N = 32, f = 8 MHz / (N * 256) = 976.5625 Hz
+	// Prescaller: N = 1, f = 16 MHz / (2 * 1 * 256) = 31.250000 kHz
+	TCCR2|=(1<<COM21)|(0<<COM20)|(1<<WGM21)|(1<<WGM20)|(1<<CS22)|(0<<CS21)|(0<<CS20);
+	// PB3 (OC2 = BUZZER) выдает Fast PWM, TOP = 0xFF, Prescaller: N = 64, f = 16 MHz / (64 * 256) = 976.562500 Hz
 	OCR2=0x7F;
 	/*		f = 976.5625 Hz = 0.9765625 kHz
 			T = 1/f = 1/0.9765625 = 1.024 s
@@ -482,9 +482,9 @@ void startup()
 		if(PROTEUS)
         {
             TCCR1B|=(0<<WGM13)|(0<<WGM12)|(1<<CS12)|(0<<CS11)|(1<<CS10);
-            // Prescaller: N = 1024, f = 8 MHz / (2 * N * TOP) = 15.318627 Hz
+            // Prescaller: N = 1024, f = 16 MHz / (2 * 1024 * 256) = 30.517578 Hz
             TCCR2|=(1<<COM21)|(0<<COM20)|(1<<WGM21)|(1<<WGM20)|(1<<CS22)|(1<<CS21)|(1<<CS20);
-            // Prescaller: N = 1024, f = 8 MHz / (1024 * 256) = 30.517578 Hz            
+            // Prescaller: N = 1024, f = 16 MHz / (1024 * 256) = 61.035156 Hz            
         }
 		if(FULL_MENU)
             SET_CNT = SET_CNT_MAX;
@@ -732,12 +732,15 @@ uint16_t get_power_value(/* TESTS ARE THERE */)
 	/* Возвращаем полученное значение */
 	return power_value;
 }
-void values_refresh()
+void values_refresh(/* TESTS ARE THERE */)
 {
 	/* Процедура обновления значений параметров, при их изменении.
 	   Вдобавок, так же выключает нагрузки при достижении температуры канала/превышении мощности. */
 	/* Получение значения потребляемой мощности */
-    cur_power = get_power_value();
+    /* TESTS ARE THERE */
+        //cur_power = get_power_value();
+        cur_power = get_adc_value(10);
+    /* TESTS ARE THERE */
 	/* Получение температур каналов */
     CH1_temp = ds18b20_get_temp(0);
     CH2_temp = ds18b20_get_temp(1);
@@ -1041,28 +1044,116 @@ void buttons_check()
 		}
 	}
 }
+/*
+void isr_button_check(uint16_t timer, uint16_t delay, uint8_t flag, uint8_t pin, uint8_t button)
+{
+	if(flag)
+        timer++;
+	if((CHECKBIT(pin, button) == 0) && !flag)
+	    flag = True;
+	if(timer>=delay)
+	{
+    	timer = 0;
+        if((CHECKBIT(pin, button) == 0) && flag)
+    	{
+        	//action
+            PORTC^=(1<<PC2);
+    	}
+        flag = False;
+	}
+}
+void isr_mode_button()
+{
+	if(BUTTON_PRESSED)
+        BTN_TIMER++;
+	if((CHECKBIT(PIND, MODE_BUTTON) == 0) && !BUTTON_PRESSED)
+		BUTTON_PRESSED = True;
+	if(BTN_TIMER>=3125)
+	{
+		BTN_TIMER = 0;
+        if((CHECKBIT(PIND, MODE_BUTTON) == 0) && BUTTON_PRESSED)
+		{
+            // MODE BUTTON ACTIONS
+            if(!dev_searching)
+            {
+                if(launch == True)
+                {
+                    launch = False;
+                    mode = CAL_MODE;
+                }
+                else
+                {
+                    lcd_clrscr();
+                    if(mode == SET_MODE)
+                    {
+				        if(option < SET_CNT-1)
+                            option++;
+                        else
+                        {
+					        eeprom_save();
+					        option = SET_TMP;
+					        if(set_timer != 0)
+					        {
+						        timer_reset();
+						        timer_enable = True;
+					        }
+					        else
+						        if(timer_enable)
+							        timer_reset();
+					        mode = WRK_MODE;
+                        }
+                    }
+                    else
+                    {
+                        if(mode < MODE_CNT-1)
+                            mode++;
+                        else
+				        {
+					        mode = WRK_MODE;
+				        }
+                    }
+                }
+            }
+            // MODE BUTTON ACTIONS            
+		}
+        BUTTON_PRESSED = False;
+	}     
+}*/
 
 ISR(TIMER0_OVF_vect)
 {
 	/* Вектор прерывания по переполнению таймера Т0 */
+    /* Таблица соответствия "время-переполнения": 
+          2 мс    => 125
+          10 мс   => 625
+          50 мс   => 3125
+          100 мс  => 6250
+          200 мс  => 12500
+          250 мс  => 15625
+          500 мс  => 31250
+          1000 мс => 62500
+    */
 	timer_counter++;
-	/* TEST BLOCK - INTERRUPT BUTTON */
-		BTN_TIMER++;
+/*
+	/ * TEST BLOCK - INTERRUPT BUTTON * /
+		if(BUTTON_PRESSED)
+            BTN_TIMER++;
 		if((CHECKBIT(PIND, MODE_BUTTON) == 0) && !BUTTON_PRESSED)
 			BUTTON_PRESSED = True;
-		/* Действия по прошествии 200 мс */
-		if(BTN_TIMER>=6250)
+		/ * Действия по прошествии N мс * /
+		if(BTN_TIMER>=3125)
 		{
-			if((CHECKBIT(PIND, MODE_BUTTON) == 0) && BUTTON_PRESSED)
-			{
-				PORTC^=(1<<PC2);
-				BUTTON_PRESSED = False;
-			}
 			BTN_TIMER = 0;
+            if((CHECKBIT(PIND, MODE_BUTTON) == 0) && BUTTON_PRESSED)
+			{
+                PORTC^=(1<<PC2);
+			}
+            BUTTON_PRESSED = False;
 		}
-	/* TEST BLOCK - INTERRUPT BUTTON */
+	/ * TEST BLOCK - INTERRUPT BUTTON * /
+*/
 	/* Действия по прошествии одной секунды */
-	if(timer_counter>=31250)
+	if(timer_counter>=62500)
 	{
 		/* Обработчик для таймера обратного отсчета */
 		if(timer_enable)
@@ -1120,13 +1211,13 @@ int main(void)
     startup();
 
 	/* TEST BLOCK */
-		sei();
+		//sei();
         set_max_pwr = power_max;
 	/* TEST BLOCK */
 
 	while(1)
     {	
-		//buttons_check();
+		buttons_check();
         switch(mode)
         {
 			case WRK_MODE:
