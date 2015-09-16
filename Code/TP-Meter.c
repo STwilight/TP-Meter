@@ -205,7 +205,7 @@ unsigned long adc_value   = 0;
 uint16_t      adc_counter = 0;
 uint16_t      adc_noise   = 0;
 #define NOISE_CAL_CNT 1000
-#define POWER_GET_CNT 10
+#define POWER_GET_CNT 45
 
 /* Переменные для отладки */
 #define PROTEUS             True
@@ -214,6 +214,10 @@ uint16_t      adc_noise   = 0;
 /* INTERRUPT BUTTON */
 uint8_t  BUTTON_PRESSED   = False;
 uint16_t BTN_TIMER		  = 0;
+
+/* TMP */
+uint16_t adc_ret_value    = 0;
+#define ADC_CONV_COUNT      300
 
 void eeprom_load()
 {
@@ -476,7 +480,7 @@ void startup()
 	ADMUX|=(1<<REFS1)|(1<<REFS0)|(0<<MUX3)|(1<<MUX2)|(0<<MUX1)|(1<<MUX0);
 	// ИОН: внутренний, 2.56V; вход АЦП: ADC5
 	ADCSRA|=(0<<ADSC)|(0<<ADFR)|(1<<ADIE)|(0<<ADPS2)|(0<<ADPS1)|(0<<ADPS0);
-	// Измерение по запросу, прерывание по окончании преобразования, делитель 2: f ADC = 8 MHz / 2 = 4 MHz	
+	// Измерение по запросу, прерывание по окончании преобразования, делитель 2: f ADC = 16 MHz / 2 = 8 MHz	
 	
 	/* Блок для отладки */
 		if(PROTEUS)
@@ -701,7 +705,7 @@ uint16_t get_adc_value(uint16_t count)
 			lcd_drawbar(i/bar_count);
 	}
 	/* Возвращение значения */
-	return adc_values_accumulator / adc_counter;
+	return adc_values_accumulator/count;
 }
 uint16_t get_power_value(/* TESTS ARE THERE */)
 {
@@ -738,8 +742,8 @@ void values_refresh(/* TESTS ARE THERE */)
 	   Вдобавок, так же выключает нагрузки при достижении температуры канала/превышении мощности. */
 	/* Получение значения потребляемой мощности */
     /* TESTS ARE THERE */
-        //cur_power = get_power_value();
-        cur_power = get_adc_value(10);
+        cur_power = get_power_value();
+        //cur_power = get_adc_value(POWER_GET_CNT);
     /* TESTS ARE THERE */
 	/* Получение температур каналов */
     CH1_temp = ds18b20_get_temp(0);
@@ -1202,8 +1206,23 @@ ISR(TIMER0_OVF_vect)
 }
 ISR(ADC_vect)
 {
-	adc_value = ADC;
-	adc_counter++;
+	// SINGLE CONVERT MODE
+        adc_value = ADC;
+        adc_counter++;
+	// SINGLE CONVERT MODE
+/*
+	// FREE RUNNING MODE
+    if(adc_counter<=ADC_CONV_COUNT)
+    {
+        adc_value += ADC;
+        adc_counter++;
+    }
+    else
+    {
+        adc_ret_value = adc_value/ADC_CONV_COUNT;
+        adc_counter = 0;
+    }
+    // FREE RUNNING MODE*/
 }
 
 int main(void)
@@ -1211,13 +1230,11 @@ int main(void)
     startup();
 
 	/* TEST BLOCK */
-		//sei();
         set_max_pwr = power_max;
 	/* TEST BLOCK */
-
 	while(1)
-    {	
-		buttons_check();
+    {
+        buttons_check();
         switch(mode)
         {
 			case WRK_MODE:
