@@ -208,16 +208,12 @@ uint16_t      adc_noise   = 0;
 #define POWER_GET_CNT 45
 
 /* Переменные для отладки */
-#define PROTEUS             True
+#define PROTEUS             False
 #define FULL_MENU           True
 
 /* INTERRUPT BUTTON */
 uint8_t  BUTTON_PRESSED   = False;
 uint16_t BTN_TIMER		  = 0;
-
-/* TMP */
-uint16_t adc_ret_value    = 0;
-#define ADC_CONV_COUNT      300
 
 void eeprom_load()
 {
@@ -724,8 +720,7 @@ uint16_t get_power_value(/* TESTS ARE THERE */)
 	*/
 	
 	/* Получаем значение напряжения с АЦП и вычитаем из него шум */
-	uint16_t power_value = adc_ret_value;
-    //uint16_t power_value = get_adc_value(POWER_GET_CNT);
+    uint16_t power_value = get_adc_value(POWER_GET_CNT);
     if(power_value >= adc_noise)
         power_value -= adc_noise;
     else
@@ -923,10 +918,6 @@ void calibrate(/* TESTS ARE THERE */)
 	cli();
 	/* Загрузка символов в дисплей */
 	symbols_load();
-    /* Отключение АЦП */
-    ADCSRA|=(0<<ADEN);
-    /* Перевод АЦП в режим непрерывного измерения */
-    ADCSRA|=(1<<ADEN)|(1<<ADSC)|(1<<ADFR);
 	/* Глобальное разрешение прерываний */
 	sei();
 	/* Переход в рабочий режим */
@@ -1215,26 +1206,9 @@ ISR(TIMER0_OVF_vect)
 }
 ISR(ADC_vect)
 {
-	if(ADFR == 1)
-    {
-        if(adc_counter <= ADC_CONV_COUNT)
-        {
-            adc_value += ADC;
-            adc_counter++;
-        }
-        else
-        {
-            adc_ret_value = adc_value/ADC_CONV_COUNT;
-            adc_counter = 0;
-        }        
-        // FREE RUNNING MODE
-    }
-    else
-    {
-        adc_value = ADC;
-        adc_counter++;
-        // SINGLE CONVERT MODE        
-    }
+    adc_value = ADC;
+    adc_counter++;
+    // SINGLE CONVERT MODE
 }
 
 int main(void)
