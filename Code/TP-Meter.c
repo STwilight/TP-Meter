@@ -205,7 +205,7 @@ unsigned long adc_value   = 0;
 uint16_t      adc_counter = 0;
 uint16_t      adc_noise   = 0;
 #define NOISE_CAL_CNT 1000
-#define POWER_GET_CNT 45
+#define POWER_GET_CNT 10
 
 /* Переменные для отладки */
 #define PROTEUS             False
@@ -475,8 +475,8 @@ void startup()
 	/* Настройка АЦП */
 	ADMUX|=(1<<REFS1)|(1<<REFS0)|(0<<MUX3)|(1<<MUX2)|(0<<MUX1)|(1<<MUX0);
 	// ИОН: внутренний, 2.56V; вход АЦП: ADC5
-	ADCSRA|=(0<<ADSC)|(0<<ADFR)|(1<<ADIE)|(0<<ADPS2)|(0<<ADPS1)|(0<<ADPS0);
-	// Измерение по запросу, прерывание по окончании преобразования, делитель 2: f ADC = 16 MHz / 2 = 8 MHz	
+	ADCSRA|=(0<<ADSC)|(0<<ADFR)|(1<<ADIE)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);
+	// Измерение по запросу, прерывание по окончании преобразования, делитель 128: f ADC = 16 MHz / 128 = 125 kHz
 	
 	/* Блок для отладки */
 		if(PROTEUS)
@@ -742,8 +742,8 @@ void values_refresh(/* TESTS ARE THERE */)
 	   Вдобавок, так же выключает нагрузки при достижении температуры канала/превышении мощности. */
 	/* Получение значения потребляемой мощности */
     /* TESTS ARE THERE */
-        cur_power = get_power_value();
-        //cur_power = get_adc_value(POWER_GET_CNT);
+        //cur_power = get_power_value();
+        cur_power = get_adc_value(POWER_GET_CNT);
     /* TESTS ARE THERE */
 	/* Получение температур каналов */
     CH1_temp = ds18b20_get_temp(0);
