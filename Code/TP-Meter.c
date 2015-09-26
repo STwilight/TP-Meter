@@ -202,7 +202,6 @@ uint8_t overpower	  = False;
 
 /* Переменные, необходимые для работы АЦП */
 unsigned long adc_value   = 0;
-uint16_t      adc_counter = 0;
 uint16_t      adc_noise   = 0;
 #define NOISE_CAL_CNT 1000
 #define POWER_GET_CNT 10
@@ -688,8 +687,7 @@ uint8_t ds18b20_get_temp(uint8_t dev_id)
 uint16_t get_adc_value(uint16_t count)
 {
 	/* Процедура получения значения с АЦП */
-	adc_value   = 0;
-	adc_counter = 0;
+	adc_value = 0;
 	unsigned long adc_values_accumulator = 0;
 	uint16_t bar_count = count/NUMBER_OF_BAR_ELEMENTS;
 	/* Сбор данных с АЦП и вывод шкалы прогресса (в случае режима калибровки) */
@@ -1124,6 +1122,12 @@ void isr_mode_button()
 	}     
 }*/
 
+//  //TEST = MULTICONVERT MODE
+// 		long test_adc_acc = 0;
+// 		uint16_t adc_cntr = 0;
+// 		uint16_t adc_mes  = 100;
+//  //TEST = MULTICONVERT MODE
+
 ISR(TIMER0_OVF_vect)
 {
 	/* Вектор прерывания по переполнению таймера Т0 */
@@ -1207,19 +1211,60 @@ ISR(TIMER0_OVF_vect)
 ISR(ADC_vect)
 {
     adc_value = ADC;
-    adc_counter++;
     // SINGLE CONVERT MODE
+// 	// TEST = MULTICONVERT MODE
+// 		test_adc_acc += ADC;
+// 		adc_cntr++;
+// 		if(adc_cntr >= adc_mes)
+// 		{
+// 			adc_value = test_adc_acc/adc_cntr;
+// 			test_adc_acc = 0;
+// 			adc_cntr  = 0;
+// 		}
+// 	// TEST = MULTICONVERT MODE
 }
 
 int main(void)
 {
-    startup();
-
-	/* TEST BLOCK */
-        set_max_pwr = power_max;
-	/* TEST BLOCK */
+    //startup();
+		// TEST
+			DDRB  = 0x3E;
+			PORTB = 0x07;
+			DDRC  = 0x8F;
+			PORTC = 0x10;
+			DDRD  = 0x3F;
+			PORTD = 0xC0;
+	
+			ADMUX|=(1<<REFS1)|(1<<REFS0)|(0<<MUX3)|(1<<MUX2)|(0<<MUX1)|(1<<MUX0);
+			ADCSRA|=(0<<ADSC)|(0<<ADFR)|(1<<ADIE)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);	
+	
+			lcd_init();
+			lcd_clrscr();
+	
+			ADCSRA|=(1<<ADEN);
+			ADCSRA|=(1<<ADSC);
+	
+			sei();
+		// TEST
 	while(1)
     {
+			// TEST
+// 				//TEST = MULTICONVERT MODE
+// 					for (uint16_t i=0; i < adc_mes; i++)
+// 					ADCSRA|=(1<<ADSC);
+// 				//TEST = MULTICONVERT MODE
+				ADCSRA|=(1<<ADSC);
+				uint16_t adc_val = adc_value;
+				char ch_array[7];
+				dtostrf((adc_val*2.56/1024), 1, 4, ch_array);
+				lcd_goto(1,0);
+				lcd_prints("L = ");
+				lcd_numTOstr(adc_val, 4);
+				lcd_goto(2,0);
+				lcd_prints("U = ");
+				lcd_prints(ch_array);
+			// TEST
+/*
         buttons_check();
         switch(mode)
         {
@@ -1234,7 +1279,7 @@ int main(void)
                 break;            
         }
 		if((mode != 0) && (mode != CAL_MODE))
-            values_refresh();
+            values_refresh();*/
     }
     return 0;
 }
