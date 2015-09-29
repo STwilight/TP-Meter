@@ -368,31 +368,34 @@ void symbols_load()
 }
 void load_control(uint8_t channel, uint8_t state)
 {
-	/* Процедура упраления нагрузкой */
+	/* Процедура упраления нагрузкой.
+	   Реле управляется отрицательным сигналом,
+	   в связи с этим если на порт выдан 0,
+	   то нагрузка включена и наоборот.        */
 	switch (channel)
 	{
 		case 1:
 			if(state)
-				ENABLE(PORTC, CH1);
+				DISABLE(PORTC, CH1);
 			else
-				DISABLE(PORTC, CH1);		
+				ENABLE(PORTC, CH1);
 			break;
 		case 2:
 			if(state)
-				ENABLE(PORTC, CH2);
+				DISABLE(PORTC, CH2);
 			else
-				DISABLE(PORTC, CH2);		
+				ENABLE(PORTC, CH2);
 			break;
 		default:
 			if(state)
 			{
-				ENABLE(PORTC, CH1);
-				ENABLE(PORTC, CH2);				
+				DISABLE(PORTC, CH1);
+				DISABLE(PORTC, CH2);
 			}
 			else
 			{
-				DISABLE(PORTC, CH1);
-				DISABLE(PORTC, CH2);
+				ENABLE(PORTC, CH1);
+				ENABLE(PORTC, CH2);				
 			}
 			break;
 	}
@@ -687,19 +690,25 @@ uint8_t ds18b20_get_temp(uint8_t dev_id)
 uint16_t get_adc_value(uint16_t count)
 {
 	/* Процедура получения значения с АЦП */
-	adc_value = 0;
+	uint8_t cal_mode = False;
 	unsigned long adc_values_accumulator = 0;
 	uint16_t bar_count = count/NUMBER_OF_BAR_ELEMENTS;
+	/* Поднятие флага режима калибровки */
+	if(mode == CAL_MODE)
+		cal_mode = True;
 	/* Сбор данных с АЦП и вывод шкалы прогресса (в случае режима калибровки) */
 	for(uint16_t i=0; i<count; i++)
 	{
 		ADCSRA|=(1<<ADSC);
+		if(!cal_mode)
+			_delay_ms(1);
 		adc_values_accumulator += adc_value;
-		if(mode == CAL_MODE)
+		if(cal_mode)
 			lcd_drawbar(i/bar_count);
 	}
 	/* Возвращение значения */
-	return adc_values_accumulator/count;
+	adc_values_accumulator /= count;
+	return (uint16_t)adc_values_accumulator;
 }
 uint16_t get_power_value(/* TESTS ARE THERE */)
 {
@@ -1235,8 +1244,11 @@ int main(void)
 			DDRD  = 0x3F;
 			PORTD = 0xC0;
 	
-			ADMUX|=(1<<REFS1)|(1<<REFS0)|(0<<MUX3)|(1<<MUX2)|(0<<MUX1)|(1<<MUX0);
-			ADCSRA|=(0<<ADSC)|(0<<ADFR)|(1<<ADIE)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);	
+			//ADMUX|=(1<<REFS1)|(1<<REFS0)|(0<<MUX3)|(1<<MUX2)|(0<<MUX1)|(1<<MUX0);
+			// ИОН: внутренний, 2.56V; вход АЦП: ADC5
+			ADMUX|=(0<<REFS1)|(1<<REFS0)|(0<<MUX3)|(1<<MUX2)|(0<<MUX1)|(1<<MUX0);
+			// ИОН внешний, входа АЦП: ADC5
+			ADCSRA|=(0<<ADSC)|(0<<ADFR)|(1<<ADIE)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);
 	
 			lcd_init();
 			lcd_clrscr();
@@ -1249,14 +1261,20 @@ int main(void)
 	while(1)
     {
 			// TEST
-// 				//TEST = MULTICONVERT MODE
+				//TEST = MULTICONVERT MODE
 // 					for (uint16_t i=0; i < adc_mes; i++)
+// 						ADCSRA|=(1<<ADSC);
+				//TEST = MULTICONVERT MODE
+				
+				//TEST 2
 // 					ADCSRA|=(1<<ADSC);
-// 				//TEST = MULTICONVERT MODE
-				ADCSRA|=(1<<ADSC);
-				uint16_t adc_val = adc_value;
+// 					uint16_t adc_val = adc_value;
+				//TEST 2
+				
+				uint16_t adc_val = get_adc_value(100);
+				
 				char ch_array[7];
-				dtostrf((adc_val*2.56/1024), 1, 4, ch_array);
+				dtostrf((adc_val*2.72/1024), 1, 4, ch_array);
 				lcd_goto(1,0);
 				lcd_prints("L = ");
 				lcd_numTOstr(adc_val, 4);
