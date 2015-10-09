@@ -90,6 +90,9 @@ unsigned char dev_num             = 0;
 #define PLUS_BUTTON     PD7
 #define MINUS_BUTTON    PB0
 
+/* Определение пина для EasterEgg */
+#define EGG				PC5
+
 /* Определение времени задержки (мс) для устранения дребезга контактов */
 #define DEB_INT		    0 //150
 
@@ -197,6 +200,11 @@ uint8_t CH1_temp      = 0;
 uint8_t CH2_temp	  = 0;
 uint16_t cur_power    = 0;
 
+/* Переменные модуля измерения температуры */
+uint8_t temp_flag	  = False;
+uint8_t temp_timer    = 0;
+#define temp_timer_max  4
+
 /* Флаг превышения потребляемой мощности */
 uint8_t overpower	  = False;
 
@@ -211,8 +219,8 @@ uint16_t      adc_noise   = 0;
 #define FULL_MENU           True
 
 /* INTERRUPT BUTTON */
-uint8_t  BUTTON_PRESSED   = False;
-uint16_t BTN_TIMER		  = 0;
+// uint8_t  BUTTON_PRESSED   = False;
+// uint16_t BTN_TIMER		  = 0;
 
 void eeprom_load()
 {
@@ -426,15 +434,15 @@ void startup()
                PB3 – BUZZER            (OC2, OUT, 0);
                PB4 – N/A               (N/A, OUT, 0);
                PB5 – N/A               (N/A, OUT, 0);
-               PB6 – OSC PIN           (8 MHz, IN, NO PULLUP);
-               PB7 – OSC PIN           (8 MHz, IN, NO PULLUP);
+               PB6 – OSC PIN           (16 MHz, IN, NO PULLUP);
+               PB7 – OSC PIN           (16 MHz, IN, NO PULLUP);
         PORT C:
                PC0 – N/A               (N/A, OUT, 0);
                PC1 – CHANNEL 2 CONTROL (CH2, OUT, 0);
                PC2 – CHANNEL 1 CONTROL (CH1, OUT, 0);
                PC3 – TEMP MEASUREMENT  (1-WIRE, OUT, 0);
-               PC4 – EASTER EGG        (EE, IN, PULLUP);
-               PC5 – POWER MEASUREMENT (ADC5, IN, NO PULLUP);
+			   PC4 – POWER MEASUREMENT (ADC4, IN, NO PULLUP);
+			   PC5 – EASTER EGG        (EGG, IN, PULLUP);
                PC6 – RESET PIN         (RESET, IN, NO PULLUP);
                PC7 – N/A               (N/A, OUT, 0);
         PORT D:
@@ -452,7 +460,7 @@ void startup()
     DDRB  = 0x3E;
 	PORTB = 0x07;
     DDRC  = 0x8F;
-    PORTC = 0x10;
+    PORTC = 0x20;
     DDRD  = 0x3F;
     PORTD = 0xC0;
 	
@@ -475,9 +483,9 @@ void startup()
 	*/
 	
 	/* Настройка АЦП */
-	ADMUX|=(1<<REFS1)|(1<<REFS0)|(0<<MUX3)|(1<<MUX2)|(0<<MUX1)|(1<<MUX0);
-	// ИОН: внутренний, 2.56V; вход АЦП: ADC5
-	ADCSRA|=(0<<ADSC)|(0<<ADFR)|(1<<ADIE)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);
+	ADMUX|=(1<<REFS1)|(1<<REFS0)|(0<<MUX3)|(1<<MUX2)|(0<<MUX1)|(0<<MUX0);
+	// ИОН: внутренний, 2.56V; вход АЦП: ADC4
+	ADCSRA|=(0<<ADEN)|(0<<ADSC)|(0<<ADFR)|(1<<ADIE)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);
 	// Измерение по запросу, прерывание по окончании преобразования, делитель 128: f ADC = 16 MHz / 128 = 125 kHz
 	
 	/* Блок для отладки */
@@ -499,7 +507,7 @@ void startup()
 	BUZZER = 0;
 
 	/* Проверка аппаратной возможности использовать Easter Egg */
-	if(CHECKBIT(PINC, PC4) == 0)
+	if(CHECKBIT(PINC, EGG) == 0)
 		enable_eegg = True;
 	else
 		enable_eegg = False;
@@ -753,8 +761,12 @@ void values_refresh(/* TESTS ARE THERE */)
         cur_power = get_adc_value(POWER_GET_CNT);
     /* TESTS ARE THERE */
 	/* Получение температур каналов */
-    CH1_temp = ds18b20_get_temp(0);
-    CH2_temp = ds18b20_get_temp(1);
+	if(temp_flag)
+	{
+		temp_flag = False;
+		CH1_temp = ds18b20_get_temp(0);
+		CH2_temp = ds18b20_get_temp(1);
+	}
 	/* Аварийное отключение нагрузки при превышении потребляемой мощности */
 	if(cur_power >= set_max_pwr)
 	{
@@ -1048,7 +1060,7 @@ void buttons_check()
 	}
 	else if(SET_EASTER_EGG && enable_eegg)
 	{
-		if(CHECKBIT(PINC, PC4) != 0)
+		if(CHECKBIT(PINC, EGG) != 0)
 		{
 			if((mode == WRK_MODE) && (CHECKBIT(PIND, PLUS_BUTTON) == 0) && (CHECKBIT(PINB, MINUS_BUTTON) == 0))
 				SET_CNT = SET_CNT_MAX;
@@ -1215,6 +1227,14 @@ ISR(TIMER0_OVF_vect)
 			timer_out = False;
 		/* Обнуление счетчика прерываний таймера Т0 */
 		timer_counter = 0;
+		/* Управление таймером отсчета времени между измерениями температуры */
+		if(temp_timer < temp_timer_max)
+			temp_timer++;
+		else
+		{
+			temp_timer = 0;
+			temp_flag  = True;
+		}
 	}
 }
 ISR(ADC_vect)
@@ -1240,15 +1260,16 @@ int main(void)
 			DDRB  = 0x3E;
 			PORTB = 0x07;
 			DDRC  = 0x8F;
-			PORTC = 0x10;
+			PORTC = 0x20;
 			DDRD  = 0x3F;
 			PORTD = 0xC0;
 	
-			//ADMUX|=(1<<REFS1)|(1<<REFS0)|(0<<MUX3)|(1<<MUX2)|(0<<MUX1)|(1<<MUX0);
-			// ИОН: внутренний, 2.56V; вход АЦП: ADC5
-			ADMUX|=(0<<REFS1)|(1<<REFS0)|(0<<MUX3)|(1<<MUX2)|(0<<MUX1)|(1<<MUX0);
-			// ИОН внешний, входа АЦП: ADC5
-			ADCSRA|=(0<<ADSC)|(0<<ADFR)|(1<<ADIE)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);
+			//ADMUX|=(1<<REFS1)|(1<<REFS0)|(0<<MUX3)|(1<<MUX2)|(0<<MUX1)|(0<<MUX0);
+			// ИОН: внутренний, 2.56V; вход АЦП: ADC4
+			ADMUX|=(0<<REFS1)|(1<<REFS0)|(0<<MUX3)|(1<<MUX2)|(0<<MUX1)|(0<<MUX0);
+			// ИОН: внешний на AVCC; вход АЦП: ADC4			
+			ADCSRA|=(0<<ADEN)|(0<<ADSC)|(0<<ADFR)|(1<<ADIE)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);
+			// Измерение по запросу, прерывание по окончании преобразования, делитель 128: f ADC = 16 MHz / 128 = 125 kHz
 	
 			lcd_init();
 			lcd_clrscr();
@@ -1274,7 +1295,7 @@ int main(void)
 				uint16_t adc_val = get_adc_value(100);
 				
 				char ch_array[7];
-				dtostrf((adc_val*2.72/1024), 1, 4, ch_array);
+				dtostrf((adc_val*4.9/1024), 1, 2, ch_array);
 				lcd_goto(1,0);
 				lcd_prints("L = ");
 				lcd_numTOstr(adc_val, 4);
