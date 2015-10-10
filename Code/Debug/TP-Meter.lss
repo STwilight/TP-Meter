@@ -1611,14 +1611,14 @@ int main(void)
  816:	7c 01       	movw	r14, r24
 				
 				char ch_array[7];
-				dtostrf((adc_val*2.5/1024), 1, 3, ch_array);
+				dtostrf((adc_val*2.49442/1024), 1, 4, ch_array);
  818:	bc 01       	movw	r22, r24
  81a:	80 e0       	ldi	r24, 0x00	; 0
  81c:	90 e0       	ldi	r25, 0x00	; 0
  81e:	22 d0       	rcall	.+68     	; 0x864 <__floatunsisf>
- 820:	20 e0       	ldi	r18, 0x00	; 0
- 822:	30 e0       	ldi	r19, 0x00	; 0
- 824:	40 e2       	ldi	r20, 0x20	; 32
+ 820:	24 e9       	ldi	r18, 0x94	; 148
+ 822:	34 ea       	ldi	r19, 0xA4	; 164
+ 824:	4f e1       	ldi	r20, 0x1F	; 31
  826:	50 e4       	ldi	r21, 0x40	; 64
  828:	5a d0       	rcall	.+180    	; 0x8de <__mulsf3>
  82a:	20 e0       	ldi	r18, 0x00	; 0
@@ -1629,7 +1629,7 @@ int main(void)
  834:	8e 01       	movw	r16, r28
  836:	0f 5f       	subi	r16, 0xFF	; 255
  838:	1f 4f       	sbci	r17, 0xFF	; 255
- 83a:	23 e0       	ldi	r18, 0x03	; 3
+ 83a:	24 e0       	ldi	r18, 0x04	; 4
  83c:	41 e0       	ldi	r20, 0x01	; 1
  83e:	45 d1       	rcall	.+650    	; 0xaca <dtostrf>
 				lcd_goto(1,0);

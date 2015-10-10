@@ -1297,7 +1297,7 @@ int main(void)
 				uint16_t adc_val = get_adc_value(100);
 				
 				char ch_array[7];
-				dtostrf((adc_val*2.5/1024), 1, 3, ch_array);
+				dtostrf((adc_val*2.49442/1024), 1, 4, ch_array);
 				lcd_goto(1,0);
 				lcd_prints("L = ");
 				lcd_numTOstr(adc_val, 4);
