@@ -1266,8 +1266,10 @@ int main(void)
 	
 			//ADMUX|=(1<<REFS1)|(1<<REFS0)|(0<<MUX3)|(1<<MUX2)|(0<<MUX1)|(0<<MUX0);
 			// ИОН: внутренний, 2.56V; вход АЦП: ADC4
-			ADMUX|=(0<<REFS1)|(1<<REFS0)|(0<<MUX3)|(1<<MUX2)|(0<<MUX1)|(0<<MUX0);
-			// ИОН: внешний на AVCC; вход АЦП: ADC4			
+			//ADMUX|=(0<<REFS1)|(1<<REFS0)|(0<<MUX3)|(1<<MUX2)|(0<<MUX1)|(0<<MUX0);
+			// ИОН: внешний на AVCC; вход АЦП: ADC4
+			ADMUX|=(0<<REFS1)|(0<<REFS0)|(0<<MUX3)|(1<<MUX2)|(0<<MUX1)|(0<<MUX0);
+			// ИОН: внешний на AREF; вход АЦП: ADC4
 			ADCSRA|=(0<<ADEN)|(0<<ADSC)|(0<<ADFR)|(1<<ADIE)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);
 			// Измерение по запросу, прерывание по окончании преобразования, делитель 128: f ADC = 16 MHz / 128 = 125 kHz
 	
@@ -1295,7 +1297,7 @@ int main(void)
 				uint16_t adc_val = get_adc_value(100);
 				
 				char ch_array[7];
-				dtostrf((adc_val*4.9/1024), 1, 2, ch_array);
+				dtostrf((adc_val*2.5/1024), 1, 3, ch_array);
 				lcd_goto(1,0);
 				lcd_prints("L = ");
 				lcd_numTOstr(adc_val, 4);
