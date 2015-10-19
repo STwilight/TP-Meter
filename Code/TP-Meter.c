@@ -483,8 +483,8 @@ void startup()
 	*/
 	
 	/* Настройка АЦП */
-	ADMUX|=(1<<REFS1)|(1<<REFS0)|(0<<MUX3)|(1<<MUX2)|(0<<MUX1)|(0<<MUX0);
-	// ИОН: внутренний, 2.56V; вход АЦП: ADC4
+	ADMUX|=(0<<REFS1)|(0<<REFS0)|(0<<MUX3)|(1<<MUX2)|(0<<MUX1)|(0<<MUX0);
+	// ИОН: внешний на AREF, TL431 (2.50 V); вход АЦП: ADC4
 	ADCSRA|=(0<<ADEN)|(0<<ADSC)|(0<<ADFR)|(1<<ADIE)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);
 	// Измерение по запросу, прерывание по окончании преобразования, делитель 128: f ADC = 16 MHz / 128 = 125 kHz
 	
@@ -736,7 +736,7 @@ uint16_t get_power_value(/* TESTS ARE THERE */)
 	
 	/* Получаем значение напряжения с АЦП и вычитаем из него шум */
     uint16_t power_value = get_adc_value(POWER_GET_CNT);
-    if(power_value >= adc_noise)
+    if(power_value > adc_noise)
         power_value -= adc_noise;
     else
         power_value = 0;
@@ -751,15 +751,12 @@ uint16_t get_power_value(/* TESTS ARE THERE */)
 	/* Возвращаем полученное значение */
 	return power_value;
 }
-void values_refresh(/* TESTS ARE THERE */)
+void values_refresh()
 {
 	/* Процедура обновления значений параметров, при их изменении.
 	   Вдобавок, так же выключает нагрузки при достижении температуры канала/превышении мощности. */
 	/* Получение значения потребляемой мощности */
-    /* TESTS ARE THERE */
-        //cur_power = get_power_value();
-        cur_power = get_adc_value(POWER_GET_CNT);
-    /* TESTS ARE THERE */
+    cur_power = get_power_value();
 	/* Получение температур каналов */
 	if(temp_flag)
 	{
@@ -926,11 +923,6 @@ void calibrate(/* TESTS ARE THERE */)
 		lcd_goto(1, 0);
 		lcd_prints("ADC Noise = ");
 		lcd_itostr(adc_noise);
-// 		char ch_array[10];
-// 		lcd_goto(2, 0);
-// 		lcd_prints("U Noise = ");
-// 		dtostrf(adc_noise*0.0025, 1, 4, ch_array);
-// 		lcd_prints(ch_array);
 		_delay_ms(1000);
 	/* TEST BLOCK */
 	/* Глобальный запрет прерываний */
@@ -1143,12 +1135,6 @@ void isr_mode_button()
 	}     
 }*/
 
-//  //TEST = MULTICONVERT MODE
-// 		long test_adc_acc = 0;
-// 		uint16_t adc_cntr = 0;
-// 		uint16_t adc_mes  = 100;
-//  //TEST = MULTICONVERT MODE
-
 ISR(TIMER0_OVF_vect)
 {
 	/* Вектор прерывания по переполнению таймера Т0 */
@@ -1240,17 +1226,6 @@ ISR(TIMER0_OVF_vect)
 ISR(ADC_vect)
 {
     adc_value = ADC;
-    // SINGLE CONVERT MODE
-// 	// TEST = MULTICONVERT MODE
-// 		test_adc_acc += ADC;
-// 		adc_cntr++;
-// 		if(adc_cntr >= adc_mes)
-// 		{
-// 			adc_value = test_adc_acc/adc_cntr;
-// 			test_adc_acc = 0;
-// 			adc_cntr  = 0;
-// 		}
-// 	// TEST = MULTICONVERT MODE
 }
 
 int main(void)
@@ -1263,15 +1238,20 @@ int main(void)
 			PORTC = 0x20;
 			DDRD  = 0x3F;
 			PORTD = 0xC0;
+
+			TCCR1A|=(1<<COM1A1)|(0<<COM1A0)|(1<<COM1B1)|(0<<COM1B0)|(0<<WGM11)|(1<<WGM10);
+			// PB1 (OC1A = LIGHT) и PB2 (OC1B = CONTRAST) выдают Phase-Correct PWM, 8-bit, TOP = 0x00FF
+			TCCR1B|=(0<<WGM13)|(0<<WGM12)|(0<<CS12)|(0<<CS11)|(1<<CS10);
+			// Prescaller: N = 1, f = 16 MHz / (2 * 1 * 256) = 31.250000 kHz
 	
-			//ADMUX|=(1<<REFS1)|(1<<REFS0)|(0<<MUX3)|(1<<MUX2)|(0<<MUX1)|(0<<MUX0);
-			// ИОН: внутренний, 2.56V; вход АЦП: ADC4
-			//ADMUX|=(0<<REFS1)|(1<<REFS0)|(0<<MUX3)|(1<<MUX2)|(0<<MUX1)|(0<<MUX0);
-			// ИОН: внешний на AVCC; вход АЦП: ADC4
 			ADMUX|=(0<<REFS1)|(0<<REFS0)|(0<<MUX3)|(1<<MUX2)|(0<<MUX1)|(0<<MUX0);
 			// ИОН: внешний на AREF; вход АЦП: ADC4
 			ADCSRA|=(0<<ADEN)|(0<<ADSC)|(0<<ADFR)|(1<<ADIE)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);
 			// Измерение по запросу, прерывание по окончании преобразования, делитель 128: f ADC = 16 MHz / 128 = 125 kHz
+
+			eeprom_load();
+			LIGHTNESS = set_light;
+			CONTRAST  = set_contrast;
 	
 			lcd_init();
 			lcd_clrscr();
@@ -1284,20 +1264,9 @@ int main(void)
 	while(1)
     {
 			// TEST
-				//TEST = MULTICONVERT MODE
-// 					for (uint16_t i=0; i < adc_mes; i++)
-// 						ADCSRA|=(1<<ADSC);
-				//TEST = MULTICONVERT MODE
-				
-				//TEST 2
-// 					ADCSRA|=(1<<ADSC);
-// 					uint16_t adc_val = adc_value;
-				//TEST 2
-				
 				uint16_t adc_val = get_adc_value(100);
-				
 				char ch_array[7];
-				dtostrf((adc_val*2.49442/1024), 1, 4, ch_array);
+				dtostrf((adc_val*2.5/1024), 1, 4, ch_array);
 				lcd_goto(1,0);
 				lcd_prints("L = ");
 				lcd_numTOstr(adc_val, 4);
