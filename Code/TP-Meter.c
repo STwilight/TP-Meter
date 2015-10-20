@@ -37,6 +37,7 @@
 #define F_CPU 16000000
 
 /* Подключение библиотек */
+#include <math.h>
 #include <stdlib.h>
 #include <avr/io.h>
 #include <avr/eeprom.h>
@@ -1265,13 +1266,14 @@ int main(void)
     {
 			// TEST
 				uint16_t adc_val = get_adc_value(100);
-				char ch_array[7];
-				dtostrf((adc_val*2.5/1024), 1, 4, ch_array);
+				char ch_array[10];
+				dtostrf(((((adc_val*2.5/1024)*30)*1.85*sqrt(2))*225), 4, 2, ch_array);
+				// 1.85 is magic number
 				lcd_goto(1,0);
 				lcd_prints("L = ");
 				lcd_numTOstr(adc_val, 4);
 				lcd_goto(2,0);
-				lcd_prints("U = ");
+				lcd_prints("P = ");
 				lcd_prints(ch_array);
 			// TEST
 /*
