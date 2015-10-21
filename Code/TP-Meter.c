@@ -213,11 +213,14 @@ uint8_t overpower	  = False;
 unsigned long adc_value   = 0;
 uint16_t      adc_noise   = 0;
 #define NOISE_CAL_CNT 1000
-#define POWER_GET_CNT 10
+#define POWER_GET_CNT 100
 
 /* Переменные для отладки */
 #define PROTEUS             False
 #define FULL_MENU           True
+
+/* Коэффициенты */
+double const X = 1.85;
 
 /* INTERRUPT BUTTON */
 // uint8_t  BUTTON_PRESSED   = False;
@@ -719,7 +722,7 @@ uint16_t get_adc_value(uint16_t count)
 	adc_values_accumulator /= count;
 	return (uint16_t)adc_values_accumulator;
 }
-uint16_t get_power_value(/* TESTS ARE THERE */)
+uint16_t get_power_value()
 {
 	/* Таблица значений "величина-ток" для датчика SCT-013-000:
 	      50 mV => 100 A
@@ -741,14 +744,8 @@ uint16_t get_power_value(/* TESTS ARE THERE */)
         power_value -= adc_noise;
     else
         power_value = 0;
-	/* Переводим полученное значение в напряжение датчика */
-	//power_value = (power_value * 2.56) / 1024;
-	/* Переводим полученное значение в ток потребления */
-	/* TEST BLOCK */
-		// здесь нужно написать код для преобразования напряжения в ток
-	/* TEST BLOCK */
-	/* Вычисляем значение потребляемой мощности */
-	//power_value = power_value * set_vtg;
+	/* Переводим полученное значение в напряжение датчика и вычисляем значение потребляемой мощности*/
+	power_value = (power_value*2.5/1024)*30*sqrt(2)*set_vtg*X;
 	/* Возвращаем полученное значение */
 	return power_value;
 }
@@ -890,8 +887,8 @@ void display()
 	/* Процедура вывода данных на основной экран */
 	if(!overpower)
 	{
-		temp_out(1, CH1_temp, CHECKBIT(LOAD_PORT, CH1));
-		temp_out(2, CH2_temp, CHECKBIT(LOAD_PORT, CH2));
+		temp_out(1, CH1_temp, ~CHECKBIT(LOAD_PORT, CH1));
+		temp_out(2, CH2_temp, ~CHECKBIT(LOAD_PORT, CH2));
 		power_out(cur_power);
 		time_out(set_timer, timer_secs);
 	}
@@ -903,7 +900,7 @@ void display()
 		lcd_prints("\tOVERPOWER!!!");
 	}
 }
-void calibrate(/* TESTS ARE THERE */)
+void calibrate()
 {
 	/* Процедура калибровки АЦП для устранения шумов */
 	/* Включение АЦП */
@@ -918,14 +915,7 @@ void calibrate(/* TESTS ARE THERE */)
 	/* Глобальное разрешение прерываний */
 	sei();
 	/* Вычисление значения шума */	
-	adc_noise = get_adc_value(NOISE_CAL_CNT);	// значение шума
-	/* TEST BLOCK */
-		lcd_clrscr();
-		lcd_goto(1, 0);
-		lcd_prints("ADC Noise = ");
-		lcd_itostr(adc_noise);
-		_delay_ms(1000);
-	/* TEST BLOCK */
+	adc_noise = get_adc_value(NOISE_CAL_CNT);
 	/* Глобальный запрет прерываний */
 	cli();
 	/* Загрузка символов в дисплей */
@@ -1231,52 +1221,9 @@ ISR(ADC_vect)
 
 int main(void)
 {
-    //startup();
-		// TEST
-			DDRB  = 0x3E;
-			PORTB = 0x07;
-			DDRC  = 0x8F;
-			PORTC = 0x20;
-			DDRD  = 0x3F;
-			PORTD = 0xC0;
-
-			TCCR1A|=(1<<COM1A1)|(0<<COM1A0)|(1<<COM1B1)|(0<<COM1B0)|(0<<WGM11)|(1<<WGM10);
-			// PB1 (OC1A = LIGHT) и PB2 (OC1B = CONTRAST) выдают Phase-Correct PWM, 8-bit, TOP = 0x00FF
-			TCCR1B|=(0<<WGM13)|(0<<WGM12)|(0<<CS12)|(0<<CS11)|(1<<CS10);
-			// Prescaller: N = 1, f = 16 MHz / (2 * 1 * 256) = 31.250000 kHz
-	
-			ADMUX|=(0<<REFS1)|(0<<REFS0)|(0<<MUX3)|(1<<MUX2)|(0<<MUX1)|(0<<MUX0);
-			// ИОН: внешний на AREF; вход АЦП: ADC4
-			ADCSRA|=(0<<ADEN)|(0<<ADSC)|(0<<ADFR)|(1<<ADIE)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);
-			// Измерение по запросу, прерывание по окончании преобразования, делитель 128: f ADC = 16 MHz / 128 = 125 kHz
-
-			eeprom_load();
-			LIGHTNESS = set_light;
-			CONTRAST  = set_contrast;
-	
-			lcd_init();
-			lcd_clrscr();
-	
-			ADCSRA|=(1<<ADEN);
-			ADCSRA|=(1<<ADSC);
-	
-			sei();
-		// TEST
+    startup();
 	while(1)
     {
-			// TEST
-				uint16_t adc_val = get_adc_value(100);
-				char ch_array[10];
-				dtostrf(((((adc_val*2.5/1024)*30)*1.85*sqrt(2))*225), 4, 2, ch_array);
-				// 1.85 is magic number
-				lcd_goto(1,0);
-				lcd_prints("L = ");
-				lcd_numTOstr(adc_val, 4);
-				lcd_goto(2,0);
-				lcd_prints("P = ");
-				lcd_prints(ch_array);
-			// TEST
-/*
         buttons_check();
         switch(mode)
         {
@@ -1291,7 +1238,7 @@ int main(void)
                 break;            
         }
 		if((mode != 0) && (mode != CAL_MODE))
-            values_refresh();*/
+            values_refresh();
     }
     return 0;
 }
