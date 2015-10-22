@@ -220,11 +220,7 @@ uint16_t      adc_noise   = 0;
 #define FULL_MENU           True
 
 /* Коэффициенты */
-double const X = 1.85;
-
-/* INTERRUPT BUTTON */
-// uint8_t  BUTTON_PRESSED   = False;
-// uint16_t BTN_TIMER		  = 0;
+double const X = 1.00;
 
 void eeprom_load()
 {
@@ -822,9 +818,9 @@ void temp_out(uint8_t channel, uint8_t temp_value, uint8_t status)
     /* Процедура вывода значения температуры на дисплей */
     lcd_goto(channel, 0);
     if(status)        
-		lcd_prints(">");
+		lcd_prints(" ");
     else
-        lcd_prints(" ");
+        lcd_prints(">");
     lcd_putc(1);
 	lcd_itostr(channel);
     lcd_prints("=");
@@ -887,8 +883,8 @@ void display()
 	/* Процедура вывода данных на основной экран */
 	if(!overpower)
 	{
-		temp_out(1, CH1_temp, ~CHECKBIT(LOAD_PORT, CH1));
-		temp_out(2, CH2_temp, ~CHECKBIT(LOAD_PORT, CH2));
+		temp_out(1, CH1_temp, CHECKBIT(LOAD_PORT, CH1));
+		temp_out(2, CH2_temp, CHECKBIT(LOAD_PORT, CH2));
 		power_out(cur_power);
 		time_out(set_timer, timer_secs);
 	}
@@ -1050,81 +1046,6 @@ void buttons_check()
 		}
 	}
 }
-/*
-void isr_button_check(uint16_t timer, uint16_t delay, uint8_t flag, uint8_t pin, uint8_t button)
-{
-	if(flag)
-        timer++;
-	if((CHECKBIT(pin, button) == 0) && !flag)
-	    flag = True;
-	if(timer>=delay)
-	{
-    	timer = 0;
-        if((CHECKBIT(pin, button) == 0) && flag)
-    	{
-        	//action
-            PORTC^=(1<<PC2);
-    	}
-        flag = False;
-	}
-}
-void isr_mode_button()
-{
-	if(BUTTON_PRESSED)
-        BTN_TIMER++;
-	if((CHECKBIT(PIND, MODE_BUTTON) == 0) && !BUTTON_PRESSED)
-		BUTTON_PRESSED = True;
-	if(BTN_TIMER>=3125)
-	{
-		BTN_TIMER = 0;
-        if((CHECKBIT(PIND, MODE_BUTTON) == 0) && BUTTON_PRESSED)
-		{
-            // MODE BUTTON ACTIONS
-            if(!dev_searching)
-            {
-                if(launch == True)
-                {
-                    launch = False;
-                    mode = CAL_MODE;
-                }
-                else
-                {
-                    lcd_clrscr();
-                    if(mode == SET_MODE)
-                    {
-				        if(option < SET_CNT-1)
-                            option++;
-                        else
-                        {
-					        eeprom_save();
-					        option = SET_TMP;
-					        if(set_timer != 0)
-					        {
-						        timer_reset();
-						        timer_enable = True;
-					        }
-					        else
-						        if(timer_enable)
-							        timer_reset();
-					        mode = WRK_MODE;
-                        }
-                    }
-                    else
-                    {
-                        if(mode < MODE_CNT-1)
-                            mode++;
-                        else
-				        {
-					        mode = WRK_MODE;
-				        }
-                    }
-                }
-            }
-            // MODE BUTTON ACTIONS            
-		}
-        BUTTON_PRESSED = False;
-	}     
-}*/
 
 ISR(TIMER0_OVF_vect)
 {
