@@ -9,30 +9,6 @@
  *
  */
 
-/*
-	TODO List:
-		– проверить работу values_refresh() для настройки ШИМ в железе
-		– проверить работу load_control() в железе
-		– проверить работу таймера обратного отсчета в железе
-		– проверить работу процедуры генерации звука в железе
-		– проверить работу опроса датчиков по прерыванию таймера в железе
-		– проверить работу процелуры управления каналами в зависимости от настроек времени таймера обратного отсчета в железе
-		– проверить работу процедуры аварийного отключения каналов нагрузки в случае превышения мощности в железе
-		– проверить работу процедуры управления каналом нагрузки в зависимости от температуры на нем в железе
-		– проверить верное определение первого запуска устройства в железе
-		– проверить работу Easter Egg в железе
-		– проверить работу аппаратной блокировки включения Easter Egg в железе
-		
-		– написать функцию конвертации полученного значения в необходимую величину и вывести ее на экран
-		– проверить работу АЦП в железе
-		
-		– разобраться с принципом определения номера датчика
-		– проверить работу в железе
-        
-        – протестировать работу финальной прошивки в железе
-
-*/
-
 /* Определение рабочей частоты МК */
 #define F_CPU 16000000
 
@@ -95,7 +71,7 @@ unsigned char dev_num             = 0;
 #define EGG				PC5
 
 /* Определение времени задержки (мс) для устранения дребезга контактов */
-#define DEB_INT		    0 //150
+#define DEB_INT		    0
 
 /* Определение режимов работы и установок */
 /* Режимы работы */
@@ -112,16 +88,11 @@ unsigned char dev_num             = 0;
 #define SET_BUZ	        4
 #define SET_LUM		    5
 #define SET_CTR	        6
-/* Общее количество настроек и количество доступных настроек */
-#define SET_EASTER_EGG	True
-uint8_t enable_eegg	  =	False;
-#define SET_CNT_MAX		7
-uint8_t SET_CNT       = 3;
 
 /* Определение границ и шага для настраиваемых значений */
 /* Границы и шаг максимальной температуры */
 #define temp_min        20
-#define temp_max        90
+#define temp_max        85
 #define temp_delta      5
 /* Границы и шаг максимальной потребляемой мощности */
 #define power_min       100
@@ -131,7 +102,7 @@ uint8_t SET_CNT       = 3;
 #define voltage_min     180
 #define voltage_max     250
 #define voltage_delta   5
-#define voltage_default 220
+#define voltage_default 230
 /* Границы и шаг таймера отключения нагрузки */
 #define timer_min       0
 #define timer_max       7200 // значение в секундах = 120 минут
@@ -212,12 +183,18 @@ uint8_t overpower	  = False;
 /* Переменные, необходимые для работы АЦП */
 unsigned long adc_value   = 0;
 uint16_t      adc_noise   = 0;
-#define NOISE_CAL_CNT 1000
+#define NOISE_CAL_CNT 500
 #define POWER_GET_CNT 100
 
+/* Общее количество настроек и количество доступных настроек */
+#define SET_EASTER_EGG	True
+uint8_t enable_eegg	  =	False;
+#define SET_CNT_MAX		7
+uint8_t SET_CNT       = 3;
+
 /* Переменные для отладки */
-#define PROTEUS             False
-#define FULL_MENU           True
+#define PROTEUS         False
+#define FULL_MENU       True
 
 /* Коэффициенты */
 double const X = 1.00;
@@ -438,8 +415,8 @@ void startup()
                PB7 – OSC PIN           (16 MHz, IN, NO PULLUP);
         PORT C:
                PC0 – N/A               (N/A, OUT, 0);
-               PC1 – CHANNEL 2 CONTROL (CH2, OUT, 0);
-               PC2 – CHANNEL 1 CONTROL (CH1, OUT, 0);
+               PC1 – CHANNEL 2 CONTROL (CH2, OUT, 1);
+               PC2 – CHANNEL 1 CONTROL (CH1, OUT, 1);
                PC3 – TEMP MEASUREMENT  (1-WIRE, OUT, 0);
 			   PC4 – POWER MEASUREMENT (ADC4, IN, NO PULLUP);
 			   PC5 – EASTER EGG        (EGG, IN, PULLUP);
@@ -460,7 +437,7 @@ void startup()
     DDRB  = 0x3E;
 	PORTB = 0x07;
     DDRC  = 0x8F;
-    PORTC = 0x20;
+    PORTC = 0x26;
     DDRD  = 0x3F;
     PORTD = 0xC0;
 	
@@ -729,9 +706,9 @@ uint16_t get_power_value()
 	  
 	  Данные АЦП:
 		BITs = 1024
-		Vref = 2.56 V
+		Vref = 2.5 V
 		 ADC = ((Vin * 1024) / Vref)
-		  dV = 2.56 / 1024 = 2.5 mV / bit => 0.0025 V / bit
+		  dV = 2.5 / 1024 = 2.441406 mV / bit => 0.002441 V / bit
 	*/
 	
 	/* Получаем значение напряжения с АЦП и вычитаем из него шум */
@@ -761,19 +738,22 @@ void values_refresh()
 	/* Аварийное отключение нагрузки при превышении потребляемой мощности */
 	if(cur_power >= set_max_pwr)
 	{
-        overpower = True;
-		timer_reset();		
-		load_control(0, Off);
-		buzz(On);
+		if(!overpower)
+		{
+			lcd_clrscr();
+			overpower = True;
+			timer_reset();
+			load_control(0, Off);
+			buzz(On);
+		}
 	}
 	else
 	{
 		if(overpower)
         {
-            lcd_clrscr();
+            buzz(Off);
+			lcd_clrscr();
             overpower = False;
-		    if(!timer_out)
-			    buzz(Off);
         }        
 	}
 	/* Управление каналами нагрузки в зависимости от температуры и мощности */
@@ -1061,24 +1041,6 @@ ISR(TIMER0_OVF_vect)
           1000 мс => 62500
     */
 	timer_counter++;
-/*
-	/ * TEST BLOCK - INTERRUPT BUTTON * /
-		if(BUTTON_PRESSED)
-            BTN_TIMER++;
-		if((CHECKBIT(PIND, MODE_BUTTON) == 0) && !BUTTON_PRESSED)
-			BUTTON_PRESSED = True;
-		/ * Действия по прошествии N мс * /
-		if(BTN_TIMER>=3125)
-		{
-			BTN_TIMER = 0;
-            if((CHECKBIT(PIND, MODE_BUTTON) == 0) && BUTTON_PRESSED)
-			{
-                PORTC^=(1<<PC2);
-			}
-            BUTTON_PRESSED = False;
-		}
-	/ * TEST BLOCK - INTERRUPT BUTTON * /
-*/
 	/* Действия по прошествии одной секунды */
 	if(timer_counter>=62500)
 	{
@@ -1096,7 +1058,7 @@ ISR(TIMER0_OVF_vect)
 				load_control(0, Off);
 				/* Помечаем таймер, как отработавший */
 				timer_out = True;	
-			}
+			}			
 		}
 		/* Обработчик для выдачи звукового сигнала */
 		if(set_buzzer && timer_out)
@@ -1123,8 +1085,6 @@ ISR(TIMER0_OVF_vect)
 		}
 		else
 			timer_out = False;
-		/* Обнуление счетчика прерываний таймера Т0 */
-		timer_counter = 0;
 		/* Управление таймером отсчета времени между измерениями температуры */
 		if(temp_timer < temp_timer_max)
 			temp_timer++;
@@ -1132,7 +1092,9 @@ ISR(TIMER0_OVF_vect)
 		{
 			temp_timer = 0;
 			temp_flag  = True;
-		}
+		}			
+		/* Обнуление счетчика прерываний таймера Т0 */
+		timer_counter = 0;
 	}
 }
 ISR(ADC_vect)
@@ -1159,7 +1121,7 @@ int main(void)
                 break;            
         }
 		if((mode != 0) && (mode != CAL_MODE))
-            values_refresh();
+			values_refresh();
     }
     return 0;
 }
