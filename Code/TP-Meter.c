@@ -41,6 +41,7 @@
 #define DS18B20_COPY_SCRATCHPAD     0x48
 #define DS18B20_RECALL_E            0xB8
 #define DS18B20_READ_POWER_SUPPLY   0xB4
+#define RES_9BIT					0x1F
 /* Опредеделние вывода под шину 1-Wire */
 #define BUS							OWI_PIN_3
 /* Количество устройств на шине 1-Wire */
@@ -71,7 +72,7 @@ unsigned char dev_num             = 0;
 #define EGG				PC5
 
 /* Определение времени задержки (мс) для устранения дребезга контактов */
-#define DEB_INT		    0
+#define DEB_INT		    50
 
 /* Определение режимов работы и установок */
 /* Режимы работы */
@@ -187,14 +188,14 @@ uint16_t      adc_noise   = 0;
 #define POWER_GET_CNT 100
 
 /* Общее количество настроек и количество доступных настроек */
-#define SET_EASTER_EGG	True
 uint8_t enable_eegg	  =	False;
+#define SET_EASTER_EGG	True
 #define SET_CNT_MAX		7
 uint8_t SET_CNT       = 3;
 
 /* Переменные для отладки */
 #define PROTEUS         False
-#define FULL_MENU       True
+#define FULL_MENU       False
 
 /* Коэффициенты */
 double const X = 1.00;
@@ -399,6 +400,15 @@ void ds18b20_search()
 			searchFlag = SENSORS_FOUND;
     }	
 }
+void ds18b20_resolution_set(unsigned char bus, unsigned char * id, uint8_t resolution_code)
+{
+	OWI_DetectPresence(bus);
+	OWI_MatchRom(id, bus);
+	OWI_SendByte(DS18B20_WRITE_SCRATCHPAD, bus);
+	OWI_SendByte(0, bus);
+	OWI_SendByte(0, bus);
+	OWI_SendByte(resolution_code, bus);
+}
 void startup()
 {
 	/* Начальная процедура настройки и запуска */
@@ -525,6 +535,10 @@ void startup()
         ds18b20_search();
     dev_searching = False;
     
+	/* Изменение разрешения датчиков */
+	ds18b20_resolution_set(BUS, allDevices[0].id, RES_9BIT);
+	ds18b20_resolution_set(BUS, allDevices[1].id, RES_9BIT);
+	
 	/* Вывод приглашения для выполнения калибровки */
 	lcd_clrscr();
     lcd_goto(1, 0);
