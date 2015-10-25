@@ -1,0 +1,4 @@
+ATMega8A Fuses:
+	Hi = 0xD1
+	Lo = 0xFF
+	Lb = 0x3C
