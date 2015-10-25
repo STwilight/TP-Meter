@@ -24,8 +24,6 @@ c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolcha
                               c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(mulsf3.o) (__fp_round)
 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodhi4.o)
                               TP-Meter.o (__udivmodhi4)
-c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
-                              TP-Meter.o (__udivmodsi4)
 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_divmodsi4.o)
                               hd44780.o (__divmodsi4)
 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_negsi2.o)
@@ -38,6 +36,8 @@ c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolcha
                               hd44780.o (__do_clear_bss)
 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_umulhisi3.o)
                               hd44780.o (__umulhisi3)
+c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
+                              c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_divmodsi4.o) (__udivmodsi4)
 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eerd_byte_atmega8.o)
                               TP-Meter.o (__eerd_byte_m8)
 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eerd_word_atmega8.o)
@@ -101,7 +101,6 @@ Discarded input sections
  .data          0x00000000        0x0 TP-Meter.o
  .bss           0x00000000        0x0 TP-Meter.o
  .text.buzz     0x00000000       0x10 TP-Meter.o
- .rodata.X      0x00000000        0x4 TP-Meter.o
  .text          0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(fixunssfsi.o)
  .data          0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(fixunssfsi.o)
  .bss           0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(fixunssfsi.o)
@@ -149,20 +148,6 @@ Discarded input sections
                 0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodhi4.o)
  .text.libgcc.fixed
                 0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodhi4.o)
- .text          0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
- .data          0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
- .bss           0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
- .text.libgcc.mul
-                0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
- .text.libgcc   0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
- .text.libgcc.prologue
-                0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
- .text.libgcc.builtins
-                0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
- .text.libgcc.fmul
-                0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
- .text.libgcc.fixed
-                0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
  .text          0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_divmodsi4.o)
  .data          0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_divmodsi4.o)
  .bss           0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_divmodsi4.o)
@@ -253,6 +238,20 @@ Discarded input sections
                 0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_umulhisi3.o)
  .text.libgcc.fixed
                 0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_umulhisi3.o)
+ .text          0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
+ .data          0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
+ .bss           0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
+ .text.libgcc.mul
+                0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
+ .text.libgcc   0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
+ .text.libgcc.prologue
+                0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
+ .text.libgcc.builtins
+                0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
+ .text.libgcc.fmul
+                0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
+ .text.libgcc.fixed
+                0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
  .text          0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eerd_byte_atmega8.o)
  .data          0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eerd_byte_atmega8.o)
  .bss           0x00000000        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eerd_byte_atmega8.o)
@@ -389,7 +388,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000     0x1b22
+.text           0x00000000     0x1b0e
  *(.vectors)
  .vectors       0x00000000       0x26 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4/crtm8.o
                 0x00000000                __vector_default
@@ -573,128 +572,128 @@ END GROUP
  .text.ds18b20_resolution_set
                 0x00000c36       0x38 TP-Meter.o
                 0x00000c36                ds18b20_resolution_set
- .text.startup  0x00000c6e       0xd6 TP-Meter.o
-                0x00000c6e                startup
- .text.settings
-                0x00000d44      0x16a TP-Meter.o
-                0x00000d44                settings
- .text.timer_reset
-                0x00000eae       0x12 TP-Meter.o
-                0x00000eae                timer_reset
  .text.ds18b20_read_temp
-                0x00000ec0       0xac TP-Meter.o
-                0x00000ec0                ds18b20_read_temp
+                0x00000c6e       0xac TP-Meter.o
+                0x00000c6e                ds18b20_read_temp
  .text.ds18b20_get_temp
-                0x00000f6c       0x5e TP-Meter.o
-                0x00000f6c                ds18b20_get_temp
+                0x00000d1a       0x5e TP-Meter.o
+                0x00000d1a                ds18b20_get_temp
+ .text.startup  0x00000d78       0xe6 TP-Meter.o
+                0x00000d78                startup
+ .text.settings
+                0x00000e5e      0x16a TP-Meter.o
+                0x00000e5e                settings
+ .text.timer_reset
+                0x00000fc8       0x12 TP-Meter.o
+                0x00000fc8                timer_reset
  .text.get_adc_value
-                0x00000fca       0xd2 TP-Meter.o
-                0x00000fca                get_adc_value
+                0x00000fda       0xb6 TP-Meter.o
+                0x00000fda                get_adc_value
  .text.get_power_value
-                0x0000109c       0x7e TP-Meter.o
-                0x0000109c                get_power_value
+                0x00001090       0x7e TP-Meter.o
+                0x00001090                get_power_value
  .text.values_refresh
-                0x0000111a      0x10e TP-Meter.o
-                0x0000111a                values_refresh
+                0x0000110e      0x106 TP-Meter.o
+                0x0000110e                values_refresh
  .text.temp_out
-                0x00001228       0x50 TP-Meter.o
-                0x00001228                temp_out
+                0x00001214       0x50 TP-Meter.o
+                0x00001214                temp_out
  .text.power_out
-                0x00001278       0x28 TP-Meter.o
-                0x00001278                power_out
+                0x00001264       0x28 TP-Meter.o
+                0x00001264                power_out
  .text.time_out
-                0x000012a0       0xf2 TP-Meter.o
-                0x000012a0                time_out
- .text.display  0x00001392       0x58 TP-Meter.o
-                0x00001392                display
+                0x0000128c       0xf2 TP-Meter.o
+                0x0000128c                time_out
+ .text.display  0x0000137e       0x58 TP-Meter.o
+                0x0000137e                display
  .text.calibrate
-                0x000013ea       0x38 TP-Meter.o
-                0x000013ea                calibrate
+                0x000013d6       0x38 TP-Meter.o
+                0x000013d6                calibrate
  .text.buttons_check
-                0x00001422      0x23a TP-Meter.o
-                0x00001422                buttons_check
+                0x0000140e      0x23a TP-Meter.o
+                0x0000140e                buttons_check
  .text.__vector_9
-                0x0000165c      0x108 TP-Meter.o
-                0x0000165c                __vector_9
+                0x00001648      0x108 TP-Meter.o
+                0x00001648                __vector_9
  .text.__vector_14
-                0x00001764       0x3c TP-Meter.o
-                0x00001764                __vector_14
- .text.main     0x000017a0       0x2e TP-Meter.o
-                0x000017a0                main
+                0x00001750       0x3c TP-Meter.o
+                0x00001750                __vector_14
+ .text.main     0x0000178c       0x2e TP-Meter.o
+                0x0000178c                main
  .text.avr-libc.fplib
-                0x000017ce       0x58 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(fixunssfsi.o)
-                0x000017ce                __fixunssfsi
+                0x000017ba       0x58 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(fixunssfsi.o)
+                0x000017ba                __fixunssfsi
  .text.avr-libc.fplib
-                0x00001826       0x7a c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(floatsisf.o)
-                0x00001826                __floatunsisf
-                0x0000182a                __floatsisf
+                0x00001812       0x7a c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(floatsisf.o)
+                0x00001812                __floatunsisf
+                0x00001816                __floatsisf
  .text.avr-libc.fplib
-                0x000018a0       0x44 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(fp_split3.o)
-                0x000018a0                __fp_split3
-                0x000018b0                __fp_splitA
+                0x0000188c       0x44 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(fp_split3.o)
+                0x0000188c                __fp_split3
+                0x0000189c                __fp_splitA
  .text.avr-libc.fplib
-                0x000018e4        0xe c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(fp_zero.o)
-                0x000018e4                __fp_zero
-                0x000018e6                __fp_szero
+                0x000018d0        0xe c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(fp_zero.o)
+                0x000018d0                __fp_zero
+                0x000018d2                __fp_szero
  .text.avr-libc.fplib
-                0x000018f2        0x4 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(mulsf3.o)
-                0x000018f2                __mulsf3
+                0x000018de        0x4 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(mulsf3.o)
+                0x000018de                __mulsf3
  .text.avr-libc.fplib
-                0x000018f6       0xc2 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(mulsf3x.o)
-                0x0000190a                __mulsf3x
-                0x0000190e                __mulsf3_pse
+                0x000018e2       0xc2 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(mulsf3x.o)
+                0x000018f6                __mulsf3x
+                0x000018fa                __mulsf3_pse
  .text.avr-libc.fplib
-                0x000019b8        0xc c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(fp_inf.o)
-                0x000019b8                __fp_inf
+                0x000019a4        0xc c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(fp_inf.o)
+                0x000019a4                __fp_inf
  .text.avr-libc.fplib
-                0x000019c4        0x6 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(fp_nan.o)
-                0x000019c4                __fp_nan
+                0x000019b0        0x6 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(fp_nan.o)
+                0x000019b0                __fp_nan
  .text.avr-libc.fplib
-                0x000019ca        0xe c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(fp_pscA.o)
-                0x000019ca                __fp_pscA
+                0x000019b6        0xe c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(fp_pscA.o)
+                0x000019b6                __fp_pscA
  .text.avr-libc.fplib
-                0x000019d8        0xe c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(fp_pscB.o)
-                0x000019d8                __fp_pscB
+                0x000019c4        0xe c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(fp_pscB.o)
+                0x000019c4                __fp_pscB
  .text.avr-libc.fplib
-                0x000019e6       0x22 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(fp_round.o)
-                0x000019e6                __fp_round
+                0x000019d2       0x22 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libm.a(fp_round.o)
+                0x000019d2                __fp_round
  .text.libgcc.div
-                0x00001a08       0x28 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodhi4.o)
-                0x00001a08                __udivmodhi4
+                0x000019f4       0x28 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodhi4.o)
+                0x000019f4                __udivmodhi4
  .text.libgcc.div
-                0x00001a30       0x44 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
-                0x00001a30                __udivmodsi4
+                0x00001a1c       0x28 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_divmodsi4.o)
+                0x00001a1c                __divmodsi4
  .text.libgcc.div
-                0x00001a74       0x28 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_divmodsi4.o)
-                0x00001a74                __divmodsi4
- .text.libgcc.div
-                0x00001a9c       0x10 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_negsi2.o)
-                0x00001a9c                __negsi2
+                0x00001a44       0x10 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_negsi2.o)
+                0x00001a44                __negsi2
  .text.libgcc.mul
-                0x00001aac       0x18 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_umulhisi3.o)
-                0x00001aac                __umulhisi3
+                0x00001a54       0x18 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_umulhisi3.o)
+                0x00001a54                __umulhisi3
+ .text.libgcc.div
+                0x00001a6c       0x44 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_udivmodsi4.o)
+                0x00001a6c                __udivmodsi4
  .text.avr-libc
-                0x00001ac4       0x10 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eerd_byte_atmega8.o)
-                0x00001ac4                __eerd_byte_m8
+                0x00001ab0       0x10 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eerd_byte_atmega8.o)
+                0x00001ab0                __eerd_byte_m8
  .text.avr-libc
-                0x00001ad4        0xa c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eerd_word_atmega8.o)
-                0x00001ad4                __eerd_word_m8
+                0x00001ac0        0xa c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eerd_word_atmega8.o)
+                0x00001ac0                __eerd_word_m8
  .text.avr-libc
-                0x00001ade       0x1a c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eewr_byte_atmega8.o)
-                0x00001ade                __eewr_byte_m8
-                0x00001ae0                __eewr_r18_m8
+                0x00001aca       0x1a c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eewr_byte_atmega8.o)
+                0x00001aca                __eewr_byte_m8
+                0x00001acc                __eewr_r18_m8
  .text.avr-libc
-                0x00001af8        0x6 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eewr_word_atmega8.o)
-                0x00001af8                __eewr_word_m8
+                0x00001ae4        0x6 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eewr_word_atmega8.o)
+                0x00001ae4                __eewr_word_m8
  .text.avr-libc
-                0x00001afe       0x20 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eerd_block_atmega8.o)
-                0x00001afe                __eerd_block_m8
-                0x00001b02                __eerd_blraw_m8
-                0x00001b1e                . = ALIGN (0x2)
+                0x00001aea       0x20 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr4\libc.a(eerd_block_atmega8.o)
+                0x00001aea                __eerd_block_m8
+                0x00001aee                __eerd_blraw_m8
+                0x00001b0a                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00001b1e        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_exit.o)
-                0x00001b1e                _exit
-                0x00001b1e                exit
+ .fini9         0x00001b0a        0x0 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_exit.o)
+                0x00001b0a                _exit
+                0x00001b0a                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -713,130 +712,131 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00001b1e        0x4 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_exit.o)
+ .fini0         0x00001b0a        0x4 c:/program files/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr4\libgcc.a(_exit.o)
  *(.fini0)
-                0x00001b22                _etext = .
+                0x00001b0e                _etext = .
 
-.data           0x00800060       0xf4 load address 0x00001b22
+.data           0x00800060       0xf6 load address 0x00001b0e
                 0x00800060                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
  .data.SET_CNT  0x00800060        0x1 TP-Meter.o
                 0x00800060                SET_CNT
- .data.set_buzzer
+ .data.temp_timer
                 0x00800061        0x1 TP-Meter.o
-                0x00800061                set_buzzer
- .data.launch   0x00800062        0x1 TP-Meter.o
-                0x00800062                launch
+                0x00800061                temp_timer
+ .data.set_buzzer
+                0x00800062        0x1 TP-Meter.o
+                0x00800062                set_buzzer
+ .data.launch   0x00800063        0x1 TP-Meter.o
+                0x00800063                launch
  .data.dev_searching
-                0x00800063        0x1 TP-Meter.o
-                0x00800063                dev_searching
+                0x00800064        0x1 TP-Meter.o
+                0x00800064                dev_searching
  *(.rodata)
- .rodata        0x00800064       0x40 TP-Meter.o
+ .rodata        0x00800065       0x40 TP-Meter.o
  *(.rodata*)
  .rodata.progress_bar
-                0x008000a4        0x6 hd44780.o
+                0x008000a5        0x6 hd44780.o
  .rodata.str1.1
-                0x008000aa       0xaa TP-Meter.o
+                0x008000ab       0xaa TP-Meter.o
                                  0xb6 (size before relaxing)
  *(.gnu.linkonce.d*)
-                0x00800154                . = ALIGN (0x2)
-                0x00800154                _edata = .
-                0x00800154                PROVIDE (__data_end, .)
+                0x00800156                . = ALIGN (0x2)
+ *fill*         0x00800155        0x1 
+                0x00800156                _edata = .
+                0x00800156                PROVIDE (__data_end, .)
 
-.bss            0x00800154       0x3d
-                0x00800154                PROVIDE (__bss_start, .)
+.bss            0x00800156       0x3c
+                0x00800156                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
  .bss.current_bar_load
-                0x00800154        0x1 hd44780.o
+                0x00800156        0x1 hd44780.o
  .bss.enable_eegg
-                0x00800155        0x1 TP-Meter.o
-                0x00800155                enable_eegg
+                0x00800157        0x1 TP-Meter.o
+                0x00800157                enable_eegg
  .bss.adc_noise
-                0x00800156        0x2 TP-Meter.o
-                0x00800156                adc_noise
+                0x00800158        0x2 TP-Meter.o
+                0x00800158                adc_noise
  .bss.adc_value
-                0x00800158        0x4 TP-Meter.o
-                0x00800158                adc_value
+                0x0080015a        0x4 TP-Meter.o
+                0x0080015a                adc_value
  .bss.overpower
-                0x0080015c        0x1 TP-Meter.o
-                0x0080015c                overpower
- .bss.temp_timer
-                0x0080015d        0x1 TP-Meter.o
-                0x0080015d                temp_timer
- .bss.temp_flag
                 0x0080015e        0x1 TP-Meter.o
-                0x0080015e                temp_flag
+                0x0080015e                overpower
+ .bss.temp_flag
+                0x0080015f        0x1 TP-Meter.o
+                0x0080015f                temp_flag
  .bss.cur_power
-                0x0080015f        0x2 TP-Meter.o
-                0x0080015f                cur_power
- .bss.CH2_temp  0x00800161        0x1 TP-Meter.o
-                0x00800161                CH2_temp
- .bss.CH1_temp  0x00800162        0x1 TP-Meter.o
-                0x00800162                CH1_temp
- .bss.BUZZ_CFG  0x00800163        0x1 TP-Meter.o
-                0x00800163                BUZZ_CFG
+                0x00800160        0x2 TP-Meter.o
+                0x00800160                cur_power
+ .bss.CH2_temp  0x00800162        0x1 TP-Meter.o
+                0x00800162                CH2_temp
+ .bss.CH1_temp  0x00800163        0x1 TP-Meter.o
+                0x00800163                CH1_temp
+ .bss.BUZZ_CFG  0x00800164        0x1 TP-Meter.o
+                0x00800164                BUZZ_CFG
  .bss.BUZZ_PART
-                0x00800164        0x1 TP-Meter.o
-                0x00800164                BUZZ_PART
- .bss.BUZZED_TIMES
                 0x00800165        0x1 TP-Meter.o
-                0x00800165                BUZZED_TIMES
+                0x00800165                BUZZ_PART
+ .bss.BUZZED_TIMES
+                0x00800166        0x1 TP-Meter.o
+                0x00800166                BUZZED_TIMES
  .bss.timer_secs
-                0x00800166        0x2 TP-Meter.o
-                0x00800166                timer_secs
+                0x00800167        0x2 TP-Meter.o
+                0x00800167                timer_secs
  .bss.timer_out
-                0x00800168        0x1 TP-Meter.o
-                0x00800168                timer_out
- .bss.timer_enable
                 0x00800169        0x1 TP-Meter.o
-                0x00800169                timer_enable
+                0x00800169                timer_out
+ .bss.timer_enable
+                0x0080016a        0x1 TP-Meter.o
+                0x0080016a                timer_enable
  .bss.timer_counter
-                0x0080016a        0x2 TP-Meter.o
-                0x0080016a                timer_counter
+                0x0080016b        0x2 TP-Meter.o
+                0x0080016b                timer_counter
  .bss.set_contrast
-                0x0080016c        0x1 TP-Meter.o
-                0x0080016c                set_contrast
- .bss.set_light
                 0x0080016d        0x1 TP-Meter.o
-                0x0080016d                set_light
+                0x0080016d                set_contrast
+ .bss.set_light
+                0x0080016e        0x1 TP-Meter.o
+                0x0080016e                set_light
  .bss.set_timer
-                0x0080016e        0x2 TP-Meter.o
-                0x0080016e                set_timer
- .bss.set_vtg   0x00800170        0x1 TP-Meter.o
-                0x00800170                set_vtg
+                0x0080016f        0x2 TP-Meter.o
+                0x0080016f                set_timer
+ .bss.set_vtg   0x00800171        0x1 TP-Meter.o
+                0x00800171                set_vtg
  .bss.set_max_pwr
-                0x00800171        0x2 TP-Meter.o
-                0x00800171                set_max_pwr
+                0x00800172        0x2 TP-Meter.o
+                0x00800172                set_max_pwr
  .bss.set_max_tmp
-                0x00800173        0x1 TP-Meter.o
-                0x00800173                set_max_tmp
- .bss.option    0x00800174        0x1 TP-Meter.o
-                0x00800174                option
- .bss.mode      0x00800175        0x1 TP-Meter.o
-                0x00800175                mode
- .bss.dev_num   0x00800176        0x1 TP-Meter.o
-                0x00800176                dev_num
- .bss.crcFlag   0x00800177        0x1 TP-Meter.o
-                0x00800177                crcFlag
+                0x00800174        0x1 TP-Meter.o
+                0x00800174                set_max_tmp
+ .bss.option    0x00800175        0x1 TP-Meter.o
+                0x00800175                option
+ .bss.mode      0x00800176        0x1 TP-Meter.o
+                0x00800176                mode
+ .bss.dev_num   0x00800177        0x1 TP-Meter.o
+                0x00800177                dev_num
+ .bss.crcFlag   0x00800178        0x1 TP-Meter.o
+                0x00800178                crcFlag
  .bss.searchFlag
-                0x00800178        0x1 TP-Meter.o
-                0x00800178                searchFlag
+                0x00800179        0x1 TP-Meter.o
+                0x00800179                searchFlag
  *(COMMON)
- COMMON         0x00800179       0x18 TP-Meter.o
-                0x00800179                rom
-                0x00800181                allDevices
-                0x00800191                PROVIDE (__bss_end, .)
-                0x00001b22                __data_load_start = LOADADDR (.data)
-                0x00001c16                __data_load_end = (__data_load_start + SIZEOF (.data))
+ COMMON         0x0080017a       0x18 TP-Meter.o
+                0x0080017a                rom
+                0x00800182                allDevices
+                0x00800192                PROVIDE (__bss_end, .)
+                0x00001b0e                __data_load_start = LOADADDR (.data)
+                0x00001c04                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800191        0x0
-                0x00800191                PROVIDE (__noinit_start, .)
+.noinit         0x00800192        0x0
+                0x00800192                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x00800191                PROVIDE (__noinit_end, .)
-                0x00800191                _end = .
-                0x00800191                PROVIDE (__heap_start, .)
+                0x00800192                PROVIDE (__noinit_end, .)
+                0x00800192                _end = .
+                0x00800192                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0xa
  *(.eeprom*)
@@ -924,13 +924,13 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x317d
+.debug_info     0x00000000     0x318e
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0xa8c hd44780.o
  .debug_info    0x00000a8c      0x1c0 OWIcrc.o
  .debug_info    0x00000c4c      0x582 OWIHighLevelFunctions.o
  .debug_info    0x000011ce      0x43b OWISWBitFunctions.o
- .debug_info    0x00001609     0x1b74 TP-Meter.o
+ .debug_info    0x00001609     0x1b85 TP-Meter.o
 
 .debug_abbrev   0x00000000      0x8d6
  *(.debug_abbrev)
@@ -940,13 +940,13 @@ END GROUP
  .debug_abbrev  0x00000445      0x13f OWISWBitFunctions.o
  .debug_abbrev  0x00000584      0x352 TP-Meter.o
 
-.debug_line     0x00000000      0xcfc
+.debug_line     0x00000000      0xcff
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x33b hd44780.o
  .debug_line    0x0000033b       0xa7 OWIcrc.o
  .debug_line    0x000003e2      0x1a2 OWIHighLevelFunctions.o
  .debug_line    0x00000584      0x1ec OWISWBitFunctions.o
- .debug_line    0x00000770      0x58c TP-Meter.o
+ .debug_line    0x00000770      0x58f TP-Meter.o
 
 .debug_frame    0x00000000      0x790
  *(.debug_frame)
@@ -969,13 +969,13 @@ END GROUP
  .debug_str     0x00000526      0x387 TP-Meter.o
                                 0x6b0 (size before relaxing)
 
-.debug_loc      0x00000000     0x2450
+.debug_loc      0x00000000     0x245e
  *(.debug_loc)
  .debug_loc     0x00000000      0x919 hd44780.o
  .debug_loc     0x00000919      0x38c OWIcrc.o
  .debug_loc     0x00000ca5      0xa6d OWIHighLevelFunctions.o
  .debug_loc     0x00001712      0x126 OWISWBitFunctions.o
- .debug_loc     0x00001838      0xc18 TP-Meter.o
+ .debug_loc     0x00001838      0xc26 TP-Meter.o
 
 .debug_macinfo
  *(.debug_macinfo)

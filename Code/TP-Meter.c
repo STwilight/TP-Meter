@@ -13,12 +13,12 @@
 #define F_CPU 16000000
 
 /* Подключение библиотек */
-#include <math.h>
-#include <stdlib.h>
+/* Стандартные библиотеки */
 #include <avr/io.h>
 #include <avr/eeprom.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
+/* Библиотека для HD44780 дисплея */
 #include "hd44780.h"
 /* Билиотеки для работы с шиной 1-Wire */
 #include "OWIPolled.h"
@@ -175,8 +175,8 @@ uint16_t cur_power    = 0;
 
 /* Переменные модуля измерения температуры */
 uint8_t temp_flag	  = False;
-uint8_t temp_timer    = 0;
-#define temp_timer_max  4
+uint8_t temp_timer    = 1;
+#define temp_timer_max  5
 
 /* Флаг превышения потребляемой мощности */
 uint8_t overpower	  = False;
@@ -194,11 +194,13 @@ uint8_t enable_eegg	  =	False;
 uint8_t SET_CNT       = 3;
 
 /* Переменные для отладки */
-#define PROTEUS         False
-#define FULL_MENU       False
+#define PROTEUS       False
+#define FULL_MENU     False
 
-/* Коэффициенты */
-double const X = 1.00;
+/* Коэффициенты и константы */
+#define X             30
+#define VREF		  2.5
+#define ADC_RES		  1024
 
 void eeprom_load()
 {
@@ -409,6 +411,58 @@ void ds18b20_resolution_set(unsigned char bus, unsigned char * id, uint8_t resol
 	OWI_SendByte(0, bus);
 	OWI_SendByte(resolution_code, bus);
 }
+unsigned char ds18b20_read_temp(unsigned char bus, unsigned char * id, unsigned int* temperature)
+{
+    /* Процедура чтения температуры с датчика */
+	unsigned char scratchpad[9];
+    unsigned char i;
+    /* Подаем сигнал сброса.
+	   Подаем команду адрессации 1-Wire устройства на шине.
+       Подаем команду запуска преобразования. */
+    OWI_DetectPresence(bus);
+    OWI_MatchRom(id, bus);
+    OWI_SendByte(DS18B20_CONVERT_T, bus);
+    /* Ждем завершения преобразования */ 
+    while(!OWI_ReadBit(bus));
+    /* Подаем сигнал сброса.
+	   Подаем команду для адрессации 1-Wire устройства на шине.
+       Подаем команду чтения внутренней памяти.
+       Считываем внутреннюю память датчика в массив. */	
+    OWI_DetectPresence(bus);
+    OWI_MatchRom(id, bus);
+    OWI_SendByte(DS18B20_READ_SCRATCHPAD, bus);
+    for(i=0; i<=8; i++)
+		scratchpad[i] = OWI_ReceiveByte(bus);
+    if(OWI_CheckScratchPadCRC(scratchpad) != OWI_CRC_OK)
+		return READ_CRC_ERROR;
+    
+    *temperature =(unsigned int)scratchpad[0];
+    *temperature|=((unsigned int)scratchpad[1]<<8);
+    
+    return READ_SUCCESSFUL;
+}
+uint8_t ds18b20_get_temp(uint8_t dev_id)
+{
+	/* Процедура конвертации и возврата температуры с указанного датчика */
+    /* Переменная для хранения "сырой" температуры с дачтика */
+    unsigned int temperature = 0;
+    /* Переменная для возвращения температуры */
+    uint8_t tmp = 0;
+    /* Опрос датчика */
+    crcFlag = ds18b20_read_temp(BUS, allDevices[dev_id].id, &temperature);
+	if(crcFlag != READ_CRC_ERROR)
+	{
+        /* Если температура отрицательная, выполняем преобразование */
+        if((temperature & 0x8000) != 0)
+            temperature = ~temperature + 1;
+        /* Целая часть температуры */
+        tmp = (uint8_t)(temperature>>4);
+        /* Дробная часть температуры */
+        // 	tmp = (unsigned char)(temperature&15);
+        // 	tmp = (tmp>>1) + (tmp>>3);
+    }  
+    return tmp;
+}
 void startup()
 {
 	/* Начальная процедура настройки и запуска */
@@ -539,6 +593,10 @@ void startup()
 	ds18b20_resolution_set(BUS, allDevices[0].id, RES_9BIT);
 	ds18b20_resolution_set(BUS, allDevices[1].id, RES_9BIT);
 	
+	/* Получение температуры с датчиков */
+	CH1_temp = ds18b20_get_temp(0);
+	CH2_temp = ds18b20_get_temp(1);
+	
 	/* Вывод приглашения для выполнения калибровки */
 	lcd_clrscr();
     lcd_goto(1, 0);
@@ -634,63 +692,11 @@ void timer_reset()
 	timer_out = False;
 	timer_secs = 0;	
 }
-unsigned char ds18b20_read_temp(unsigned char bus, unsigned char * id, unsigned int* temperature)
-{
-    /* Процедура чтения температуры с датчика */
-	unsigned char scratchpad[9];
-    unsigned char i;
-    /* Подаем сигнал сброса.
-	   Подаем команду адрессации 1-Wire устройства на шине.
-       Подаем команду запуска преобразования. */
-    OWI_DetectPresence(bus);
-    OWI_MatchRom(id, bus);
-    OWI_SendByte(DS18B20_CONVERT_T, bus);
-    /* Ждем завершения преобразования */ 
-    while(!OWI_ReadBit(bus));
-    /* Подаем сигнал сброса.
-	   Подаем команду для адрессации 1-Wire устройства на шине.
-       Подаем команду чтения внутренней памяти.
-       Считываем внутреннюю память датчика в массив. */	
-    OWI_DetectPresence(bus);
-    OWI_MatchRom(id, bus);
-    OWI_SendByte(DS18B20_READ_SCRATCHPAD, bus);
-    for(i=0; i<=8; i++)
-		scratchpad[i] = OWI_ReceiveByte(bus);
-    if(OWI_CheckScratchPadCRC(scratchpad) != OWI_CRC_OK)
-		return READ_CRC_ERROR;
-    
-    *temperature =(unsigned int)scratchpad[0];
-    *temperature|=((unsigned int)scratchpad[1]<<8);
-    
-    return READ_SUCCESSFUL;
-}
-uint8_t ds18b20_get_temp(uint8_t dev_id)
-{
-	/* Процедура конвертации и возврата температуры с указанного датчика */
-    /* Переменная для хранения "сырой" температуры с дачтика */
-    unsigned int temperature = 0;
-    /* Переменная для возвращения температуры */
-    uint8_t tmp = 0;
-    /* Опрос датчика */
-    crcFlag = ds18b20_read_temp(BUS, allDevices[dev_id].id, &temperature);
-	if(crcFlag != READ_CRC_ERROR)
-	{
-        /* Если температура отрицательная, выполняем преобразование */
-        if((temperature & 0x8000) != 0)
-            temperature = ~temperature + 1;
-        /* Целая часть температуры */
-        tmp = (uint8_t)(temperature>>4);
-        /* Дробная часть температуры */
-        // 	tmp = (unsigned char)(temperature&15);
-        // 	tmp = (tmp>>1) + (tmp>>3);
-    }  
-    return tmp;
-}
 uint16_t get_adc_value(uint16_t count)
 {
 	/* Процедура получения значения с АЦП */
 	uint8_t cal_mode = False;
-	unsigned long adc_values_accumulator = 0;
+	unsigned int adc_values_accumulator = 0;
 	uint16_t bar_count = count/NUMBER_OF_BAR_ELEMENTS;
 	/* Поднятие флага режима калибровки */
 	if(mode == CAL_MODE)
@@ -732,7 +738,7 @@ uint16_t get_power_value()
     else
         power_value = 0;
 	/* Переводим полученное значение в напряжение датчика и вычисляем значение потребляемой мощности*/
-	power_value = (power_value*2.5/1024)*30*sqrt(2)*set_vtg*X;
+	power_value = (power_value*VREF/ADC_RES)*VREF*X*set_vtg;
 	/* Возвращаем полученное значение */
 	return power_value;
 }
@@ -742,13 +748,6 @@ void values_refresh()
 	   Вдобавок, так же выключает нагрузки при достижении температуры канала/превышении мощности. */
 	/* Получение значения потребляемой мощности */
     cur_power = get_power_value();
-	/* Получение температур каналов */
-	if(temp_flag)
-	{
-		temp_flag = False;
-		CH1_temp = ds18b20_get_temp(0);
-		CH2_temp = ds18b20_get_temp(1);
-	}
 	/* Аварийное отключение нагрузки при превышении потребляемой мощности */
 	if(cur_power >= set_max_pwr)
 	{
@@ -770,6 +769,13 @@ void values_refresh()
             overpower = False;
         }        
 	}
+	/* Получение температур каналов */
+	if(temp_flag)
+	{
+		temp_flag = False;
+		CH1_temp = ds18b20_get_temp(0);
+		CH2_temp = ds18b20_get_temp(1);
+	}	
 	/* Управление каналами нагрузки в зависимости от температуры и мощности */
 	if(!overpower)
 	{
@@ -1104,7 +1110,7 @@ ISR(TIMER0_OVF_vect)
 			temp_timer++;
 		else
 		{
-			temp_timer = 0;
+			temp_timer = 1;
 			temp_flag  = True;
 		}			
 		/* Обнуление счетчика прерываний таймера Т0 */
