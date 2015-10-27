@@ -4451,7 +4451,7 @@ void buttons_check()
     1516:	08 f0       	brcs	.+2      	; 0x151a <buttons_check+0x10a>
     1518:	97 c0       	rjmp	.+302    	; 0x1648 <buttons_check+0x238>
 						set_vtg += voltage_delta;
-    151a:	8b 5f       	subi	r24, 0xFB	; 251
+    151a:	8f 5f       	subi	r24, 0xFF	; 255
     151c:	80 93 71 01 	sts	0x0171, r24
     1520:	08 95       	ret
 					break;
@@ -4559,7 +4559,7 @@ void buttons_check()
     15d0:	85 3b       	cpi	r24, 0xB5	; 181
     15d2:	d0 f1       	brcs	.+116    	; 0x1648 <buttons_check+0x238>
 						set_vtg -= voltage_delta;
-    15d4:	85 50       	subi	r24, 0x05	; 5
+    15d4:	81 50       	subi	r24, 0x01	; 1
     15d6:	80 93 71 01 	sts	0x0171, r24
     15da:	08 95       	ret
 					break;

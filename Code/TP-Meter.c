@@ -102,7 +102,7 @@ unsigned char dev_num             = 0;
 /* Границы и шаг значения входного сетевого напряжения */
 #define voltage_min     180
 #define voltage_max     250
-#define voltage_delta   5
+#define voltage_delta   1
 #define voltage_default 230
 /* Границы и шаг таймера отключения нагрузки */
 #define timer_min       0
