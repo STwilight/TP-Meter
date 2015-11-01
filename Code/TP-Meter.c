@@ -760,15 +760,6 @@ void values_refresh()
 			buzz(On);
 		}
 	}
-	else
-	{
-		if(overpower)
-        {
-            buzz(Off);
-			lcd_clrscr();
-            overpower = False;
-        }        
-	}
 	/* Получение температур каналов */
 	if(temp_flag)
 	{
@@ -787,7 +778,7 @@ void values_refresh()
                 if(CH1_temp != 0)
 				    load_control(1, On);
                 else
-                    load_control(2, Off);                    
+                    load_control(1, Off);                    
             }			
             else
 				load_control(1, Off);
@@ -804,7 +795,7 @@ void values_refresh()
 	}
 	else
 		load_control(0, Off);
-	/* Обновление значений яркости и контраста для таймера */
+	/* Обновление значений яркости и контраста для таймеров */
 	if(mode == SET_MODE)
     {
         if(LIGHTNESS != set_light)
@@ -927,7 +918,7 @@ void calibrate()
 void buttons_check()
 {
     /* Процедура проверки нажатия кнопок */
-	if((CHECKBIT(PIND, MODE_BUTTON) == 0) && (!dev_searching))
+	if(CHECKBIT(PIND, MODE_BUTTON) == 0)
     {
         _delay_ms(DEB_INT);
         if(launch == True)
@@ -954,6 +945,8 @@ void buttons_check()
 					else
 						if(timer_enable)
 							timer_reset();
+					if(overpower)
+						overpower = False;
 					mode = WRK_MODE;
                 }
             }
