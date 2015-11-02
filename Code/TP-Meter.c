@@ -946,7 +946,10 @@ void buttons_check()
 						if(timer_enable)
 							timer_reset();
 					if(overpower)
+					{
+						buzz(Off);
 						overpower = False;
+					}
 					mode = WRK_MODE;
                 }
             }
