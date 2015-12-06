@@ -86,9 +86,10 @@ unsigned char dev_num             = 0;
 #define SET_PWR         1
 #define SET_VTG         2
 #define SET_TIM         3
-#define SET_BUZ	        4
-#define SET_LUM		    5
-#define SET_CTR	        6
+#define SET_HM			4
+#define SET_BUZ	        5
+#define SET_LUM		    6
+#define SET_CTR	        7
 
 /* Определение границ и шага для настраиваемых значений */
 /* Границы и шаг максимальной температуры */
@@ -118,6 +119,10 @@ unsigned char dev_num             = 0;
 #define lcd_contr_max   255
 #define lcd_contr_delta 5
 #define lcd_contr_def   100
+/* Границы и значение по-умолчанию для режима обогрева */
+#define heating_mode_min 0
+#define heating_mode_max 2
+#define heating_mode_def 0
 
 /* Объявление глобальных переменных */
 /* Переменные запуска и режимов работы */
@@ -139,6 +144,8 @@ uint8_t           set_contrast = 0;
 uint8_t EEMEM  ee_set_contrast = 0;
 uint8_t           set_buzzer   = True;
 uint8_t EEMEM  ee_set_buzzer   = True;
+uint8_t           heating_mode = 0;
+uint8_t EEMEM  ee_heating_mode = 0;
 /* Определение первого запуска устройства */
 uint8_t EEMEM  ee_first_run    = False;
 
@@ -190,8 +197,8 @@ uint16_t      adc_noise   = 0;
 /* Общее количество настроек и количество доступных настроек */
 uint8_t enable_eegg	  =	False;
 #define SET_EASTER_EGG	True
-#define SET_CNT_MAX		7
-uint8_t SET_CNT       = 3;
+#define SET_CNT_MAX		8
+uint8_t SET_CNT       = 6;
 
 /* Переменные для отладки */
 #define PROTEUS       False
@@ -239,6 +246,10 @@ void eeprom_load()
 		set_buzzer = True;
 	else
 		set_buzzer = False;
+	
+	heating_mode = eeprom_read_byte(&ee_heating_mode);
+		if((heating_mode < heating_mode_min) || (heating_mode > heating_mode_max))
+			heating_mode = heating_mode_def;
 }
 void eeprom_save()
 {
@@ -249,7 +260,8 @@ void eeprom_save()
 	eeprom_write_word(&ee_set_timer, set_timer);
 	eeprom_write_byte(&ee_set_light, set_light);
 	eeprom_write_byte(&ee_set_contrast, set_contrast);
-	eeprom_write_byte(&ee_set_buzzer, set_buzzer);	
+	eeprom_write_byte(&ee_set_buzzer, set_buzzer);
+	eeprom_write_byte(&ee_heating_mode, heating_mode);
 }
 void symbols_load()
 {
@@ -363,19 +375,19 @@ void load_control(uint8_t channel, uint8_t state)
 	switch (channel)
 	{
 		case 1:
-			if(state)
+			if(state && ((heating_mode == 0) || (heating_mode == 1)))
 				DISABLE(PORTC, CH1);
 			else
 				ENABLE(PORTC, CH1);
 			break;
 		case 2:
-			if(state)
+			if(state && ((heating_mode == 0) || (heating_mode == 2)))
 				DISABLE(PORTC, CH2);
 			else
 				ENABLE(PORTC, CH2);
 			break;
 		default:
-			if(state)
+			if(state && (heating_mode == 0))
 			{
 				DISABLE(PORTC, CH1);
 				DISABLE(PORTC, CH2);
@@ -650,6 +662,25 @@ void settings()
 			lcd_numTOstr(set_timer/3600, 2);
 			lcd_prints(":");
 			lcd_numTOstr((set_timer/60)%60, 2);
+			break;
+		case SET_HM:
+			// Настройка каналов нагрузки (выборочное отключение)
+			lcd_prints("\t\t M: ");
+			switch(heating_mode)
+			{
+				case 0:
+					// Включены оба канала
+					lcd_prints("1&2");
+					break;
+				case 1:
+					// Включен только первый канал
+					lcd_prints("1  ");
+					break;
+				case 2:
+					// Включен только второй канал
+					lcd_prints("2  ");
+					break;
+			}	
 			break;
 	    case SET_BUZ:
 			// Настройка звукового оповещения
@@ -956,8 +987,12 @@ void buttons_check()
             else
             {
                 if(mode < MODE_CNT-1)
-                    mode++;
-                else
+				{
+					if(overpower)
+						buzz(Off);                  
+					mode++;					
+				}
+				else
 				{
 					mode = WRK_MODE;
 				}
@@ -986,6 +1021,12 @@ void buttons_check()
 				case SET_TIM:
 					if(set_timer < timer_max)
 						set_timer += timer_delta;
+					break;
+				case SET_HM:
+					if(heating_mode < heating_mode_max)
+						heating_mode++;
+					else
+						heating_mode = heating_mode_min;
 					break;
 				case SET_BUZ:
 					set_buzzer ^= On;
@@ -1020,7 +1061,18 @@ void buttons_check()
 				case SET_TIM:
 					if(set_timer > timer_min)
 						set_timer -= timer_delta;
+					if(set_timer == timer_min)
+					{
+						timer_reset();
+						buzz(Off);
+					}
 					break;
+				case SET_HM:
+					if(heating_mode > heating_mode_min)
+						heating_mode--;
+					else
+						heating_mode = heating_mode_max;
+					break;			
 				case SET_BUZ:
 					set_buzzer ^= On;
 					break;
